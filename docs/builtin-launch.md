@@ -49,6 +49,17 @@ expose that surface. Unknown fields are rejected. `tekes-helper` and
 `tekes-workspace-service` must be in the same directory as `worker`. `HOME`
 must be set; shared user skills are read from `$HOME/.agents`.
 
+Built-in launches also accept optional `"automatic_title"` in `"provided"` mode
+(for example `{"mode":"model","provider":"...","model":"...","max_input_chars":500}`
+or `{"mode":"local"}`). When omitted or `"mode":"local"` (the default), automatic
+session titling uses only the local 40-character prompt seed and sends zero
+outbound model requests. In `"existing"` mode, specifying `"automatic_title"` in
+the launch document is rejected, though `"automatic_title"` already present in
+`root/config/settings.json` is validated and honored; omitting it from legacy
+`settings.json` retains the local-only default. See
+[Session Endpoint § Session mutations](../spec/session-endpoint.md#session-mutations)
+for input caps, non-fallback guarantees, and manual rename precedence.
+
 `configuration_mode` is optional. Omission means `provided` for compatibility.
 In `provided` mode, `providers` is required and is the Kernel execution
 configuration generated from the application's selected providers and their
@@ -109,17 +120,23 @@ requests drain and shutdown; SIGTERM also requests shutdown. Exit code 64 means
 a usage error and 74 a startup or runtime failure.
 
 The first stdout line is a JSON readiness record containing `type: ready`,
-`protocolVersion: 3`, `bootstrapVersion: 1`, `url`, and `pid`.
+`protocolVersion: 4`, `bootstrapVersion: 1`, `url`, and `pid`. Here
+`bootstrapVersion: 1` versions only the built-in launch configuration and private
+stdin bootstrap pipe (`TEKES-KERNEL-BOOTSTRAP/1`), while `protocolVersion: 4`
+identifies the Session Endpoint contract.
 Use the reported URLs, especially when requesting an ephemeral port. Health is `/health/ready`; unary requests are
 `POST /api/{method}`, the multiplexed streams use `/api/remote.mux`, and
 file-change notifications use `GET /api/session.files.changes`. The
-authoritative protocol handshake is the WebSocket `ready` frame, not the stdout
-launch notification.
+authoritative protocol handshake is the WebSocket `ready` frame (`protocolVersion: 4`,
+required capabilities `session-inventory-sync`, `session-journal`,
+`session-control-sync`, `actionable-sync`, plus optional `models`,
+`attachments`, `management`), not the stdout launch notification.
 
 The smoke test uses a temporary state directory and synthetic provider key. It
-verifies private bootstrap, legacy-environment and Web Client rejection,
-readiness, workspace/session creation, model selection and routability,
-WebSocket handshake and all five stream baselines, and parent-pipe shutdown. The
+verifies private bootstrap (`bootstrapVersion: 1`), legacy-environment and Web Client rejection,
+readiness, session creation, model selection and routability,
+WebSocket handshake (`protocolVersion: 4`) and the four live V4 stream baselines
+(`session-inventory`, `session-journal`, `session-control`, `actionables`), and parent-pipe shutdown. The
 macOS check reads `KERN_PROCARGS2` with a synthetic positive-control marker and
 asserts that the synthetic endpoint token and selected provider key are absent;
 the queried process bytes are never printed.
@@ -128,7 +145,7 @@ The Client contract check (it needs TekesClientKit, see above) compiles the
 TekesClientKit Swift contract sources and decodes/validates actual Kernel frames
 without a Client translation shim. It also compiles the generic
 `NativeSessionEndpoint` from TekesClientKit and runs its connection,
-workspace/session creation, model selection, journal and history paging against
+session creation, model selection, journal and history paging against
 the real child process. It does not prove a real provider response or Tekes
 application UI integration.
 

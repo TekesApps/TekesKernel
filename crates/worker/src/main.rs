@@ -391,7 +391,7 @@ fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
                         &mut stdout,
                     );
                     if let Err(error) = provider_result {
-                        if is_protocol_failure(error.as_ref()) {
+                        if is_protocol_failure(error.as_ref()) || cancellation.supervisor_lost() {
                             return Err(error);
                         }
                         settle_internal_worker_failure(&mut ledger, &options, error.as_ref())?;

@@ -217,7 +217,9 @@ fn run_provider_turn_with_input(
     );
     match result {
         Ok(()) => Ok(()),
-        Err(error) if is_protocol_failure(error.as_ref()) => Err(error),
+        Err(error) if is_protocol_failure(error.as_ref()) || cancellation.supervisor_lost() => {
+            Err(error)
+        }
         // Stop owns its receipt and interrupted settlement in post_turn_exit.
         // Child launch/wait cancellation must not preempt it with internal error.
         Err(_) if cancellation.stop_requested() => Ok(()),
@@ -872,13 +874,14 @@ fn run_provider_turn_inner(
                 });
                 let mut block = 0_u64;
                 let mut main_failure: Option<Box<dyn std::error::Error>> = None;
+                let mut suppressed_supervisor_loss = false;
                 loop {
                     let frame = match frame_receiver.recv_timeout(Duration::from_millis(20)) {
                         Ok(frame) => Some(frame),
                         Err(std::sync::mpsc::RecvTimeoutError::Timeout) => None,
                         Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break,
                     };
-                    if main_failure.is_some() {
+                    if main_failure.is_some() || suppressed_supervisor_loss {
                         continue;
                     }
                     let step = (|| -> Result<(), Box<dyn std::error::Error>> {
@@ -925,7 +928,17 @@ fn run_provider_turn_inner(
                     })();
                     if let Err(error) = step {
                         cancelled_flag.store(true, std::sync::atomic::Ordering::Release);
-                        main_failure = Some(error);
+                        let broken_pipe = error
+                            .downcast_ref::<io::Error>()
+                            .is_some_and(|err| err.kind() == io::ErrorKind::BrokenPipe);
+                        if broken_pipe && !cancellation.supervisor_lost() {
+                            cancellation.cancel(CANCEL_SUPERVISOR_LOSS);
+                        }
+                        if cancellation.supervisor_lost() || broken_pipe {
+                            suppressed_supervisor_loss = true;
+                        } else {
+                            main_failure = Some(error);
+                        }
                     }
                 }
                 let completion = request
@@ -994,6 +1007,12 @@ fn run_provider_turn_inner(
             &eager,
         )?,
     };
+    if cancellation.supervisor_lost() {
+        drop(credential_material);
+        return Err(Box::new(ProtocolFailure(
+            "supervisor EOF during provider request".to_owned(),
+        )));
+    }
     stdout.write_all(&encode_line(
         "attempt_settled",
         &AttemptSettled {
@@ -1026,11 +1045,6 @@ fn run_provider_turn_inner(
         None
     };
     drop(credential_material);
-    if runtime_cancelled_provider && cancellation.supervisor_lost() {
-        return Err(Box::new(ProtocolFailure(
-            "supervisor EOF during provider request".to_owned(),
-        )));
-    }
     if runtime_cancelled_provider && cancellation.stop_requested() {
         // The attempt is terminal (usage + error are durable). The settle belongs to
         // `post_turn_exit`, which first echoes the durable `stop_requested` for the
@@ -1172,7 +1186,7 @@ fn run_provider_turn_inner(
             .filter(|call| !paired.contains(&call.call_id))
             .cloned()
             .collect::<Vec<_>>();
-        if !remaining.is_empty() {
+        if !remaining.is_empty() && !cancellation.supervisor_lost() {
             announce_appended(ledger, stdout)?;
         }
         let parked = execute_provider_tool_calls(
@@ -1190,10 +1204,15 @@ fn run_provider_turn_inner(
             lines,
             stdout,
         )?;
-        if !remaining.is_empty() {
+        if !remaining.is_empty() && !cancellation.supervisor_lost() {
             announce_appended(ledger, stdout)?;
         }
         if parked {
+            if cancellation.supervisor_lost() || cancellation.protocol_failed() {
+                return Err(Box::new(ProtocolFailure(
+                    "supervisor lost during tool execution".to_owned(),
+                )));
+            }
             return Ok(());
         }
         if cancellation.stop_requested() {

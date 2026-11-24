@@ -47,11 +47,11 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/endpoint/src/journal.rs](../../src/journal.rs) | 37 | 393 | [Symbols and calls](src--journal.md) |
 | [crates/endpoint/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/endpoint/src/mux.rs](../../src/mux.rs) | 50 | 170 | [Symbols and calls](src--mux.md) |
-| [crates/endpoint/src/projection.rs](../../src/projection.rs) | 56 | 900 | [Symbols and calls](src--projection.md) |
+| [crates/endpoint/src/projection.rs](../../src/projection.rs) | 58 | 946 | [Symbols and calls](src--projection.md) |
 | [crates/endpoint/src/requests.rs](../../src/requests.rs) | 17 | 74 | [Symbols and calls](src--requests.md) |
 | [crates/endpoint/src/respond.rs](../../src/respond.rs) | 17 | 133 | [Symbols and calls](src--respond.md) |
 | [crates/endpoint/src/rpc.rs](../../src/rpc.rs) | 25 | 72 | [Symbols and calls](src--rpc.md) |
-| [crates/endpoint/src/service.rs](../../src/service.rs) | 60 | 450 | [Symbols and calls](src--service.md) |
+| [crates/endpoint/src/service.rs](../../src/service.rs) | 60 | 460 | [Symbols and calls](src--service.md) |
 | [crates/endpoint/src/session_event_registry_generated.rs](../../src/session_event_registry_generated.rs) | 8 | 7 | [Symbols and calls](src--session_event_registry_generated.md) |
 | [crates/endpoint/src/session_operations.rs](../../src/session_operations.rs) | 108 | 1239 | [Symbols and calls](src--session_operations.md) |
 | [crates/endpoint/src/stitch.rs](../../src/stitch.rs) | 4 | 36 | [Symbols and calls](src--stitch.md) |
@@ -61,7 +61,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/endpoint/tests/legacy_replay.rs](../../tests/legacy_replay.rs) | 2 | 126 | `inventory.json` |
 | [crates/endpoint/tests/session_endpoint.rs](../../tests/session_endpoint.rs) | 10 | 100 | `inventory.json` |
 | [crates/endpoint/tests/session_notice.rs](../../tests/session_notice.rs) | 4 | 40 | `inventory.json` |
-| [crates/endpoint/tests/slice6_gates.rs](../../tests/slice6_gates.rs) | 11 | 273 | `inventory.json` |
+| [crates/endpoint/tests/slice6_gates.rs](../../tests/slice6_gates.rs) | 13 | 375 | `inventory.json` |
 | [crates/endpoint/tests/slice9_lower_seam.rs](../../tests/slice9_lower_seam.rs) | 47 | 574 | `inventory.json` |
 | [crates/endpoint/tests/submission_intent.rs](../../tests/submission_intent.rs) | 2 | 107 | `inventory.json` |
 

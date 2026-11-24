@@ -59,6 +59,23 @@ pub(crate) fn handle_delivery(
     require_version(selected)?;
     match message {
         SupervisorMessage::Input(input) => {
+            if let Some(projection) = ledger.projection()
+                && !projection.origin_tuples.contains_key(&input.origin)
+                && input.steer == Some(true)
+                && !projection.lifecycle.steer_window_open()
+            {
+                stdout.write_all(&encode_line(
+                    "receipt",
+                    &Receipt {
+                        delivery: input.delivery,
+                        seq: 0,
+                        deduplicated: false,
+                        rejected: Some("steer-unavailable".to_owned()),
+                    },
+                )?)?;
+                stdout.flush()?;
+                return Ok(());
+            }
             let mut object =
                 origin_event(ledger, &options.event_timestamp(), "input", &input.origin);
             object.insert("content".to_owned(), serde_json::to_value(input.content)?);

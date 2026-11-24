@@ -103,12 +103,6 @@ struct SweepLedgerScan {
     /// A descendant line's parent ledger file name, from its genesis.
     parent_file: Option<String>,
 }
-/// The cheap model a thread title is written with, matched as a substring of the
-/// model id or its dialect profile. A model id is chosen by whoever writes
-/// `providers.json` — Tekes ships `deepseek-flash` — so pinning one exact
-/// spelling silently disabled titling for every real installation and left the
-/// seeded prompt as the thread's name (2026-09-20).
-const AUTOMATIC_THREAD_TITLE_MODEL_HINT: &str = "flash";
 const AUTOMATIC_THREAD_TITLE_MAX_CHARS: usize = 40;
 const AUTOMATIC_THREAD_TITLE_TIMEOUT: Duration = Duration::from_secs(30);
 /// Output ceiling of the title request. A 40-character title needs far less;
@@ -250,40 +244,54 @@ fn automatic_title_origin(session_id: &str, operation: &str) -> OriginTuple {
     }
 }
 
+fn automatic_title_policy(settings: &profile::SettingsConfig) -> Option<(&str, &str, usize)> {
+    let config = settings.automatic_title.as_ref()?;
+    if config.mode != profile::AutomaticTitleMode::Model {
+        return None;
+    }
+    let provider = config.provider.as_deref()?;
+    let model = config.model.as_deref()?;
+    let max_input_chars = config
+        .max_input_chars
+        .and_then(|limit| usize::try_from(limit).ok())
+        .filter(|limit| *limit > 0)
+        .unwrap_or(profile::DEFAULT_AUTOMATIC_TITLE_MAX_INPUT_CHARS);
+    Some((provider, model, max_input_chars))
+}
+
+fn truncate_automatic_title_source(source: &str, max_input_chars: usize) -> String {
+    source.chars().take(max_input_chars).collect()
+}
+
 fn automatic_title_route(
     providers: &profile::ProvidersConfig,
+    settings: &profile::SettingsConfig,
 ) -> Result<
     (
         profile::Provider,
         profile::Model,
         provider::ResolvedDialectProfile,
+        usize,
     ),
     String,
 > {
-    // Prefer a flash model; fall back to any enabled DeepSeek model rather than
-    // leave the thread named after its raw prompt.
-    let mut fallback = None;
-    for configured in &providers.providers {
-        for model in configured.models.iter().filter(|model| model.enabled) {
-            let Ok(resolved) = provider::resolve_profile(configured, model) else {
-                continue;
-            };
-            if !matches!(
-                resolved.dialect,
-                provider::DialectId::DeepseekResponsesV1 | provider::DialectId::DeepseekChatV1
-            ) {
-                continue;
-            }
-            let route = (configured.clone(), model.clone(), resolved);
-            if model.id.contains(AUTOMATIC_THREAD_TITLE_MODEL_HINT)
-                || model.profile.contains(AUTOMATIC_THREAD_TITLE_MODEL_HINT)
-            {
-                return Ok(route);
-            }
-            fallback.get_or_insert(route);
-        }
-    }
-    fallback.ok_or_else(|| "no enabled DeepSeek model is configured".to_owned())
+    let (provider_id, model_id, max_input_chars) = automatic_title_policy(settings)
+        .ok_or_else(|| "automatic title refinement is disabled (local mode)".to_owned())?;
+    let configured = providers
+        .providers
+        .iter()
+        .find(|configured| configured.id == provider_id)
+        .ok_or_else(|| format!("automatic title provider {provider_id} is not configured"))?;
+    let model = configured
+        .models
+        .iter()
+        .find(|model| model.enabled && model.id == model_id)
+        .ok_or_else(|| {
+            format!("automatic title model {model_id} is not enabled on {provider_id}")
+        })?;
+    let resolved = provider::resolve_profile(configured, model)
+        .map_err(|error| format!("automatic title model profile is invalid: {error}"))?;
+    Ok((configured.clone(), model.clone(), resolved, max_input_chars))
 }
 
 /// The session's selected model, else the configured defaults, else the first
@@ -2886,7 +2894,12 @@ impl ProductionProcessHost {
         let receipt = self
             .endpoint
             .prompt_for_endpoint(session_id, timestamp, origin, content, steer)
-            .map_err(internal)?;
+            .map_err(|error| match error {
+                endpoint::NativeEndpointError::SteerUnavailable => {
+                    steer_unavailable_error(&origin.key)
+                }
+                other => internal(other),
+            })?;
         let source = self
             .first_root_input(session_id)
             .unwrap_or_else(|| prompt_text(&prompt.blocks));
@@ -2897,7 +2910,7 @@ impl ProductionProcessHost {
             self.publish_queue_snapshot(session_id);
             self.schedule_accepted_prompt(session_id, receipt.seq);
         }
-        if should_refine {
+        if should_refine && self.automatic_title_model_enabled(session_id) {
             self.spawn_automatic_title_refinement(session_id.to_owned(), source);
         }
         Ok(receipt)
@@ -3157,6 +3170,35 @@ impl ProductionProcessHost {
         });
     }
 
+    fn automatic_title_model_enabled(&self, session_id: &str) -> bool {
+        self.endpoint
+            .session_config_snapshot(session_id)
+            .ok()
+            .is_some_and(|config| automatic_title_policy(&config.settings).is_some())
+    }
+
+    fn automatic_title_still_seed(&self, session_id: &str) -> bool {
+        let folder = self.root.join("threads").join(session_id);
+        let Ok(bytes) = fs::read(folder.join("main.jsonl")) else {
+            return false;
+        };
+        let Some(projection) = scan_valid_prefix(&bytes, schema::READER_VERSION).projection else {
+            return false;
+        };
+        let Some(latest_title) =
+            projection.events.iter().rev().find(|item| {
+                *item.kind() == EventKind::Meta && item.string_field("title").is_some()
+            })
+        else {
+            return false;
+        };
+        latest_title
+            .origin_tuple()
+            .ok()
+            .flatten()
+            .is_some_and(|tuple| tuple.op == AUTOMATIC_TITLE_SEED_OPERATION)
+    }
+
     fn refine_automatic_title(&self, session_id: &str, source: &str) -> Result<(), String> {
         if self.draining.load(Ordering::Acquire) {
             return Ok(());
@@ -3165,7 +3207,14 @@ impl ProductionProcessHost {
             .endpoint
             .session_config_snapshot(session_id)
             .map_err(|error| format!("config snapshot: {error}"))?;
-        let generated = self.generate_automatic_title(&config.providers, source)?;
+        if automatic_title_policy(&config.settings).is_none() {
+            return Ok(());
+        }
+        if !self.automatic_title_still_seed(session_id) {
+            return Ok(());
+        }
+        let generated =
+            self.generate_automatic_title(&config.providers, &config.settings, source)?;
         let origin = automatic_title_origin(session_id, AUTOMATIC_TITLE_REFINE_OPERATION);
         let timestamp = Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
         let receipt = loop {
@@ -3358,13 +3407,16 @@ impl ProductionProcessHost {
     fn generate_automatic_title(
         &self,
         providers: &profile::ProvidersConfig,
+        settings: &profile::SettingsConfig,
         source: &str,
     ) -> Result<String, String> {
-        let (configured, _model, resolved) = automatic_title_route(providers)?;
+        let (configured, _model, resolved, max_input_chars) =
+            automatic_title_route(providers, settings)?;
+        let bounded_source = truncate_automatic_title_source(source, max_input_chars);
         let prepared = prepare_automatic_title_request(
             &configured,
             &resolved,
-            source,
+            &bounded_source,
             format!("automatic-title-{}", uuid::Uuid::new_v4()),
         )?;
         let raw = self.complete_automatic_text(
@@ -4989,6 +5041,9 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
                 .map_err(internal)
                 .and_then(|()| worker.receipt_confirmed(&delivery, "session.prompt", &origin.key));
             if let Ok(receipt) = delivered {
+                if receipt.rejected.as_deref() == Some("steer-unavailable") {
+                    return Err(steer_unavailable_error(&origin.key));
+                }
                 self.publish_queue_snapshot(session_id);
                 self.spawn_automatic_title_seed_and_refinement(
                     session_id.to_owned(),
@@ -5215,6 +5270,18 @@ impl LiveRespondAuthority for ProductionProcessHost {
 /// Names the cancel stage and the time spent in it on a failure that the
 /// endpoint folds into `internal`, so `endpoint-route-error-folded` shows where
 /// a stop failed. Typed (exact) failures keep their payload.
+fn steer_unavailable_error(item_id: &str) -> ProductionRouteFailure {
+    let details = serde_json::to_vec(&serde_json::json!({
+        "itemId": item_id,
+    }))
+    .expect("steer-unavailable details serialize");
+    ProductionRouteFailure::new(
+        "steer-unavailable",
+        "Current turn no longer accepts steering",
+        IJsonValue::parse(&details).expect("steer-unavailable details are I-JSON"),
+    )
+}
+
 fn accepted_but_not_confirmed_error(operation: &str, rpc_id: &str) -> ProductionRouteFailure {
     let details = serde_json::to_vec(&serde_json::json!({
         "rpcId": rpc_id,
@@ -6823,70 +6890,81 @@ mod tests {
         );
     }
 
-    /// A model id belongs to whoever writes `providers.json`. The route picks the
-    /// flash model whatever it is called, and still titles the thread when only a
-    /// heavier model is enabled — leaving the raw prompt as the name is worse
-    /// than spending one short call on it (2026-09-20).
     #[test]
-    fn automatic_title_route_finds_flash_by_hint_and_falls_back_to_any_deepseek() {
-        fn providers_with(models: Vec<(&str, &str)>) -> profile::ProvidersConfig {
-            let mut provider = deepseek_title_provider();
-            provider.models = models
-                .into_iter()
-                .map(|(id, profile_id)| profile::Model {
-                    id: id.to_owned(),
-                    profile: profile_id.to_owned(),
-                    enabled: true,
-                    context_window_tokens: 200_000,
-                    compact_trigger_tokens: 180_000,
-                })
-                .collect();
-            profile::ProvidersConfig {
-                format: 1,
-                revision: 1,
-                providers: vec![provider],
-                web_search: None,
-            }
-        }
-
-        // Production order: the pro model is listed first, flash second.
-        let production = providers_with(vec![
-            ("deepseek-v4-pro", "deepseek_responses_v1:deepseek-v4-pro"),
-            ("deepseek-flash", "deepseek_responses_v1:deepseek-flash"),
-        ]);
-        let (_, model, _) = automatic_title_route(&production).expect("flash route");
-        assert_eq!(model.id, "deepseek-flash");
-
-        // Named anything, as long as the profile says flash.
-        let renamed = providers_with(vec![("fast", "deepseek_responses_v1:deepseek-flash")]);
-        let (_, model, _) = automatic_title_route(&renamed).expect("profile-matched route");
-        assert_eq!(model.id, "fast");
-
-        // No flash at all: still titled rather than left as the raw prompt.
-        let pro_only = providers_with(vec![(
-            "deepseek-v4-pro",
-            "deepseek_responses_v1:deepseek-v4-pro",
-        )]);
-        let (_, model, _) = automatic_title_route(&pro_only).expect("fallback route");
-        assert_eq!(model.id, "deepseek-v4-pro");
-    }
-
-    #[test]
-    fn automatic_title_request_uses_configured_deepseek_adapter_and_pins_flash() {
+    fn automatic_title_route_requires_explicit_model_mode_and_never_falls_back() {
         let providers = profile::ProvidersConfig {
             format: 1,
             revision: 1,
             providers: vec![deepseek_title_provider()],
             web_search: None,
         };
-        let (configured, model, resolved) =
-            automatic_title_route(&providers).expect("DeepSeek Flash route");
+        let default_settings = profile::SettingsConfig::default();
+        assert!(automatic_title_route(&providers, &default_settings).is_err());
+
+        let local_settings = profile::SettingsConfig {
+            automatic_title: Some(profile::AutomaticTitleSettings {
+                mode: profile::AutomaticTitleMode::Local,
+                provider: None,
+                model: None,
+                max_input_chars: None,
+            }),
+            ..profile::SettingsConfig::default()
+        };
+        assert!(automatic_title_route(&providers, &local_settings).is_err());
+
+        let explicit = profile::SettingsConfig {
+            automatic_title: Some(profile::AutomaticTitleSettings {
+                mode: profile::AutomaticTitleMode::Model,
+                provider: Some("deepseek-responses".to_owned()),
+                model: Some("deepseek-flash".to_owned()),
+                max_input_chars: Some(120),
+            }),
+            ..profile::SettingsConfig::default()
+        };
+        let (configured, model, _, max_input_chars) =
+            automatic_title_route(&providers, &explicit).expect("explicit route");
+        assert_eq!(configured.id, "deepseek-responses");
+        assert_eq!(model.id, "deepseek-flash");
+        assert_eq!(max_input_chars, 120);
+
+        let missing_model = profile::SettingsConfig {
+            automatic_title: Some(profile::AutomaticTitleSettings {
+                mode: profile::AutomaticTitleMode::Model,
+                provider: Some("deepseek-responses".to_owned()),
+                model: Some("missing-model".to_owned()),
+                max_input_chars: None,
+            }),
+            ..profile::SettingsConfig::default()
+        };
+        assert!(automatic_title_route(&providers, &missing_model).is_err());
+    }
+
+    #[test]
+    fn automatic_title_request_uses_explicit_target_and_truncates_input_chars() {
+        let providers = profile::ProvidersConfig {
+            format: 1,
+            revision: 1,
+            providers: vec![deepseek_title_provider()],
+            web_search: None,
+        };
+        let settings = profile::SettingsConfig {
+            automatic_title: Some(profile::AutomaticTitleSettings {
+                mode: profile::AutomaticTitleMode::Model,
+                provider: Some("deepseek-responses".to_owned()),
+                model: Some("deepseek-flash".to_owned()),
+                max_input_chars: Some(10),
+            }),
+            ..profile::SettingsConfig::default()
+        };
+        let (configured, model, resolved, max_input_chars) =
+            automatic_title_route(&providers, &settings).expect("explicit route");
         assert_eq!(model.id, "deepseek-flash");
         assert_eq!(resolved.dialect, provider::DialectId::DeepseekResponsesV1);
+        let bounded = truncate_automatic_title_source("0123456789ABCDEF", max_input_chars);
         let prepared = prepare_automatic_title_request(
             &configured,
             &resolved,
-            "请修复登录问题",
+            &bounded,
             "automatic-title-test".to_owned(),
         )
         .expect("title request");
@@ -6902,7 +6980,7 @@ mod tests {
         );
         assert_eq!(
             body.pointer("/input/0/content/0/text"),
-            Some(&json!("请修复登录问题"))
+            Some(&json!("0123456789"))
         );
         assert_eq!(body["instructions"], json!(AUTOMATIC_THREAD_TITLE_SYSTEM));
     }
@@ -6939,12 +7017,27 @@ mod tests {
             providers: vec![deepseek_title_provider()],
             web_search: None,
         };
+        let settings = profile::SettingsConfig {
+            automatic_title: Some(profile::AutomaticTitleSettings {
+                mode: profile::AutomaticTitleMode::Model,
+                provider: Some("deepseek-responses".to_owned()),
+                model: Some("deepseek-flash".to_owned()),
+                max_input_chars: Some(4),
+            }),
+            ..profile::SettingsConfig::default()
+        };
         assert_eq!(
-            host.generate_automatic_title(&providers, "请修复登录问题")
+            host.generate_automatic_title(&providers, &settings, "请修复登录问题-多余后缀")
                 .expect("generated title"),
             "修复 登录失败"
         );
         let request = String::from_utf8(request.join().expect("title server")).expect("HTTP text");
+        let (_, body_text) = request.split_once("\r\n\r\n").expect("http body");
+        let body: Value = serde_json::from_str(body_text).expect("request JSON");
+        assert_eq!(
+            body.pointer("/input/0/content/0/text"),
+            Some(&json!("请修复登"))
+        );
         assert!(request.starts_with("POST /responses HTTP/1.1\r\n"));
         assert!(request.contains("authorization: Bearer fixture-title-secret\r\n"));
         host.shutdown();
@@ -6979,6 +7072,15 @@ mod tests {
             providers: vec![deepseek_title_provider()],
             web_search: None,
         };
+        let settings = profile::SettingsConfig {
+            automatic_title: Some(profile::AutomaticTitleSettings {
+                mode: profile::AutomaticTitleMode::Model,
+                provider: Some("deepseek-responses".to_owned()),
+                model: Some("deepseek-flash".to_owned()),
+                max_input_chars: None,
+            }),
+            ..profile::SettingsConfig::default()
+        };
         let cut = json!({
             "id": "title-response",
             "incomplete_details": {"reason": "max_output_tokens"},
@@ -6997,8 +7099,12 @@ mod tests {
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(transport);
             assert!(
-                host.generate_automatic_title(&providers, "Implement a weighted TTL cache")
-                    .is_err(),
+                host.generate_automatic_title(
+                    &providers,
+                    &settings,
+                    "Implement a weighted TTL cache"
+                )
+                .is_err(),
                 "{status} must not produce a title"
             );
             request.join().expect("title server");
@@ -12771,5 +12877,221 @@ mod tests {
         }
         std::thread::sleep(Duration::from_millis(2_300));
         assert!(!late_marker.exists(), "child wrote past worker shutdown");
+    }
+
+    #[test]
+    fn steer_prompt_on_idle_and_settled_sessions_returns_steer_unavailable_without_side_effects() {
+        let root = tempfile::tempdir().expect("process host root");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
+        fs::create_dir_all(&workspace).expect("workspace");
+        fs::create_dir_all(root.path().join("config")).expect("config");
+        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
+        write_test_execution_config(
+            root.path(),
+            json!({
+                "format":1,"revision":1,"id":"ws","name":"ws",
+                "cwd":[workspace.to_string_lossy()],
+                "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}
+            }),
+        );
+        let session = "018f0000-0000-7000-8000-000000000248";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        let ledger = folder.join("main.jsonl");
+        write_test_genesis(&ledger, session);
+
+        let bin = std::env::current_exe().expect("test executable");
+        let host = ProductionProcessHost::open(
+            root.path(),
+            &bin,
+            "test",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+
+        let steer_origin = OriginTuple {
+            principal: "test".to_owned(),
+            client: "test".to_owned(),
+            target: session.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-idle-steer".to_owned(),
+        };
+        let steer_prompt = MaterializedPrompt {
+            blocks: vec![Block::Text {
+                text: "IDLE STEER SHOULD NOT BECOME TITLE OR QUEUE".to_owned(),
+            }],
+            attachments: Vec::new(),
+            files: Vec::new(),
+        };
+        for _ in 0..2 {
+            let err = host
+                .prompt(
+                    session,
+                    "2026-08-28T00:00:01.000Z",
+                    &steer_origin,
+                    &steer_prompt,
+                    true,
+                )
+                .expect_err("idle session must reject steer");
+            assert_eq!(err.code, "steer-unavailable");
+            assert_eq!(err.message, "Current turn no longer accepts steering");
+            assert_eq!(
+                err.details,
+                IJsonValue::parse_str(r#"{"itemId":"rpc-idle-steer"}"#).unwrap()
+            );
+        }
+        let ledger_text = fs::read_to_string(&ledger).expect("ledger");
+        assert_eq!(
+            ledger_text.lines().count(),
+            1,
+            "idle steer must leave only genesis"
+        );
+        let projection = schema::validate_ledger(ledger_text.as_bytes(), schema::READER_VERSION)
+            .expect("valid ledger after idle steer");
+        assert!(projection.lifecycle.runnable_inputs.is_empty());
+        let inventory = host
+            .endpoint
+            .list_sessions(&std::collections::HashSet::new())
+            .expect("inventory");
+        let item = inventory
+            .into_iter()
+            .find(|item| item.session_id == session)
+            .expect("session row");
+        assert_eq!(item.title, None, "rejected steer must not seed title");
+
+        // Settled session: write a completed turn directly to main.jsonl, verify steer rejected too.
+        {
+            let mut file = fs::OpenOptions::new().append(true).open(&ledger).unwrap();
+            for line in [
+                json!({"v":1,"seq":2,"ts":"2026-08-28T00:00:02.000Z","kind":"input","content":[{"type":"text","text":"real prompt"}],"origin_key":"q1","origin_tuple":{"principal":"test","client":"test","target":session,"op":"session.prompt","key":"q1"}}),
+                json!({"v":1,"seq":3,"ts":"2026-08-28T00:00:02.000Z","kind":"run_start","run":"r1","mode":"ordinary","binary":"worker","config_digest":"cfg","instruction_digest":"ins","policy":"p","recovery_ordinal":0}),
+                json!({"v":1,"seq":4,"ts":"2026-08-28T00:00:02.000Z","turn":1,"kind":"turn_open","trigger":{"inputs":[2]}}),
+                json!({"v":1,"seq":5,"ts":"2026-08-28T00:00:02.000Z","kind":"epoch","id":"e1","adapter":"fake","model":"m","reason":"initial","renderer":1,"system":{"asset":"sha256-aa","digest":"d"},"tools":{"asset":"sha256-td","digest":"td"}}),
+                json!({"v":1,"seq":6,"ts":"2026-08-28T00:00:02.000Z","turn":1,"kind":"attempt","attempt":"a1","epoch":"e1","request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":64},"wire_digest":"wd","admits":[{"from":2,"to":2}]}),
+                json!({"v":1,"seq":7,"ts":"2026-08-28T00:00:03.000Z","turn":1,"kind":"output","attempt":"a1","content":[{"type":"text","text":"ok"}],"final_answer":true,"usage":{"availability":"reported","input_tokens":"1","output_tokens":"1"},"sealed":{"version":1,"adapter":"fake","fragments":"[]"}}),
+                json!({"v":1,"seq":8,"ts":"2026-08-28T00:00:03.000Z","turn":1,"kind":"settle","outcome":"completed","promoted_output_seq":7}),
+            ] {
+                writeln!(
+                    file,
+                    "{}",
+                    serde_json_canonicalizer::to_string(&line).unwrap()
+                )
+                .unwrap();
+            }
+        }
+        let settled_before = fs::read_to_string(&ledger).unwrap();
+        let settled_origin = OriginTuple {
+            key: "rpc-settled-steer".to_owned(),
+            ..steer_origin
+        };
+        let err = host
+            .prompt(
+                session,
+                "2026-08-28T00:00:04.000Z",
+                &settled_origin,
+                &steer_prompt,
+                true,
+            )
+            .expect_err("settled session must reject steer");
+        assert_eq!(err.code, "steer-unavailable");
+        assert_eq!(
+            err.details,
+            IJsonValue::parse_str(r#"{"itemId":"rpc-settled-steer"}"#).unwrap()
+        );
+        assert_eq!(fs::read_to_string(&ledger).unwrap(), settled_before);
+        host.shutdown();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn live_worker_steer_rejection_returns_steer_unavailable_without_title_or_queue_effects() {
+        let root = tempfile::tempdir().expect("process host root");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
+        fs::create_dir_all(&workspace).expect("workspace");
+        fs::create_dir_all(root.path().join("config")).expect("config");
+        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
+        write_test_execution_config(
+            root.path(),
+            json!({
+                "format":1,"revision":1,"id":"ws","name":"ws",
+                "cwd":[workspace.to_string_lossy()],
+                "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}
+            }),
+        );
+        let session = "018f0000-0000-7000-8000-000000000249";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        let ledger = folder.join("main.jsonl");
+        write_test_genesis(&ledger, session);
+
+        let bin = root.path().join("fake-worker-steer-reject");
+        fs::write(
+            &bin,
+            "#!/bin/sh\n\
+             printf '%s\\n' '{\"hello\":{\"max\":2,\"min\":2,\"proto\":\"tekes-worker\"}}'\n\
+             IFS= read -r selected\n\
+             while IFS= read -r line; do\n\
+               delivery=$(printf '%s' \"$line\" | sed -n 's/.*\"delivery\":\"\\([^\"]*\\)\".*/\\1/p')\n\
+               if [ -n \"$delivery\" ]; then\n\
+                 printf '{\"receipt\":{\"deduplicated\":false,\"delivery\":\"%s\",\"rejected\":\"steer-unavailable\",\"seq\":0}}\\n' \"$delivery\"\n\
+               fi\n\
+             done\n",
+        )
+        .expect("fake worker");
+        fs::set_permissions(&bin, fs::Permissions::from_mode(0o700)).expect("worker mode");
+        let helper = root.path().join("tekes-helper");
+        fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
+        fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).expect("helper mode");
+
+        let host = ProductionProcessHost::open(
+            root.path(),
+            &bin,
+            "test",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+        host.schedule_worker_at(session, session, ledger.clone())
+            .expect("schedule")
+            .expect("started");
+
+        let origin = OriginTuple {
+            principal: "test".to_owned(),
+            client: "test".to_owned(),
+            target: session.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-live-reject".to_owned(),
+        };
+        let prompt = MaterializedPrompt {
+            blocks: vec![Block::Text {
+                text: "LIVE REJECTED STEER".to_owned(),
+            }],
+            attachments: Vec::new(),
+            files: Vec::new(),
+        };
+        let err = host
+            .prompt(session, "2026-08-28T00:00:01.000Z", &origin, &prompt, true)
+            .expect_err("live worker rejection must surface steer-unavailable");
+        assert_eq!(err.code, "steer-unavailable");
+        assert_eq!(
+            err.details,
+            IJsonValue::parse_str(r#"{"itemId":"rpc-live-reject"}"#).unwrap()
+        );
+        let ledger_text = fs::read_to_string(&ledger).unwrap();
+        assert_eq!(ledger_text.lines().count(), 1);
+        let projection = schema::validate_ledger(ledger_text.as_bytes(), schema::READER_VERSION)
+            .expect("valid ledger after live steer reject");
+        assert!(projection.lifecycle.runnable_inputs.is_empty());
+        let inventory = host
+            .endpoint
+            .list_sessions(&std::collections::HashSet::new())
+            .expect("inventory");
+        let item = inventory
+            .into_iter()
+            .find(|item| item.session_id == session)
+            .expect("session row");
+        assert_eq!(item.title, None, "live steer rejection must not seed title");
+        host.shutdown();
     }
 }

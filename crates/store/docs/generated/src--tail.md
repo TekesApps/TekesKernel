@@ -164,7 +164,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 |---|---|---|---|
 | `last_seq` | `self.projection.as_ref().map_or` | [30](../../src/tail.rs#L30) | receiver-type-required |
 | `last_seq` | `self.projection.as_ref` | [30](../../src/tail.rs#L30) | receiver-type-required |
-| `scan_valid_prefix` | `LedgerValidator::new` | [38](../../src/tail.rs#L38) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L147) |
+| `scan_valid_prefix` | `LedgerValidator::new` | [38](../../src/tail.rs#L38) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L152) |
 | `scan_valid_prefix` | `bytes.len` | [42](../../src/tail.rs#L42), [69](../../src/tail.rs#L69) | receiver-type-required |
 | `scan_valid_prefix` | `rest.iter().position` | [44](../../src/tail.rs#L44) | receiver-type-required |
 | `scan_valid_prefix` | `rest.iter` | [44](../../src/tail.rs#L44) | receiver-type-required |
@@ -189,7 +189,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_genesis` | `line.pop` | [95](../../src/tail.rs#L95) | receiver-type-required |
 | `read_genesis` | `line.is_empty` | [96](../../src/tail.rs#L96) | receiver-type-required |
 | `read_genesis` | `Event::decode_canonical` | [99](../../src/tail.rs#L99) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
-| `read_genesis` | `LedgerValidator::new` | [102](../../src/tail.rs#L102) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L147) |
+| `read_genesis` | `LedgerValidator::new` | [102](../../src/tail.rs#L102) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L152) |
 | `read_genesis` | `validator.push(event.clone()).is_err` | [103](../../src/tail.rs#L103) | receiver-type-required |
 | `read_genesis` | `validator.push` | [103](../../src/tail.rs#L103) | receiver-type-required |
 | `read_genesis` | `event.clone` | [103](../../src/tail.rs#L103) | receiver-type-required |
@@ -241,7 +241,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_sync` | `sync.full_sync` | [213](../../src/tail.rs#L213) | receiver-type-required |
 | `open_with_sync` | `scan             .validator             .clone()             .unwrap_or_else` | [216](../../src/tail.rs#L216) | receiver-type-required |
 | `open_with_sync` | `scan             .validator             .clone` | [216](../../src/tail.rs#L216) | receiver-type-required |
-| `open_with_sync` | `LedgerValidator::new` | [219](../../src/tail.rs#L219) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L147) |
+| `open_with_sync` | `LedgerValidator::new` | [219](../../src/tail.rs#L219) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L152) |
 | `open_with_sync` | `Ok` | [221](../../src/tail.rs#L221) | external-constructor-callback-or-unresolved |
 | `projection` | `self.projection.as_ref` | [239](../../src/tail.rs#L239) | receiver-type-required |
 | `next_seq` | `self.projection             .as_ref()             .map_or` | [244](../../src/tail.rs#L244) | receiver-type-required |

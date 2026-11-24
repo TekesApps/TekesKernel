@@ -46,8 +46,9 @@ The executable extension catalog is `fixtures/client-extensions/catalog.canonica
 a 14-method base (including mux) and 14 capabilities with 37 extension methods. The retained native-client capabilities are
 specified in Session Endpoint and listed under
 [Native-client capabilities](#native-client-capabilities).
-The Session Endpoint protocol version is 4. Capability ids and versions are Client metadata, not fields added to
-`host.describe`. Release qualification compares the Client driver's declared
+The Session Endpoint protocol version is 4. Capability ids and versions are
+negotiated in the V4 `ready` handshake (not fields smuggled onto legacy
+`host.describe`). Release qualification compares the Client driver's declared
 catalog with the server registry in both directions and rejects a collision
 with the base set or another extension. The v1 capability groups are atomic:
 partial method registration or advertisement is a protocol defect. Extensions

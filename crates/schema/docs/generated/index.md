@@ -34,7 +34,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 |---|---:|---:|---|
 | [crates/schema/src/event.rs](../../src/event.rs) | 93 | 1067 | [Symbols and calls](src--event.md) |
 | [crates/schema/src/execution.rs](../../src/execution.rs) | 5 | 54 | [Symbols and calls](src--execution.md) |
-| [crates/schema/src/fold.rs](../../src/fold.rs) | 42 | 642 | [Symbols and calls](src--fold.md) |
+| [crates/schema/src/fold.rs](../../src/fold.rs) | 43 | 643 | [Symbols and calls](src--fold.md) |
 | [crates/schema/src/ijson.rs](../../src/ijson.rs) | 26 | 61 | [Symbols and calls](src--ijson.md) |
 | [crates/schema/src/lib.rs](../../src/lib.rs) | 12 | 24 | [Symbols and calls](src--lib.md) |
 | [crates/schema/src/metrics.rs](../../src/metrics.rs) | 10 | 21 | [Symbols and calls](src--metrics.md) |

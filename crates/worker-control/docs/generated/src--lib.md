@@ -27,27 +27,27 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [worker-control::LaunchResult](../../src/lib.rs#L115) | struct_item | `pub` |  |
 | [worker-control::SupervisorMessage](../../src/lib.rs#L124) | enum_item | `pub` |  |
 | [worker-control::Receipt](../../src/lib.rs#L139) | struct_item | `pub` |  |
-| [worker-control::AttemptSettled](../../src/lib.rs#L146) | struct_item | `pub` |  |
-| [worker-control::LeaseRequest](../../src/lib.rs#L152) | struct_item | `pub` |  |
-| [worker-control::Appended](../../src/lib.rs#L158) | struct_item | `pub` |  |
-| [worker-control::FrameChannel](../../src/lib.rs#L164) | enum_item | `pub` |  |
-| [worker-control::Frame](../../src/lib.rs#L172) | struct_item | `pub` |  |
-| [worker-control::Frame::validate](../../src/lib.rs#L193) | function_item | `pub` |  |
-| [worker-control::State](../../src/lib.rs#L223) | struct_item | `pub` |  |
-| [worker-control::Pong](../../src/lib.rs#L228) | struct_item | `pub` |  |
-| [worker-control::LaunchChild](../../src/lib.rs#L233) | struct_item | `pub` |  |
-| [worker-control::WorkerMessage](../../src/lib.rs#L240) | enum_item | `pub` |  |
-| [worker-control::ProtocolError](../../src/lib.rs#L254) | enum_item | `pub` |  |
-| [worker-control::negotiate](../../src/lib.rs#L276) | function_item | `pub` |  |
-| [worker-control::decode_hello](../../src/lib.rs#L292) | function_item | `pub` |  |
-| [worker-control::decode_selected](../../src/lib.rs#L296) | function_item | `pub` |  |
-| [worker-control::decode_reject](../../src/lib.rs#L300) | function_item | `pub` |  |
-| [worker-control::decode_supervisor](../../src/lib.rs#L304) | function_item | `pub` |  |
-| [worker-control::decode_worker](../../src/lib.rs#L330) | function_item | `pub` |  |
-| [worker-control::encode_line](../../src/lib.rs#L359) | function_item | `pub` |  |
-| [worker-control::decode_named](../../src/lib.rs#L367) | function_item | `private` |  |
-| [worker-control::split_line](../../src/lib.rs#L378) | function_item | `private` |  |
-| [worker-control::from_payload](../../src/lib.rs#L391) | function_item | `private` |  |
+| [worker-control::AttemptSettled](../../src/lib.rs#L148) | struct_item | `pub` |  |
+| [worker-control::LeaseRequest](../../src/lib.rs#L154) | struct_item | `pub` |  |
+| [worker-control::Appended](../../src/lib.rs#L160) | struct_item | `pub` |  |
+| [worker-control::FrameChannel](../../src/lib.rs#L166) | enum_item | `pub` |  |
+| [worker-control::Frame](../../src/lib.rs#L174) | struct_item | `pub` |  |
+| [worker-control::Frame::validate](../../src/lib.rs#L195) | function_item | `pub` |  |
+| [worker-control::State](../../src/lib.rs#L225) | struct_item | `pub` |  |
+| [worker-control::Pong](../../src/lib.rs#L230) | struct_item | `pub` |  |
+| [worker-control::LaunchChild](../../src/lib.rs#L235) | struct_item | `pub` |  |
+| [worker-control::WorkerMessage](../../src/lib.rs#L242) | enum_item | `pub` |  |
+| [worker-control::ProtocolError](../../src/lib.rs#L256) | enum_item | `pub` |  |
+| [worker-control::negotiate](../../src/lib.rs#L278) | function_item | `pub` |  |
+| [worker-control::decode_hello](../../src/lib.rs#L294) | function_item | `pub` |  |
+| [worker-control::decode_selected](../../src/lib.rs#L298) | function_item | `pub` |  |
+| [worker-control::decode_reject](../../src/lib.rs#L302) | function_item | `pub` |  |
+| [worker-control::decode_supervisor](../../src/lib.rs#L306) | function_item | `pub` |  |
+| [worker-control::decode_worker](../../src/lib.rs#L332) | function_item | `pub` |  |
+| [worker-control::encode_line](../../src/lib.rs#L361) | function_item | `pub` |  |
+| [worker-control::decode_named](../../src/lib.rs#L369) | function_item | `private` |  |
+| [worker-control::split_line](../../src/lib.rs#L380) | function_item | `private` |  |
+| [worker-control::from_payload](../../src/lib.rs#L393) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -113,88 +113,88 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
 | `default` | `PROTOCOL_NAME.to_owned` | [26](../../src/lib.rs#L26) | receiver-type-required |
-| `validate` | `self                     .call_id                     .as_deref()                     .is_some_and` | [196](../../src/lib.rs#L196) | receiver-type-required |
-| `validate` | `self                     .call_id                     .as_deref` | [196](../../src/lib.rs#L196) | receiver-type-required |
-| `validate` | `value.is_empty` | [199](../../src/lib.rs#L199) | receiver-type-required |
-| `validate` | `Ok` | [201](../../src/lib.rs#L201), [211](../../src/lib.rs#L211) | external-constructor-callback-or-unresolved |
-| `validate` | `Err` | [203](../../src/lib.rs#L203), [214](../../src/lib.rs#L214) | external-constructor-callback-or-unresolved |
-| `validate` | `ProtocolError::InvalidFrame` | [203](../../src/lib.rs#L203), [214](../../src/lib.rs#L214) | external-constructor-callback-or-unresolved |
-| `validate` | `"tool frame requires nonempty call_id".to_owned` | [204](../../src/lib.rs#L204) | receiver-type-required |
-| `validate` | `self.call_id.is_none` | [207](../../src/lib.rs#L207) | receiver-type-required |
-| `validate` | `self.name.is_none` | [208](../../src/lib.rs#L208) | receiver-type-required |
-| `validate` | `self.arguments_complete.is_none` | [209](../../src/lib.rs#L209) | receiver-type-required |
-| `validate` | `"text/reasoning frame forbids call_id and name".to_owned` | [215](../../src/lib.rs#L215) | receiver-type-required |
-| `negotiate` | `Err` | [282](../../src/lib.rs#L282), [287](../../src/lib.rs#L287) | external-constructor-callback-or-unresolved |
-| `negotiate` | `ProtocolError::ProtocolName` | [282](../../src/lib.rs#L282) | external-constructor-callback-or-unresolved |
-| `negotiate` | `hello.proto.clone` | [282](../../src/lib.rs#L282) | receiver-type-required |
-| `negotiate` | `hello.min.max` | [284](../../src/lib.rs#L284) | receiver-type-required |
-| `negotiate` | `hello.max.min` | [285](../../src/lib.rs#L285) | receiver-type-required |
-| `negotiate` | `Ok` | [289](../../src/lib.rs#L289) | external-constructor-callback-or-unresolved |
-| `decode_hello` | `decode_named` | [293](../../src/lib.rs#L293) | [worker-control::decode_named](../../src/lib.rs#L367) |
-| `decode_selected` | `decode_named` | [297](../../src/lib.rs#L297) | [worker-control::decode_named](../../src/lib.rs#L367) |
-| `decode_reject` | `decode_named` | [301](../../src/lib.rs#L301) | [worker-control::decode_named](../../src/lib.rs#L367) |
-| `decode_supervisor` | `split_line` | [305](../../src/lib.rs#L305) | [worker-control::split_line](../../src/lib.rs#L378) |
-| `decode_supervisor` | `Ok` | [306](../../src/lib.rs#L306) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `key.as_str` | [306](../../src/lib.rs#L306) | receiver-type-required |
-| `decode_supervisor` | `SupervisorMessage::Input` | [307](../../src/lib.rs#L307) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `from_payload` | [307](../../src/lib.rs#L307), [308](../../src/lib.rs#L308), [309](../../src/lib.rs#L309), [310](../../src/lib.rs#L310), [311](../../src/lib.rs#L311), [312](../../src/lib.rs#L312), [313](../../src/lib.rs#L313), [314](../../src/lib.rs#L314), [315](../../src/lib.rs#L315), [317](../../src/lib.rs#L317) | [worker-control::from_payload](../../src/lib.rs#L391) |
-| `decode_supervisor` | `SupervisorMessage::ApprovalResponse` | [308](../../src/lib.rs#L308) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `SupervisorMessage::QueueEdit` | [309](../../src/lib.rs#L309) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `SupervisorMessage::Stop` | [310](../../src/lib.rs#L310) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `SupervisorMessage::Lease` | [311](../../src/lib.rs#L311) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `SupervisorMessage::Ping` | [312](../../src/lib.rs#L312) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `SupervisorMessage::Compact` | [313](../../src/lib.rs#L313) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `SupervisorMessage::Meta` | [314](../../src/lib.rs#L314) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `SupervisorMessage::LaunchResult` | [315](../../src/lib.rs#L315) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `message                 .validate()                 .map_err` | [318](../../src/lib.rs#L318) | receiver-type-required |
-| `decode_supervisor` | `message                 .validate` | [318](../../src/lib.rs#L318) | receiver-type-required |
-| `decode_supervisor` | `ProtocolError::InvalidDurableControl` | [320](../../src/lib.rs#L320) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `source.to_string` | [320](../../src/lib.rs#L320) | receiver-type-required |
-| `decode_supervisor` | `SupervisorMessage::QueueTransaction` | [321](../../src/lib.rs#L321) | external-constructor-callback-or-unresolved |
-| `decode_supervisor` | `serde_json::from_value` | [325](../../src/lib.rs#L325) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `split_line` | [331](../../src/lib.rs#L331) | [worker-control::split_line](../../src/lib.rs#L378) |
-| `decode_worker` | `Ok` | [332](../../src/lib.rs#L332) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `key.as_str` | [332](../../src/lib.rs#L332) | receiver-type-required |
-| `decode_worker` | `WorkerMessage::Receipt` | [333](../../src/lib.rs#L333) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `from_payload` | [333](../../src/lib.rs#L333), [334](../../src/lib.rs#L334), [335](../../src/lib.rs#L335), [336](../../src/lib.rs#L336), [338](../../src/lib.rs#L338), [342](../../src/lib.rs#L342), [343](../../src/lib.rs#L343), [344](../../src/lib.rs#L344), [346](../../src/lib.rs#L346) | [worker-control::from_payload](../../src/lib.rs#L391) |
-| `decode_worker` | `WorkerMessage::AttemptSettled` | [334](../../src/lib.rs#L334) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `WorkerMessage::LeaseRequest` | [335](../../src/lib.rs#L335) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `WorkerMessage::Appended` | [336](../../src/lib.rs#L336) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `frame.validate` | [339](../../src/lib.rs#L339) | receiver-type-required |
-| `decode_worker` | `WorkerMessage::Frame` | [340](../../src/lib.rs#L340) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `WorkerMessage::State` | [342](../../src/lib.rs#L342) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `WorkerMessage::Pong` | [343](../../src/lib.rs#L343) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `WorkerMessage::LaunchChild` | [344](../../src/lib.rs#L344) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `message                 .validate()                 .map_err` | [347](../../src/lib.rs#L347) | receiver-type-required |
-| `decode_worker` | `message                 .validate` | [347](../../src/lib.rs#L347) | receiver-type-required |
-| `decode_worker` | `ProtocolError::InvalidDurableControl` | [349](../../src/lib.rs#L349) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `source.to_string` | [349](../../src/lib.rs#L349) | receiver-type-required |
-| `decode_worker` | `WorkerMessage::QueueTransactionResult` | [350](../../src/lib.rs#L350) | external-constructor-callback-or-unresolved |
-| `decode_worker` | `serde_json::from_value` | [354](../../src/lib.rs#L354) | external-constructor-callback-or-unresolved |
-| `encode_line` | `Map::new` | [360](../../src/lib.rs#L360) | external-constructor-callback-or-unresolved |
-| `encode_line` | `object.insert` | [361](../../src/lib.rs#L361) | receiver-type-required |
-| `encode_line` | `key.to_owned` | [361](../../src/lib.rs#L361) | receiver-type-required |
-| `encode_line` | `serde_json::to_value` | [361](../../src/lib.rs#L361) | external-constructor-callback-or-unresolved |
-| `encode_line` | `serde_json_canonicalizer::to_vec` | [362](../../src/lib.rs#L362) | external-constructor-callback-or-unresolved |
-| `encode_line` | `Value::Object` | [362](../../src/lib.rs#L362) | external-constructor-callback-or-unresolved |
-| `encode_line` | `bytes.push` | [363](../../src/lib.rs#L363) | receiver-type-required |
-| `encode_line` | `Ok` | [364](../../src/lib.rs#L364) | external-constructor-callback-or-unresolved |
-| `decode_named` | `split_line` | [368](../../src/lib.rs#L368) | [worker-control::split_line](../../src/lib.rs#L378) |
-| `decode_named` | `Err` | [370](../../src/lib.rs#L370) | external-constructor-callback-or-unresolved |
-| `decode_named` | `expected.to_owned` | [371](../../src/lib.rs#L371) | receiver-type-required |
-| `decode_named` | `from_payload` | [375](../../src/lib.rs#L375) | [worker-control::from_payload](../../src/lib.rs#L391) |
-| `split_line` | `line.strip_suffix(b"\n").unwrap_or` | [379](../../src/lib.rs#L379) | receiver-type-required |
-| `split_line` | `line.strip_suffix` | [379](../../src/lib.rs#L379) | receiver-type-required |
-| `split_line` | `serde_json::from_slice` | [380](../../src/lib.rs#L380) | external-constructor-callback-or-unresolved |
-| `split_line` | `value         .as_object()         .cloned()         .ok_or` | [381](../../src/lib.rs#L381) | receiver-type-required |
-| `split_line` | `value         .as_object()         .cloned` | [381](../../src/lib.rs#L381) | receiver-type-required |
-| `split_line` | `value         .as_object` | [381](../../src/lib.rs#L381) | receiver-type-required |
-| `split_line` | `object.len` | [385](../../src/lib.rs#L385) | receiver-type-required |
-| `split_line` | `Err` | [386](../../src/lib.rs#L386) | external-constructor-callback-or-unresolved |
-| `split_line` | `Ok` | [388](../../src/lib.rs#L388) | external-constructor-callback-or-unresolved |
-| `split_line` | `object.into_iter().next().expect` | [388](../../src/lib.rs#L388) | receiver-type-required |
-| `split_line` | `object.into_iter().next` | [388](../../src/lib.rs#L388) | receiver-type-required |
-| `split_line` | `object.into_iter` | [388](../../src/lib.rs#L388) | receiver-type-required |
-| `from_payload` | `serde_json::from_value(payload).map_err` | [392](../../src/lib.rs#L392) | receiver-type-required |
-| `from_payload` | `serde_json::from_value` | [392](../../src/lib.rs#L392) | external-constructor-callback-or-unresolved |
-| `from_payload` | `message.to_owned` | [393](../../src/lib.rs#L393) | receiver-type-required |
+| `validate` | `self                     .call_id                     .as_deref()                     .is_some_and` | [198](../../src/lib.rs#L198) | receiver-type-required |
+| `validate` | `self                     .call_id                     .as_deref` | [198](../../src/lib.rs#L198) | receiver-type-required |
+| `validate` | `value.is_empty` | [201](../../src/lib.rs#L201) | receiver-type-required |
+| `validate` | `Ok` | [203](../../src/lib.rs#L203), [213](../../src/lib.rs#L213) | external-constructor-callback-or-unresolved |
+| `validate` | `Err` | [205](../../src/lib.rs#L205), [216](../../src/lib.rs#L216) | external-constructor-callback-or-unresolved |
+| `validate` | `ProtocolError::InvalidFrame` | [205](../../src/lib.rs#L205), [216](../../src/lib.rs#L216) | external-constructor-callback-or-unresolved |
+| `validate` | `"tool frame requires nonempty call_id".to_owned` | [206](../../src/lib.rs#L206) | receiver-type-required |
+| `validate` | `self.call_id.is_none` | [209](../../src/lib.rs#L209) | receiver-type-required |
+| `validate` | `self.name.is_none` | [210](../../src/lib.rs#L210) | receiver-type-required |
+| `validate` | `self.arguments_complete.is_none` | [211](../../src/lib.rs#L211) | receiver-type-required |
+| `validate` | `"text/reasoning frame forbids call_id and name".to_owned` | [217](../../src/lib.rs#L217) | receiver-type-required |
+| `negotiate` | `Err` | [284](../../src/lib.rs#L284), [289](../../src/lib.rs#L289) | external-constructor-callback-or-unresolved |
+| `negotiate` | `ProtocolError::ProtocolName` | [284](../../src/lib.rs#L284) | external-constructor-callback-or-unresolved |
+| `negotiate` | `hello.proto.clone` | [284](../../src/lib.rs#L284) | receiver-type-required |
+| `negotiate` | `hello.min.max` | [286](../../src/lib.rs#L286) | receiver-type-required |
+| `negotiate` | `hello.max.min` | [287](../../src/lib.rs#L287) | receiver-type-required |
+| `negotiate` | `Ok` | [291](../../src/lib.rs#L291) | external-constructor-callback-or-unresolved |
+| `decode_hello` | `decode_named` | [295](../../src/lib.rs#L295) | [worker-control::decode_named](../../src/lib.rs#L369) |
+| `decode_selected` | `decode_named` | [299](../../src/lib.rs#L299) | [worker-control::decode_named](../../src/lib.rs#L369) |
+| `decode_reject` | `decode_named` | [303](../../src/lib.rs#L303) | [worker-control::decode_named](../../src/lib.rs#L369) |
+| `decode_supervisor` | `split_line` | [307](../../src/lib.rs#L307) | [worker-control::split_line](../../src/lib.rs#L380) |
+| `decode_supervisor` | `Ok` | [308](../../src/lib.rs#L308) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `key.as_str` | [308](../../src/lib.rs#L308) | receiver-type-required |
+| `decode_supervisor` | `SupervisorMessage::Input` | [309](../../src/lib.rs#L309) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `from_payload` | [309](../../src/lib.rs#L309), [310](../../src/lib.rs#L310), [311](../../src/lib.rs#L311), [312](../../src/lib.rs#L312), [313](../../src/lib.rs#L313), [314](../../src/lib.rs#L314), [315](../../src/lib.rs#L315), [316](../../src/lib.rs#L316), [317](../../src/lib.rs#L317), [319](../../src/lib.rs#L319) | [worker-control::from_payload](../../src/lib.rs#L393) |
+| `decode_supervisor` | `SupervisorMessage::ApprovalResponse` | [310](../../src/lib.rs#L310) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `SupervisorMessage::QueueEdit` | [311](../../src/lib.rs#L311) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `SupervisorMessage::Stop` | [312](../../src/lib.rs#L312) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `SupervisorMessage::Lease` | [313](../../src/lib.rs#L313) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `SupervisorMessage::Ping` | [314](../../src/lib.rs#L314) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `SupervisorMessage::Compact` | [315](../../src/lib.rs#L315) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `SupervisorMessage::Meta` | [316](../../src/lib.rs#L316) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `SupervisorMessage::LaunchResult` | [317](../../src/lib.rs#L317) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `message                 .validate()                 .map_err` | [320](../../src/lib.rs#L320) | receiver-type-required |
+| `decode_supervisor` | `message                 .validate` | [320](../../src/lib.rs#L320) | receiver-type-required |
+| `decode_supervisor` | `ProtocolError::InvalidDurableControl` | [322](../../src/lib.rs#L322) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `source.to_string` | [322](../../src/lib.rs#L322) | receiver-type-required |
+| `decode_supervisor` | `SupervisorMessage::QueueTransaction` | [323](../../src/lib.rs#L323) | external-constructor-callback-or-unresolved |
+| `decode_supervisor` | `serde_json::from_value` | [327](../../src/lib.rs#L327) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `split_line` | [333](../../src/lib.rs#L333) | [worker-control::split_line](../../src/lib.rs#L380) |
+| `decode_worker` | `Ok` | [334](../../src/lib.rs#L334) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `key.as_str` | [334](../../src/lib.rs#L334) | receiver-type-required |
+| `decode_worker` | `WorkerMessage::Receipt` | [335](../../src/lib.rs#L335) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `from_payload` | [335](../../src/lib.rs#L335), [336](../../src/lib.rs#L336), [337](../../src/lib.rs#L337), [338](../../src/lib.rs#L338), [340](../../src/lib.rs#L340), [344](../../src/lib.rs#L344), [345](../../src/lib.rs#L345), [346](../../src/lib.rs#L346), [348](../../src/lib.rs#L348) | [worker-control::from_payload](../../src/lib.rs#L393) |
+| `decode_worker` | `WorkerMessage::AttemptSettled` | [336](../../src/lib.rs#L336) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `WorkerMessage::LeaseRequest` | [337](../../src/lib.rs#L337) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `WorkerMessage::Appended` | [338](../../src/lib.rs#L338) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `frame.validate` | [341](../../src/lib.rs#L341) | receiver-type-required |
+| `decode_worker` | `WorkerMessage::Frame` | [342](../../src/lib.rs#L342) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `WorkerMessage::State` | [344](../../src/lib.rs#L344) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `WorkerMessage::Pong` | [345](../../src/lib.rs#L345) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `WorkerMessage::LaunchChild` | [346](../../src/lib.rs#L346) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `message                 .validate()                 .map_err` | [349](../../src/lib.rs#L349) | receiver-type-required |
+| `decode_worker` | `message                 .validate` | [349](../../src/lib.rs#L349) | receiver-type-required |
+| `decode_worker` | `ProtocolError::InvalidDurableControl` | [351](../../src/lib.rs#L351) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `source.to_string` | [351](../../src/lib.rs#L351) | receiver-type-required |
+| `decode_worker` | `WorkerMessage::QueueTransactionResult` | [352](../../src/lib.rs#L352) | external-constructor-callback-or-unresolved |
+| `decode_worker` | `serde_json::from_value` | [356](../../src/lib.rs#L356) | external-constructor-callback-or-unresolved |
+| `encode_line` | `Map::new` | [362](../../src/lib.rs#L362) | external-constructor-callback-or-unresolved |
+| `encode_line` | `object.insert` | [363](../../src/lib.rs#L363) | receiver-type-required |
+| `encode_line` | `key.to_owned` | [363](../../src/lib.rs#L363) | receiver-type-required |
+| `encode_line` | `serde_json::to_value` | [363](../../src/lib.rs#L363) | external-constructor-callback-or-unresolved |
+| `encode_line` | `serde_json_canonicalizer::to_vec` | [364](../../src/lib.rs#L364) | external-constructor-callback-or-unresolved |
+| `encode_line` | `Value::Object` | [364](../../src/lib.rs#L364) | external-constructor-callback-or-unresolved |
+| `encode_line` | `bytes.push` | [365](../../src/lib.rs#L365) | receiver-type-required |
+| `encode_line` | `Ok` | [366](../../src/lib.rs#L366) | external-constructor-callback-or-unresolved |
+| `decode_named` | `split_line` | [370](../../src/lib.rs#L370) | [worker-control::split_line](../../src/lib.rs#L380) |
+| `decode_named` | `Err` | [372](../../src/lib.rs#L372) | external-constructor-callback-or-unresolved |
+| `decode_named` | `expected.to_owned` | [373](../../src/lib.rs#L373) | receiver-type-required |
+| `decode_named` | `from_payload` | [377](../../src/lib.rs#L377) | [worker-control::from_payload](../../src/lib.rs#L393) |
+| `split_line` | `line.strip_suffix(b"\n").unwrap_or` | [381](../../src/lib.rs#L381) | receiver-type-required |
+| `split_line` | `line.strip_suffix` | [381](../../src/lib.rs#L381) | receiver-type-required |
+| `split_line` | `serde_json::from_slice` | [382](../../src/lib.rs#L382) | external-constructor-callback-or-unresolved |
+| `split_line` | `value         .as_object()         .cloned()         .ok_or` | [383](../../src/lib.rs#L383) | receiver-type-required |
+| `split_line` | `value         .as_object()         .cloned` | [383](../../src/lib.rs#L383) | receiver-type-required |
+| `split_line` | `value         .as_object` | [383](../../src/lib.rs#L383) | receiver-type-required |
+| `split_line` | `object.len` | [387](../../src/lib.rs#L387) | receiver-type-required |
+| `split_line` | `Err` | [388](../../src/lib.rs#L388) | external-constructor-callback-or-unresolved |
+| `split_line` | `Ok` | [390](../../src/lib.rs#L390) | external-constructor-callback-or-unresolved |
+| `split_line` | `object.into_iter().next().expect` | [390](../../src/lib.rs#L390) | receiver-type-required |
+| `split_line` | `object.into_iter().next` | [390](../../src/lib.rs#L390) | receiver-type-required |
+| `split_line` | `object.into_iter` | [390](../../src/lib.rs#L390) | receiver-type-required |
+| `from_payload` | `serde_json::from_value(payload).map_err` | [394](../../src/lib.rs#L394) | receiver-type-required |
+| `from_payload` | `serde_json::from_value` | [394](../../src/lib.rs#L394) | external-constructor-callback-or-unresolved |
+| `from_payload` | `message.to_owned` | [395](../../src/lib.rs#L395) | receiver-type-required |

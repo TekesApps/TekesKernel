@@ -349,6 +349,7 @@ fn slice6_gate_51_inventory_and_model_readiness_are_independent() {
             default_provider: Some("deepseek".into()),
             default_model: Some("deepseek-chat".into()),
             limits: None,
+            automatic_title: None,
         },
         session_settings: None,
         revisions: RevisionVector {
@@ -506,4 +507,199 @@ fn read_only_projection_matches_durable_journal_without_creating_state() {
         .reconcile(&projection.events, &journal)
         .unwrap();
     assert_eq!(rows, journal.records().unwrap());
+}
+
+#[test]
+fn prompt_for_endpoint_steer_rejects_idle_and_settled_sessions_with_no_ledger_append() {
+    use serde_json::json;
+
+    let root = tempfile::tempdir().expect("root");
+    let endpoint = NativeEndpoint::open(root.path()).expect("endpoint");
+    let session = "018f0000-0000-7000-8000-000000000148";
+    let create = origin(session, "session.create", "create-148");
+    endpoint
+        .create_session(
+            session,
+            &test_support::execution_fixture(),
+            "cfg",
+            ResumePolicy::Never,
+            "2026-08-26T09:00:00.000Z",
+            &create,
+        )
+        .expect("create");
+
+    let steer_idle = origin(session, "session.prompt", "steer-idle");
+    let steer_content =
+        IJsonValue::parse_str(r#"[{"type":"text","text":"idle steer"}]"#).expect("content");
+    let err = endpoint
+        .prompt_for_endpoint(
+            session,
+            "2026-08-26T09:00:01.000Z",
+            &steer_idle,
+            steer_content.clone(),
+            true,
+        )
+        .expect_err("idle session must reject steer");
+    assert!(matches!(
+        err,
+        endpoint::NativeEndpointError::SteerUnavailable
+    ));
+
+    let ledger_path = root.path().join("threads").join(session).join("main.jsonl");
+    let before_bytes = fs::read(&ledger_path).expect("ledger after idle reject");
+    assert_eq!(
+        validate_ledger(&before_bytes, schema::READER_VERSION)
+            .expect("valid")
+            .events
+            .len(),
+        1,
+        "rejected steer must not append input or metadata"
+    );
+
+    let queue_origin = origin(session, "session.prompt", "queue-1");
+    let queue_content =
+        IJsonValue::parse_str(r#"[{"type":"text","text":"normal prompt"}]"#).expect("content");
+    endpoint
+        .prompt_for_endpoint(
+            session,
+            "2026-08-26T09:00:02.000Z",
+            &queue_origin,
+            queue_content,
+            false,
+        )
+        .expect("normal prompt");
+
+    {
+        let mut ledger =
+            store::LockedLedger::open(&ledger_path, schema::READER_VERSION).expect("lock");
+        for raw in [
+            json!({"v":1,"seq":3,"ts":"2026-08-26T09:00:03.000Z","kind":"run_start","run":"r1","mode":"ordinary","binary":"w","config_digest":"cfg","instruction_digest":"ins","policy":"p","recovery_ordinal":0}),
+            json!({"v":1,"seq":4,"ts":"2026-08-26T09:00:03.000Z","turn":1,"kind":"turn_open","trigger":{"inputs":[2]}}),
+            json!({"v":1,"seq":5,"ts":"2026-08-26T09:00:03.000Z","kind":"epoch","id":"e1","adapter":"fake","model":"m","reason":"initial","renderer":1,"system":{"asset":"sha256-aa","digest":"d"},"tools":{"asset":"sha256-td","digest":"td"}}),
+            json!({"v":1,"seq":6,"ts":"2026-08-26T09:00:03.000Z","turn":1,"kind":"attempt","attempt":"a1","epoch":"e1","request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":64},"wire_digest":"wd","admits":[{"from":2,"to":2}]}),
+            json!({"v":1,"seq":7,"ts":"2026-08-26T09:00:04.000Z","turn":1,"kind":"output","attempt":"a1","content":[{"type":"text","text":"done"}],"final_answer":true,"usage":{"availability":"reported","input_tokens":"1","output_tokens":"1"},"sealed":{"version":1,"adapter":"fake","fragments":"[]"}}),
+            json!({"v":1,"seq":8,"ts":"2026-08-26T09:00:04.000Z","turn":1,"kind":"settle","outcome":"completed","promoted_output_seq":7}),
+        ] {
+            let ev = schema::Event::decode(&serde_json::to_vec(&raw).unwrap()).unwrap();
+            ledger
+                .append_contract(ev, store::BarrierContext::default())
+                .unwrap();
+        }
+    }
+
+    let settled_bytes = fs::read(&ledger_path).expect("settled ledger");
+    let steer_settled = origin(session, "session.prompt", "steer-settled");
+    let err = endpoint
+        .prompt_for_endpoint(
+            session,
+            "2026-08-26T09:00:05.000Z",
+            &steer_settled,
+            steer_content,
+            true,
+        )
+        .expect_err("settled session must reject steer");
+    assert!(matches!(
+        err,
+        endpoint::NativeEndpointError::SteerUnavailable
+    ));
+    assert_eq!(
+        fs::read(&ledger_path).expect("ledger unchanged"),
+        settled_bytes
+    );
+}
+
+#[test]
+fn admitted_steer_leaves_live_inputs_allows_select_model_and_projects_once() {
+    use serde_json::json;
+
+    let root = tempfile::tempdir().expect("root");
+    let endpoint = NativeEndpoint::open(root.path()).expect("endpoint");
+    let session = "018f0000-0000-7000-8000-000000000147";
+    endpoint
+        .create_session(
+            session,
+            &test_support::execution_fixture(),
+            "cfg",
+            ResumePolicy::Never,
+            "2026-08-26T09:00:00.000Z",
+            &origin(session, "session.create", "create-147"),
+        )
+        .expect("create");
+    endpoint
+        .prompt_for_endpoint(
+            session,
+            "2026-08-26T09:00:01.000Z",
+            &origin(session, "session.prompt", "prompt-1"),
+            IJsonValue::parse_str(r#"[{"type":"text","text":"initial"}]"#).expect("content"),
+            false,
+        )
+        .expect("initial prompt");
+
+    let ledger_path = root.path().join("threads").join(session).join("main.jsonl");
+    {
+        let mut ledger =
+            store::LockedLedger::open(&ledger_path, schema::READER_VERSION).expect("lock");
+        for raw in [
+            json!({"v":1,"seq":3,"ts":"2026-08-26T09:00:02.000Z","kind":"run_start","run":"r1","mode":"ordinary","binary":"w","config_digest":"cfg","instruction_digest":"ins","policy":"p","recovery_ordinal":0}),
+            json!({"v":1,"seq":4,"ts":"2026-08-26T09:00:02.000Z","turn":1,"kind":"turn_open","trigger":{"inputs":[2]}}),
+            json!({"v":1,"seq":5,"ts":"2026-08-26T09:00:02.000Z","kind":"epoch","id":"e1","adapter":"fake","model":"m","reason":"initial","renderer":1,"system":{"asset":"sha256-aa","digest":"d"},"tools":{"asset":"sha256-td","digest":"td"}}),
+            json!({"v":1,"seq":6,"ts":"2026-08-26T09:00:02.000Z","turn":1,"kind":"attempt","attempt":"a1","epoch":"e1","request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":64},"wire_digest":"wd1","admits":[{"from":2,"to":2}]}),
+        ] {
+            let ev = schema::Event::decode(&serde_json::to_vec(&raw).unwrap()).unwrap();
+            ledger
+                .append_contract(ev, store::BarrierContext::default())
+                .unwrap();
+        }
+    }
+
+    let steer = endpoint
+        .prompt_for_endpoint(
+            session,
+            "2026-08-26T09:00:03.000Z",
+            &origin(session, "session.prompt", "steer-1"),
+            IJsonValue::parse_str(r#"[{"type":"text","text":"steer body"}]"#).expect("content"),
+            true,
+        )
+        .expect("open turn accepts steer");
+    assert_eq!(steer.seq, 7);
+
+    // Before admission: steer stays in live_inputs.
+    let before =
+        validate_ledger(&fs::read(&ledger_path).unwrap(), schema::READER_VERSION).expect("fold");
+    assert_eq!(before.lifecycle.live_inputs, vec![7]);
+
+    // After attempt admits seq 7 and turn settles: live_inputs is empty, delete fails, history has 1 steer message.
+    {
+        let mut ledger =
+            store::LockedLedger::open(&ledger_path, schema::READER_VERSION).expect("lock");
+        for raw in [
+            json!({"v":1,"seq":8,"ts":"2026-08-26T09:00:04.000Z","turn":1,"kind":"output","attempt":"a1","content":[],"final_answer":false,"usage":{"availability":"reported","input_tokens":"1","output_tokens":"1"},"sealed":{"version":1,"adapter":"fake","fragments":"[]"}}),
+            json!({"v":1,"seq":9,"ts":"2026-08-26T09:00:04.000Z","turn":1,"kind":"attempt","attempt":"a2","epoch":"e1","request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":64},"wire_digest":"wd2","admits":[{"from":7,"to":7}]}),
+            json!({"v":1,"seq":10,"ts":"2026-08-26T09:00:05.000Z","turn":1,"kind":"output","attempt":"a2","content":[{"type":"text","text":"done"}],"final_answer":true,"usage":{"availability":"reported","input_tokens":"1","output_tokens":"1"},"sealed":{"version":1,"adapter":"fake","fragments":"[]"}}),
+            json!({"v":1,"seq":11,"ts":"2026-08-26T09:00:05.000Z","turn":1,"kind":"settle","outcome":"completed","promoted_output_seq":10}),
+        ] {
+            let ev = schema::Event::decode(&serde_json::to_vec(&raw).unwrap()).unwrap();
+            ledger
+                .append_contract(ev, store::BarrierContext::default())
+                .unwrap();
+        }
+    }
+
+    let after =
+        validate_ledger(&fs::read(&ledger_path).unwrap(), schema::READER_VERSION).expect("fold");
+    assert!(after.lifecycle.live_inputs.is_empty());
+    assert!(after.lifecycle.terminal_tail);
+
+    endpoint
+        .reconcile_projection(session)
+        .expect("project journal");
+    let records = EndpointJournal::open(root.path().join("threads").join(session))
+        .expect("journal")
+        .records()
+        .expect("records");
+    let steer_msgs: Vec<_> = records
+        .iter()
+        .filter(|r| r.event.event_type == "user/message" && r.slot.as_str() == "steer-message-7")
+        .collect();
+    assert_eq!(steer_msgs.len(), 1);
 }

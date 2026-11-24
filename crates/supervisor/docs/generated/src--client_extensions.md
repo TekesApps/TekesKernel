@@ -586,7 +586,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `payload["execution"].clone` | [909](../../src/client_extensions.rs#L909) | receiver-type-required |
 | `execute` | `bad_request` | [910](../../src/client_extensions.rs#L910), [912](../../src/client_extensions.rs#L912), [915](../../src/client_extensions.rs#L915), [918](../../src/client_extensions.rs#L918), [925](../../src/client_extensions.rs#L925), [933](../../src/client_extensions.rs#L933), [1042](../../src/client_extensions.rs#L1042) | [tekes-supervisor::client_extensions::bad_request](../../src/client_extensions.rs#L454) |
 | `execute` | `profile::ConfigRepository::open(&self.root)                     .map_err` | [911](../../src/client_extensions.rs#L911) | receiver-type-required |
-| `execute` | `profile::ConfigRepository::open` | [911](../../src/client_extensions.rs#L911) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L543) |
+| `execute` | `profile::ConfigRepository::open` | [911](../../src/client_extensions.rs#L911) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L568) |
 | `execute` | `repository                     .normalize_execution(&execution)                     .map_err` | [913](../../src/client_extensions.rs#L913) | receiver-type-required |
 | `execute` | `repository                     .normalize_execution` | [913](../../src/client_extensions.rs#L913) | receiver-type-required |
 | `execute` | `repository                     .resolve_execution("preview", &execution, None)                     .map_err` | [916](../../src/client_extensions.rs#L916) | receiver-type-required |

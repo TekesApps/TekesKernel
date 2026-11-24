@@ -212,12 +212,13 @@ for line in sys.stdin:
             print('STANDALONE_CLI_HOST_REAL_MCP_CALL_OK')
         original_genesis=ledger.read_text().splitlines()[0]
         # Open the actual mux, then reconnect after a full supervisor restart.
-        def inventory():
+        def collect_frames_and_verify():
             url=urlparse(ready['url']);sock=socket.create_connection((url.hostname,url.port),timeout=10)
             key=base64.b64encode(secrets.token_bytes(16)).decode()
             auth=base64.urlsafe_b64encode(token).decode().rstrip('=')
             sock.sendall((f'GET /api/remote.mux HTTP/1.1\r\nHost: {url.netloc}\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: {key}\r\nAuthorization: Bearer {auth}\r\n\r\n').encode())
             stream=sock.makefile('rb')
+            captured=[]
             try:
                 assert b' 101 ' in stream.readline()
                 while stream.readline()!=b'\r\n':pass
@@ -227,19 +228,48 @@ for line in sys.stdin:
                     if length==126:length=struct.unpack('!H',stream.read(2))[0]
                     elif length==127:length=struct.unpack('!Q',stream.read(8))[0]
                     return json.loads(stream.read(length))
+                def send_frame(obj):
+                    payload=json.dumps(obj).encode()
+                    mask=secrets.token_bytes(4)
+                    header=bytes([129,128|len(payload)]) if len(payload)<126 else bytes([129,254])+struct.pack('!H',len(payload))
+                    sock.sendall(header+mask+bytes(b^mask[i%4] for i,b in enumerate(payload)))
                 frame=receive();assert frame['type']=='ready',frame
                 assert 'workspace-sync' not in frame['host']['capabilities'],frame
-                payload=json.dumps({'type':'open','streamId':'inventory','target':{'kind':'session-inventory'}}).encode()
-                mask=secrets.token_bytes(4)
-                header=bytes([129,128|len(payload)]) if len(payload)<126 else bytes([129,254])+struct.pack('!H',len(payload))
-                sock.sendall(header+mask+bytes(b^mask[i%4] for i,b in enumerate(payload)))
-                frame=receive()
-                rows=frame['frame']['snapshot']['items']
-                row=next(row for row in rows if row['sessionId']==session)
-                assert row['cwd']==str(workspace_path),row
+                for stream_id,kind,target in [
+                    ('inventory','inventory',{'kind':'session-inventory'}),
+                    ('control','control',{'kind':'session-control'}),
+                    ('actionables','actionables',{'kind':'actionables'}),
+                    ('journal','journal',{'kind':'session-journal','address':{'sessionId':session},'maxMessages':10}),
+                ]:
+                    send_frame({'type':'open','streamId':stream_id,'target':target})
+                    got=receive()
+                    captured.append({'kind':kind,'frame':got['frame']})
+                    if kind=='inventory':
+                        rows=got['frame']['snapshot']['items']
+                        row=next(row for row in rows if row['sessionId']==session)
+                        assert row['cwd']==str(workspace_path),row
+                frames_out=os.environ.get('TEKES_BUILTIN_CLIENT_FRAMES')
+                if frames_out:
+                    Path(frames_out).write_text(json.dumps(captured))
             finally:
                 stream.close();sock.close()
-        inventory()
+        collect_frames_and_verify()
+        native_exec=os.environ.get('TEKES_NATIVE_CLIENT_EXEC')
+        if native_exec:
+            native_dir=base/'native-project'
+            native_dir.mkdir(exist_ok=True)
+            (native_dir/'file-page.txt').write_text('first\nsecond\n')
+            res_dir=native_dir/'resource-project'
+            skill_dir=res_dir/'.agents'/'skills'/'project-only'
+            cmd_dir=res_dir/'.agents'/'commands'
+            skill_dir.mkdir(parents=True,exist_ok=True)
+            cmd_dir.mkdir(parents=True,exist_ok=True)
+            (skill_dir/'SKILL.md').write_text('---\nname: project-only\ndescription: Native contract skill\n---\nSkill body\n')
+            (cmd_dir/'project-only.md').write_text('---\ndescription: Native contract command\n---\nCommand body $ARGUMENTS\n')
+            native_run=subprocess.run([native_exec,ready['url'],str(native_dir)],input=token.hex().encode(),capture_output=True,timeout=60)
+            if native_run.returncode!=0:
+                raise AssertionError(f'native client check failed rc={native_run.returncode}\nstdout={native_run.stdout.decode(errors="replace")}\nstderr={native_run.stderr.decode(errors="replace")}')
+            print(native_run.stdout.decode(errors='replace').strip())
         p.stdin.close();p.wait(timeout=15);assert p.returncode==0,p.stderr.read()
         for diagnostic in p.stderr.read().decode(errors='replace').splitlines():
             try:record=json.loads(diagnostic)
@@ -257,7 +287,7 @@ for line in sys.stdin:
         assert select.select([p.stdout],[],[],20)[0],'restart readiness timeout'
         line=p.stdout.readline();assert line,p.stderr.read()
         ready=json.loads(line)
-        inventory()
+        collect_frames_and_verify()
         assert ledger.read_text().splitlines()[0]==original_genesis
         call('session.rename',{'sessionId':session,'title':'Execution restart verified'})
         assert 'Execution restart verified' in ledger.read_text()

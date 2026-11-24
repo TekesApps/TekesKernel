@@ -318,7 +318,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_storage` | `store.gc_rewrite_debris` | [196](../../src/host_runtime.rs#L196) | receiver-type-required |
 | `prepare_storage` | `crate::boot_trace::phase` | [197](../../src/host_runtime.rs#L197) | [tekes-supervisor::boot_trace::phase](../../src/boot_trace.rs#L60) |
 | `prepare_storage` | `profile::ConfigRepository::open(root)         .map_err` | [202](../../src/host_runtime.rs#L202) | receiver-type-required |
-| `prepare_storage` | `profile::ConfigRepository::open` | [202](../../src/host_runtime.rs#L202) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L543) |
+| `prepare_storage` | `profile::ConfigRepository::open` | [202](../../src/host_runtime.rs#L202) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L568) |
 | `prepare_storage` | `DaemonError::invalid_config` | [203](../../src/host_runtime.rs#L203) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L489) |
 | `prepare_storage` | `error.to_string` | [203](../../src/host_runtime.rs#L203) | receiver-type-required |
 | `prepare_storage` | `Ok` | [204](../../src/host_runtime.rs#L204) | external-constructor-callback-or-unresolved |

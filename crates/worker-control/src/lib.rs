@@ -140,6 +140,8 @@ pub struct Receipt {
     pub delivery: String,
     pub seq: u64,
     pub deduplicated: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rejected: Option<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

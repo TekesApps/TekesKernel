@@ -7,9 +7,9 @@ use engine::{
 };
 use profile::{Model, Provider, SessionSettings};
 use provider::{
-    DialectId, PrepareInput, ProviderTarget, ThinkingWire, epoch_profile,
-    normalize_dialect_response, normalize_dialect_sse_stream, prepare, repair_tool_arguments,
-    resolve_profile, validate_target,
+    AdapterId, DialectId, PrepareInput, ProviderTarget, ResolvedDialectProfile, ThinkingWire,
+    epoch_profile, normalize_dialect_response, normalize_dialect_sse_stream, prepare,
+    repair_tool_arguments, resolve_profile, validate_target,
 };
 use schema::IJsonValue;
 use serde_json::{Value, json};
@@ -1868,9 +1868,21 @@ fn sol_pro_local_variant_renders_base_model_and_independent_reasoning_mode() {
     }
 }
 
+fn non_reasoning_profile(resolved: &ResolvedDialectProfile) -> bool {
+    resolved.reasoning_efforts().is_empty()
+        && resolved.default_reasoning_effort().is_none()
+        && resolved.thinking_wire().is_none()
+        && !resolved.pro_reasoning()
+        && matches!(
+            resolved.dialect.family(),
+            AdapterId::Responses | AdapterId::ChatCompletion | AdapterId::Anthropic
+        )
+}
+
 #[test]
 fn reasoning_disabled_has_a_verified_off_switch_or_fails_closed() {
     let mut covered = BTreeSet::new();
+    let mut non_reasoning = 0usize;
     for profile in corpus()["profiles"].as_array().expect("profiles") {
         let target: ProviderTarget =
             serde_json::from_value(profile["target"].clone()).expect("target");
@@ -1913,6 +1925,13 @@ fn reasoning_disabled_has_a_verified_off_switch_or_fails_closed() {
                 assert!(body.get("output_config").is_none());
                 covered.insert(resolved.dialect);
             }
+            _ if non_reasoning_profile(&resolved) => {
+                let body: Value =
+                    serde_json::from_slice(&disabled.expect("prepared").body).unwrap();
+                assert!(body.get("reasoning").is_none());
+                assert!(body.get("thinking").is_none());
+                non_reasoning += 1;
+            }
             _ => assert!(
                 disabled.is_err(),
                 "{} has no verified off switch",
@@ -1925,11 +1944,13 @@ fn reasoning_disabled_has_a_verified_off_switch_or_fails_closed() {
         3,
         "all three DeepSeek dialects are in the corpus"
     );
+    assert!(non_reasoning > 0);
 }
 
 #[test]
-fn title_output_cap_renders_on_deepseek_dialects_and_fails_closed_elsewhere() {
+fn title_output_cap_renders_on_deepseek_and_non_reasoning_profiles_and_fails_closed_elsewhere() {
     let mut covered = BTreeSet::new();
+    let mut non_reasoning = 0usize;
     for profile in corpus()["profiles"].as_array().expect("profiles") {
         let target: ProviderTarget =
             serde_json::from_value(profile["target"].clone()).expect("target");
@@ -1965,6 +1986,17 @@ fn title_output_cap_renders_on_deepseek_dialects_and_fails_closed_elsewhere() {
                 assert_eq!(body["max_tokens"], json!(64));
                 covered.insert(resolved.dialect);
             }
+            _ if non_reasoning_profile(&resolved) => {
+                let body: Value = serde_json::from_slice(&capped.expect("prepared").body).unwrap();
+                match resolved.dialect.family() {
+                    AdapterId::Responses => assert_eq!(body["max_output_tokens"], json!(64)),
+                    AdapterId::ChatCompletion | AdapterId::Anthropic => {
+                        assert_eq!(body["max_tokens"], json!(64))
+                    }
+                    _ => unreachable!("checked by non_reasoning_profile"),
+                }
+                non_reasoning += 1;
+            }
             _ => assert!(
                 capped.is_err(),
                 "{} accepted an unverified title output cap",
@@ -1977,6 +2009,7 @@ fn title_output_cap_renders_on_deepseek_dialects_and_fails_closed_elsewhere() {
         3,
         "all three DeepSeek dialects are in the corpus"
     );
+    assert!(non_reasoning > 0);
 }
 
 #[test]

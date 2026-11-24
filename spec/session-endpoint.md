@@ -37,11 +37,11 @@ The only public stream route is authenticated WebSocket
   "type": "ready",
   "generation": "1",
   "host": {
-    "protocolVersion": 3,
+    "protocolVersion": 4,
     "product": {"name": "TekesKernel", "version": "<diagnostic build>"},
     "capabilities": [
-      "actionable-sync", "session-control-sync", "session-inventory-sync",
-      "session-journal", "workspace-sync"
+      "session-inventory-sync", "session-journal", "session-control-sync",
+      "actionable-sync", "models", "attachments", "management"
     ],
     "cwd": "/...", "attachedSessions": 0,
     "home": "/...",
@@ -50,19 +50,34 @@ The only public stream route is authenticated WebSocket
 }
 ```
 
-Compatibility is the exact integer `protocolVersion == 3` plus the closed
-required capability set. `product.version` is diagnostic and MUST NOT be an
-allowlist gate. Authentication, loopback restriction, I-JSON, 16 MiB frame
-limit, admission, drain, and secret-redaction rules remain those of the native
-endpoint carrier.
+Compatibility is the exact integer `protocolVersion == 4` plus the four
+required capabilities (`session-inventory-sync`, `session-journal`,
+`session-control-sync`, `actionable-sync`). The production host additionally
+advertises optional capabilities (`attachments`, `management`, and `models` when
+provider readiness is wired); `workspace-sync` is retired in V4. For built-in
+child launches (`--built-in`), the first stdout line emits a launch readiness
+record with `"bootstrapVersion": 1` and `"protocolVersion": 4`:
+`bootstrapVersion: 1` versions only the private launch configuration and
+`TEKES-KERNEL-BOOTSTRAP/1` stdin channel, whereas the WebSocket `ready` frame
+(`protocolVersion == 4`) is the authoritative Session Endpoint handshake.
+`product.version` is diagnostic and MUST NOT be an allowlist gate.
+Authentication, loopback restriction, I-JSON, 16 MiB frame limit, admission,
+drain, and secret-redaction rules remain those of the native endpoint carrier.
 
-The public unary mutations are `workspace.create`, `workspace.rename`, `workspace.relocate`,
-`workspace.archiveSession`, `workspace.unarchiveSession`, `session.create`,
-`session.prompt`, `session.updateQueue`, `session.cancel`, `session.rename`,
-`session.fork`, `session.discard`, `session.attachment`, `session.models`,
-`models.list`, and `session.selectModel`. Public `host.describe`, `workspace.list`,
-`session.list`, `session.history`, `/api/events.mux`, `/api/events.host`, and
-`/api/respond` do not exist in V3.
+The public base V4 unary routes (`TEKES_UNARY_ROUTES`, alongside `remote.mux`)
+are `session.archive`, `session.unarchive`, `session.create`, `session.prompt`,
+`session.updateQueue`, `session.cancel`, `session.rename`, `session.fork`,
+`session.discard`, `session.attachment`, `session.models`, `models.list`, and
+`session.selectModel`. Built-in launches additionally register the active
+atomic extension capability groups (`resources.v1`, `initialPresets.v1`,
+`sessionPresets.v1`, `recovery.v1`, `attachments.v1`, `approvals.v1`,
+`feedback.v1`, `settings.v1`, `goals.v1`, `subagents.v1`, `sessionFiles.v1`
+with `GET /api/session.files.changes`, `tools.v1`, `threadSearch.v1`, and
+`usage.v1`). Public `workspace.*` (`workspace.create`, `workspace.rename`,
+`workspace.relocate`, `workspace.archiveSession`, `workspace.unarchiveSession`),
+`host.describe`, `workspace.list`, `session.list`, `session.history`,
+`folders.*`, `mcp.*`, `directory.*`, `/api/events.mux`, `/api/events.host`, and
+`/api/respond` are retired / unavailable in V4.
 
 ### Built-in resource and recovery extensions
 
@@ -98,8 +113,9 @@ journal-page {requestId,address,throughSequence,beforeSequence?,maxMessages}
 actionable-respond {requestId,actionableId,expectedRevision,outcome}
 ```
 
-The five targets are `workspace`, `session-inventory`, `session-journal`,
-`session-control`, and `actionables`. Journal target additionally carries
+The four live V4 stream targets are `session-inventory`, `session-journal`,
+`session-control`, and `actionables` (`workspace` was retired in V4 alongside
+`workspace-sync`). Journal target additionally carries
 `address:{sessionId}` and `maxMessages` in `1...500`; the normal initial value
 is 50. A stream ID is scoped to one physical generation and cannot be reused
 until closed. `close` ends only that stream: frames the server had already
@@ -121,7 +137,6 @@ Every logical stream starts with its own baseline for the physical
 
 | stream | first frame | bounded content |
 |---|---|---|
-| workspace | `baseline` | workspace metadata and membership |
 | session-inventory | `baseline` | summaries only, no history |
 | session-journal | `snapshot` | one Session, latest bounded window |
 | session-control | `baseline` | current nonempty queue/jobs/projections |
@@ -172,10 +187,11 @@ authoritative assistant/terminal event or reconnect snapshot.
 the cut never enter that page, so scrolling older history cannot drift while
 live output arrives.
 
-### Workspace, inventory, and control
+### Inventory and control (workspace retired in V4)
 
-Workspace frames are baseline/upsert/remove/reorder/archived replacement
-semantics. Inventory contains lightweight `SessionSummaryV3` values and uses
+Historical `workspace` stream frames used baseline/upsert/remove/reorder/archived
+replacement semantics under `workspace-sync`, which V4 retires. Inventory
+contains lightweight `SessionSummary` values and uses
 baseline/upsert/remove; each summary carries the classified tail state
 (`tail`, §SessionSummary) so a parked hold is
 distinguishable from a run without opening the journal. Control starts with a baseline containing separate `queues`, `jobs`, and
@@ -223,12 +239,12 @@ Host-specific causes belong in details and cannot redefine the category.
 
 ### Conformance requirements
 
-Release tests cover: V3-only route/registry parity; ready/capabilities;
+Release tests cover: V4-only route/registry parity; ready/capabilities;
 baseline-before-delta; per-stream generation rejection; follow-first journal
 handoff; frozen pages during append; duplicate/gap behavior; independent
 bounded streams; pending actionable replay after Client reconnect; stale and
 duplicate response; cancellation/response race; structured errors; drain and
-backpressure; and absence of all removed public V2 routes.
+backpressure; and absence of all removed public V2/V3 routes.
 
 ## Journal projection
 
@@ -292,13 +308,13 @@ clients re-baseline.
 Each line is canonical I-JSON plus LF:
 
 ```text
-{v: 6, event: SessionEvent, kernel_seqs: [int], slot: str}
+{v: 7, event: SessionEvent, kernel_seqs: [int], slot: str}
 ```
 
 `v` is the projection record version. It is bumped whenever the deterministic
 projection of an existing ledger changes bytes, including fixed error text (v3: durable reasoning folds
 into `assistant/message`; v4: `tool/result.error` is absent on success and a
-structured `{code, name}` on failure instead of a boolean; v6: exact user-stop errors carry a cancellation message); a journal whose records carry an earlier `v` is
+structured `{code, name}` on failure instead of a boolean; v6: exact user-stop errors carry a cancellation message; v7: `transport/supervisor_lost` projects `"The local runtime connection was lost before the provider response finished; the provider request outcome is unknown."`); a journal whose records carry an earlier `v` is
 retired when the folder is next opened and rebuilt from the ledger, its
 endpoint seqs are reassigned and clients re-baseline, exactly like the
 `endpoint-v2.jsonl` retirement. Only derived cache files are retired; semantic
@@ -707,12 +723,22 @@ storage before projecting the completed response.
 
 ## Transport listener
 
+> **Version scope:** Current V4 public routes and streams are defined above in
+> §[Routes and streams](#routes-and-streams) (`13` base V4 unary methods +
+> `remote.mux` + active extensions, `session-inventory`, `session-journal`,
+> `session-control`, and `actionables`). The carrier sections below retain
+> historical V2-era route names (`host.describe`, `workspace.list`,
+> `session.list`, `session.history`, `events.mux`, `events.host`, `respond`)
+> **only** as internal carrier/idempotency records and `fixtures/endpoint`
+> transport-fixture compatibility; those retired routes are not exposed by
+> current V4 public hosts.
+
 The public routes are those of §Routes and streams; the listener below is the
 physical carrier those routes and the internal registrations share. Routes
-retired from the public surface (`host.describe`, `workspace.list`,
+retired from the V4 public surface (`host.describe`, `workspace.list`,
 `session.list`, `session.history`, `events.mux`, `events.host`, `respond`)
-remain registrations only so the carrier fixtures and idempotency records that
-name them stay decodable; they are not advertised.
+remain internal registrations only so the carrier fixtures and idempotency
+records that name them stay decodable; they are not advertised in V4 `ready`.
 
 This is the physical carrier for Slice 9. The Client-owned authority is
 `Tekes/docs/session-event-conversation-transport-v2.md` and its
@@ -768,28 +794,22 @@ versus null, unions, error codes, and integer limits are identical. Requests
 larger than 16 MiB, non-UTF-8, duplicate JSON keys, non-I-JSON numbers, or a
 body trailing a complete JSON value fail before dispatch.
 
-### Negotiation and capabilities
+### Negotiation and capabilities (historical V2 carrier vs current V4)
 
-`host.describe` is the first successful application call. Its value is exactly
-the Client-owned `SessionHostDescription` DTO: `{version, cwd, provider?,
-model?, attachedSessions, home, canOpenPath}`. The Client accepts `version`
-only through its endpoint-version allowlist. Endpoint generation is
-connection-local Client state and is not a wire field.
+In the historical Slice-9 / V2 transport fixtures, `host.describe` was the
+first call (`{version,cwd,provider?,model?,attachedSessions,home,canOpenPath}`).
+**In current V4 (`protocolVersion == 4`)**, `host.describe` is retired from
+public servers; the authoritative handshake is the `ready` frame on WebSocket
+`GET /api/remote.mux` (§[Compatibility and capabilities](#compatibility-and-capabilities)),
+distinct from the built-in stdout `bootstrapVersion: 1` launch readiness line.
+Capabilities are closed endpoint metadata, never smuggled onto unrelated DTOs.
+Unknown methods fail closed (`not-found` on built-in `/api/*` or
+`method-not-found` on carrier-fixture routing); unknown required `SessionEvent`
+variants fail closed unless `ignorable: true`.
 
-Capabilities are the endpoint driver's closed, endpoint-kind-specific method
-catalog, not extra fields smuggled into `host.describe`. The `.tekes` driver
-declares only routes that this transport registers and can execute; the DSH
-driver keeps its separately accepted catalog. Authority sync compares the
-driver catalog with the server registry in both directions before release.
-The server never returns a successful empty value for an unimplemented method.
-Unknown methods are `method-not-found`; a known driver operation unavailable
-for this endpoint kind is `unsupported-capability`; an unknown required
-SessionEvent fails closed. Only an event with explicit `ignorable: true` may
-be skipped.
-
-The Slice-9 `.tekes` driver/registry set is exactly the closed registration
-table in §Management authority and recovery and is reproduced here only as a carrier
-registry:
+The historical Slice-9 `.tekes` carrier fixture table (preserved in
+`§Management authority and recovery` for transport-fixture validation, NOT
+the active V4 public route set) covers these 22 fixture registrations:
 
 ```text
 host.describe
@@ -1045,18 +1065,22 @@ file owns the native Kernel author path, idempotency, crash recovery, and the
 two native extensions `workspace.unarchiveSession` and the all-session stream
 lifecycle.
 
-There are exactly **22 registrations**, not 22 unary methods: 19 ordinary
-`POST /api/{method}` RPCs, the bare-response `POST /api/respond`, and two
-WebSocket registrations. `scripts/check-endpoint-transport-fixtures.py` compares
-this table with its management route registry in both directions.
+There are exactly **22 historical carrier registrations** in the table below,
+not 22 active V4 public methods: 19 historical `POST /api/{method}` RPCs,
+`POST /api/respond`, and two legacy WebSocket channel registrations.
+`scripts/check-endpoint-transport-fixtures.py` still compares this closed table
+against the historical management fixture registry in both directions.
 
-This table is not the public protocol version 3 registry. Under V3 the public
-routes are the 16 unary methods in §Routes and streams plus `remote.mux`; that
-list includes `models.list`, which this table does not. `host.describe`,
-`workspace.list`, `session.list`, `session.history`, `events.mux`,
-`events.host`, and `respond` are not public V3 routes. Their names remain in
-internal code (the `respond` idempotency operation and the stream channel
-names) and in the management fixtures.
+This historical V2 table is **not** the public V4 registry. In current V4
+(`protocolVersion == 4`), public hosts expose the **13 base unary methods +
+`remote.mux`** in §[Routes and streams](#routes-and-streams) plus the active
+`*.v1` extensions (`resources.v1`, `initialPresets.v1`, `sessionPresets.v1`,
+`recovery.v1`, `attachments.v1`, `approvals.v1`, `feedback.v1`, `settings.v1`,
+`goals.v1`, `subagents.v1`, `sessionFiles.v1`, `tools.v1`, `threadSearch.v1`,
+`usage.v1`), while `host.describe`, `workspace.*`, `session.list`,
+`session.history`, `events.mux`, `events.host`, and `respond` are retired from
+the public V4 surface (`workspace.unarchiveSession` is replaced by
+`session.unarchive`, and `models.list` is added to the base set).
 
 ### JSON notation and common rules
 
@@ -1138,7 +1162,7 @@ from `/api/respond` correlation; a violation is carrier `invalid-request`.
 
 ### Closed registration table
 
-The request and success value columns below are exact. A later field or union
+The legacy historical route/fixture table below is **historical only** (retired routes are not served by the live V4 host) and retains **exactly the closed registration** set covered by the carrier transport fixtures. The request and success value columns below are exact. A later field or union
 arm requires a versioned Client authority change and new fixtures.
 
 | registration | request payload | success value |
@@ -1784,18 +1808,31 @@ The returned `seq` is the durable meta seq. Both retry through origin-tuple
 dedup.
 
 After the first accepted root input, the supervisor conditionally appends a
-keyed automatic-title `meta` only when the session has no title. Its value is
-the first input with Unicode whitespace collapsed and truncated to 40
-characters. Winning that durable seed launches exactly one host-owned
-presentation request: it reuses the configured DeepSeek adapter and credential,
-pins model `deepseek-v4-flash`, supplies no tools, continuation or reasoning
-control, and does not alter the session model selection. A nonempty response is
-normalized to one line and at most 40 characters, then conditionally appended
-as a second title `meta` only if the seed remains the latest title. Therefore a
-racing `session.rename` always wins. Provider/config/credential failure leaves
-the deterministic seed in place and later prompts do not retry the model call.
-Each appended title is projected as a durable `session/title` row before its
-inventory projection is published.
+keyed automatic-title `meta` only when the session has no title. Its seed value
+is the first input with Unicode whitespace collapsed and truncated to 40
+characters, persisted locally with zero outbound model requests.
+
+By default (`settings.automatic_title` omitted, including legacy `settings.json`
+configurations, or `{"mode":"local"}`), automatic titling stops at that local
+seed and sends **0** network requests. A host explicitly opts into model title
+refinement (`"mode":"model"`) via `settings.json` `automatic_title` or the
+built-in launch field of the same name: `{mode:"model", provider, model,
+max_input_chars?}` (default `max_input_chars` is 500 characters; allowed range
+`1..=4000`; `"mode":"local"` forbids `provider`/`model`/`max_input_chars`).
+When enabled and the durable seed wins cleanly, the supervisor sends at most
+one bounded presentation request exclusively to that authorized
+`(provider, model)` pair with input truncated to `max_input_chars` Unicode
+scalars, `title_max_output_tokens = 64`, `reasoning_disabled = true`, no tools,
+and no continuation, without altering the session's selected model. Target
+unavailability (unknown/disabled provider or model, missing/revoked credential,
+reasoning dialect without a verified off switch, transport/provider failure, or
+a length-truncated/empty response) leaves the local seed in place with **zero**
+fallback to any other connection or model. A nonempty response is normalized to
+one line of at most 40 characters and conditionally appended only while the seed
+remains the latest title: a manual `session.rename` always wins (and if already
+present before refinement, skips the model call), and existing titles, retries,
+or restarts never send a replacement title request. Each appended title is
+projected as a durable `session/title` row before inventory publication.
 
 Answerable mux frames use a stable rpcId derived from the hold itself; there
 is no request journal. Every `approval_request` on a session's main line is a
@@ -1905,31 +1942,23 @@ a stale frame. The success body is exactly `{accepted:true}`
 (the optional `reason` is omitted). A retry after the durable resolution returns the
 same success from the rpcId record and never authors a second response.
 
-### Read routes
+### Read routes and projections (historical V2 read routes vs V4 streams)
 
-Native `host.describe` derives every field as follows: `version` is the exact
-selected bundle version from deployment; `cwd` is the canonical process
-working directory captured before readiness; `home` is the service account's
-home from the OS account database (never an untrusted request/environment
-override); `provider` and `model` are both present only when the validated
-global config default contains both; `attachedSessions` is the number of
-distinct session ids in the same complete active-session inventory snapshot
-used by `events.mux` (including settled and parked sessions without a worker);
-and `canOpenPath` is always false for this headless native endpoint.
-
+The historical Slice-9 / V2 `host.describe`, `workspace.list`, and
+`session.list` unary routes are retained only for carrier-fixture checks and are
+retired in V4 (`ready`, `session-inventory`, and `session-journal` replace them).
+For historical V2 carrier checks: `host.describe` derives `version` from the
+deployment bundle version; `cwd` is the canonical process working directory;
+`home` is the service account's home; `provider` and `model` reflect validated
+global defaults; `attachedSessions` counts active-inventory sessions; and
+`canOpenPath` is always false for the native headless endpoint.
 Workspace titles are Unicode-whitespace-trimmed UTF-8 with 1...256 bytes and
-no control scalar. `workspace.create` defaults title to the canonical path's
-last component and applies the same validation. `workspace.list.items` are
-ascending by `workspaceId`; each `sessionIds` and `archivedSessionIds` array is
-ascending UUID order and duplicate-free. Active `sessionIds` exclude archived
-folders. `session.list` excludes archived sessions.
+no control scalar. `workspace.list.items` are ascending by `workspaceId`, and
+`session.list` (cursor-reserved `invalid-cursor`) orders active sessions by
+descending `updatedAt`, then ascending `sessionId`.
 
-`session.list` with omitted `cursor` returns the complete active list, ordered
-by descending `updatedAt`, then ascending `sessionId`. The imported v2 cursor
-field is reserved: any present, nonempty cursor is `invalid-cursor`; there is
-no hidden page because `SessionList` has no next-cursor result field.
-
-`SessionSummary` is a pure projection of authority:
+In current V4, `SessionSummary` (projected onto `session-inventory`) is a pure
+projection of authority:
 
 - `running` is true exactly when any schema-valid line file in the session
   folder has a live file-lock holder, or the supervisor has registered a

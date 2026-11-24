@@ -53,7 +53,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/boot_trace.rs](../../src/boot_trace.rs) | 10 | 25 | [Symbols and calls](src--boot_trace.md) |
 | [crates/supervisor/src/bootstrap.rs](../../src/bootstrap.rs) | 25 | 144 | [Symbols and calls](src--bootstrap.md) |
 | [crates/supervisor/src/bounded_child_history.rs](../../src/bounded_child_history.rs) | 12 | 264 | [Symbols and calls](src--bounded_child_history.md) |
-| [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 16 | 327 | [Symbols and calls](src--builtin.md) |
+| [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 18 | 341 | [Symbols and calls](src--builtin.md) |
 | [crates/supervisor/src/catalog.rs](../../src/catalog.rs) | 25 | 168 | [Symbols and calls](src--catalog.md) |
 | [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 84 | 903 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 348 | [Symbols and calls](src--context_usage.md) |
@@ -69,7 +69,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 173 | [Symbols and calls](src--mcp_continuation.md) |
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 50 | 519 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 376 | 7034 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 381 | 7249 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 18 | 1840 | [Symbols and calls](src--process_live_tests.md) |
 | [crates/supervisor/src/process_tool_visibility_tests.rs](../../src/process_tool_visibility_tests.rs) | 13 | 231 | [Symbols and calls](src--process_tool_visibility_tests.md) |
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 836 | [Symbols and calls](src--production_tool_control.md) |
@@ -145,7 +145,7 @@ flowchart LR
   m18 -->|"4"| m1
   m18 -->|"1"| m5
   m18 -->|"2"| m9
-  m18 -->|"4"| m11
+  m18 -->|"5"| m11
   m18 -->|"160"| m13
   m18 -->|"1"| m14
   m18 -->|"1"| m17

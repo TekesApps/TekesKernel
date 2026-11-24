@@ -9,7 +9,7 @@ it is not an authenticated trust-management surface.
 [Users and protocols · documentation home](../README.md) · [Client boundary](client.md) · [Next: transport implementation](../../crates/transport/docs/README.md)
 
 TekesKernel can expose the Tekes experience through a browser without adding
-methods, DTOs, events, or capabilities to Session Endpoint v3. The Web Client
+methods, DTOs, events, or capabilities to Session Endpoint V4. The Web Client
 is a separately bound HTTP service over the already assembled endpoint host.
 It is disabled by default.
 
@@ -36,7 +36,7 @@ It maps browser-only paths to the same in-process endpoint handlers:
 | Browser path | Existing endpoint operation |
 |---|---|
 | `/web/api/{method}` | the named unary method |
-| `/web/remote.mux` | V3 multiplexed workspace/inventory/journal/control/actionables streams |
+| `/web/remote.mux` | V4 multiplexed inventory/journal/control/actionables streams |
 
 This is an HTTP adapter, not a second application protocol. Request and
 response envelopes, method names, event ordering, history pagination,
@@ -60,8 +60,8 @@ a separately designed TLS and remote-authentication boundary.
 
 ## Client state model
 
-The Web Client connects to `/web/remote.mux`, validates V3 readiness, then opens
-workspace, inventory, control and actionables streams. Selecting a session opens
+The Web Client connects to `/web/remote.mux`, validates V4 readiness, then opens
+inventory, control and actionables streams. Selecting a session opens
 its bounded `session-journal` snapshot/live stream. Older history uses
 `journal-page`; approvals/questions use `actionable-respond` on that same mux.
 Each logical stream has a generation-bound baseline. Journal transients do not

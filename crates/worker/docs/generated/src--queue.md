@@ -13,9 +13,9 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-worker::queue::queue_rejected](../../src/queue.rs#L173) | function_item | `private` |  |
 | [tekes-worker::queue::queue_target](../../src/queue.rs#L184) | function_item | `private` |  |
 | [tekes-worker::queue::queue_steer_window_open](../../src/queue.rs#L279) | function_item | `private` |  |
-| [tekes-worker::queue::verify_queue_assets](../../src/queue.rs#L288) | function_item | `private` |  |
-| [tekes-worker::queue::validate_existing_retraction](../../src/queue.rs#L304) | function_item | `private` |  |
-| [tekes-worker::queue::validate_existing_replacement](../../src/queue.rs#L323) | function_item | `private` |  |
+| [tekes-worker::queue::verify_queue_assets](../../src/queue.rs#L285) | function_item | `private` |  |
+| [tekes-worker::queue::validate_existing_retraction](../../src/queue.rs#L301) | function_item | `private` |  |
+| [tekes-worker::queue::validate_existing_replacement](../../src/queue.rs#L320) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -91,14 +91,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_queue_transaction` | `target.submission.clone` | [85](../../src/queue.rs#L85), [93](../../src/queue.rs#L93) | receiver-type-required |
 | `execute_queue_transaction` | `target.content.clone` | [90](../../src/queue.rs#L90) | receiver-type-required |
 | `execute_queue_transaction` | `target.assets.clone` | [92](../../src/queue.rs#L92) | receiver-type-required |
-| `execute_queue_transaction` | `verify_queue_assets` | [98](../../src/queue.rs#L98) | [tekes-worker::queue::verify_queue_assets](../../src/queue.rs#L288) |
+| `execute_queue_transaction` | `verify_queue_assets` | [98](../../src/queue.rs#L98) | [tekes-worker::queue::verify_queue_assets](../../src/queue.rs#L285) |
 | `execute_queue_transaction` | `assets.as_deref().unwrap_or_default` | [98](../../src/queue.rs#L98) | receiver-type-required |
 | `execute_queue_transaction` | `assets.as_deref` | [98](../../src/queue.rs#L98) | receiver-type-required |
 | `execute_queue_transaction` | `StoreError::Corruption(format!(                 "queue replacement asset became invalid after retraction: {error}"             ))             .into` | [101](../../src/queue.rs#L101) | receiver-type-required |
 | `execute_queue_transaction` | `"CORRUPT".to_owned` | [109](../../src/queue.rs#L109) | receiver-type-required |
-| `execute_queue_transaction` | `validate_existing_retraction` | [114](../../src/queue.rs#L114) | [tekes-worker::queue::validate_existing_retraction](../../src/queue.rs#L304) |
+| `execute_queue_transaction` | `validate_existing_retraction` | [114](../../src/queue.rs#L114) | [tekes-worker::queue::validate_existing_retraction](../../src/queue.rs#L301) |
 | `execute_queue_transaction` | `replacement.as_ref` | [116](../../src/queue.rs#L116) | receiver-type-required |
-| `execute_queue_transaction` | `validate_existing_replacement` | [117](../../src/queue.rs#L117) | [tekes-worker::queue::validate_existing_replacement](../../src/queue.rs#L323) |
+| `execute_queue_transaction` | `validate_existing_replacement` | [117](../../src/queue.rs#L117) | [tekes-worker::queue::validate_existing_replacement](../../src/queue.rs#L320) |
 | `execute_queue_transaction` | `ledger.next_seq` | [124](../../src/queue.rs#L124), [144](../../src/queue.rs#L144) | receiver-type-required |
 | `execute_queue_transaction` | `origin_event` | [125](../../src/queue.rs#L125), [145](../../src/queue.rs#L145) | external-constructor-callback-or-unresolved |
 | `execute_queue_transaction` | `object.insert` | [126](../../src/queue.rs#L126), [146](../../src/queue.rs#L146), [147](../../src/queue.rs#L147), [149](../../src/queue.rs#L149), [152](../../src/queue.rs#L152) | receiver-type-required |
@@ -168,51 +168,51 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `queue_target` | `value.get("steer").and_then(Value::as_bool).unwrap_or` | [273](../../src/queue.rs#L273) | receiver-type-required |
 | `queue_target` | `value.get("steer").and_then` | [273](../../src/queue.rs#L273) | receiver-type-required |
 | `queue_target` | `value.get("submission").cloned` | [275](../../src/queue.rs#L275) | receiver-type-required |
-| `queue_steer_window_open` | `ledger.projection().is_some_and` | [280](../../src/queue.rs#L280) | receiver-type-required |
-| `queue_steer_window_open` | `ledger.projection` | [280](../../src/queue.rs#L280) | receiver-type-required |
-| `queue_steer_window_open` | `projection.latest_turn.is_some` | [281](../../src/queue.rs#L281) | receiver-type-required |
-| `verify_queue_assets` | `ledger         .path()         .parent()         .ok_or_else(&#124;&#124; StoreError::Corruption("ledger has no thread folder".to_owned()))?         .join` | [292](../../src/queue.rs#L292) | receiver-type-required |
-| `verify_queue_assets` | `ledger         .path()         .parent()         .ok_or_else` | [292](../../src/queue.rs#L292) | receiver-type-required |
-| `verify_queue_assets` | `ledger         .path()         .parent` | [292](../../src/queue.rs#L292) | receiver-type-required |
-| `verify_queue_assets` | `ledger         .path` | [292](../../src/queue.rs#L292) | receiver-type-required |
-| `verify_queue_assets` | `StoreError::Corruption` | [295](../../src/queue.rs#L295) | external-constructor-callback-or-unresolved |
-| `verify_queue_assets` | `"ledger has no thread folder".to_owned` | [295](../../src/queue.rs#L295) | receiver-type-required |
-| `verify_queue_assets` | `AssetStore::new` | [297](../../src/queue.rs#L297) | external-constructor-callback-or-unresolved |
-| `verify_queue_assets` | `store.verify_named` | [299](../../src/queue.rs#L299) | receiver-type-required |
-| `verify_queue_assets` | `Ok` | [301](../../src/queue.rs#L301) | external-constructor-callback-or-unresolved |
-| `validate_existing_retraction` | `event_at` | [309](../../src/queue.rs#L309) | external-constructor-callback-or-unresolved |
-| `validate_existing_retraction` | `event_json(event).map_err` | [310](../../src/queue.rs#L310) | receiver-type-required |
-| `validate_existing_retraction` | `event_json` | [310](../../src/queue.rs#L310) | external-constructor-callback-or-unresolved |
-| `validate_existing_retraction` | `StoreError::Corruption` | [310](../../src/queue.rs#L310), [316](../../src/queue.rs#L316) | external-constructor-callback-or-unresolved |
-| `validate_existing_retraction` | `error.to_string` | [310](../../src/queue.rs#L310) | receiver-type-required |
-| `validate_existing_retraction` | `event.string_field` | [312](../../src/queue.rs#L312) | receiver-type-required |
-| `validate_existing_retraction` | `Some` | [312](../../src/queue.rs#L312), [313](../../src/queue.rs#L313), [314](../../src/queue.rs#L314) | external-constructor-callback-or-unresolved |
-| `validate_existing_retraction` | `event.origin_tuple` | [313](../../src/queue.rs#L313) | receiver-type-required |
-| `validate_existing_retraction` | `transaction.retract_origin.clone` | [313](../../src/queue.rs#L313) | receiver-type-required |
-| `validate_existing_retraction` | `value.get` | [314](../../src/queue.rs#L314) | receiver-type-required |
-| `validate_existing_retraction` | `Err` | [316](../../src/queue.rs#L316) | external-constructor-callback-or-unresolved |
-| `validate_existing_retraction` | `"queue transaction retraction origin resolves to mismatched bytes".to_owned` | [317](../../src/queue.rs#L317) | receiver-type-required |
-| `validate_existing_retraction` | `Ok` | [320](../../src/queue.rs#L320) | external-constructor-callback-or-unresolved |
-| `validate_existing_replacement` | `event_at` | [334](../../src/queue.rs#L334) | external-constructor-callback-or-unresolved |
-| `validate_existing_replacement` | `event_json(event).map_err` | [335](../../src/queue.rs#L335) | receiver-type-required |
-| `validate_existing_replacement` | `event_json` | [335](../../src/queue.rs#L335) | external-constructor-callback-or-unresolved |
-| `validate_existing_replacement` | `StoreError::Corruption` | [335](../../src/queue.rs#L335), [337](../../src/queue.rs#L337), [343](../../src/queue.rs#L343), [351](../../src/queue.rs#L351) | external-constructor-callback-or-unresolved |
-| `validate_existing_replacement` | `error.to_string` | [335](../../src/queue.rs#L335), [337](../../src/queue.rs#L337), [343](../../src/queue.rs#L343) | receiver-type-required |
-| `validate_existing_replacement` | `serde_json::to_value(&replacement.0)         .map_err` | [336](../../src/queue.rs#L336) | receiver-type-required |
-| `validate_existing_replacement` | `serde_json::to_value` | [336](../../src/queue.rs#L336) | external-constructor-callback-or-unresolved |
-| `validate_existing_replacement` | `replacement         .2         .as_ref()         .map(serde_json::to_value)         .transpose()         .map_err` | [338](../../src/queue.rs#L338) | receiver-type-required |
-| `validate_existing_replacement` | `replacement         .2         .as_ref()         .map(serde_json::to_value)         .transpose` | [338](../../src/queue.rs#L338) | receiver-type-required |
-| `validate_existing_replacement` | `replacement         .2         .as_ref()         .map` | [338](../../src/queue.rs#L338) | receiver-type-required |
-| `validate_existing_replacement` | `replacement         .2         .as_ref` | [338](../../src/queue.rs#L338) | receiver-type-required |
-| `validate_existing_replacement` | `event.string_field` | [344](../../src/queue.rs#L344) | receiver-type-required |
-| `validate_existing_replacement` | `Some` | [344](../../src/queue.rs#L344), [346](../../src/queue.rs#L346), [347](../../src/queue.rs#L347) | external-constructor-callback-or-unresolved |
-| `validate_existing_replacement` | `event.origin_tuple` | [345](../../src/queue.rs#L345) | receiver-type-required |
-| `validate_existing_replacement` | `transaction.replacement_origin().cloned` | [345](../../src/queue.rs#L345) | receiver-type-required |
-| `validate_existing_replacement` | `transaction.replacement_origin` | [345](../../src/queue.rs#L345) | receiver-type-required |
-| `validate_existing_replacement` | `value.get` | [346](../../src/queue.rs#L346), [347](../../src/queue.rs#L347), [348](../../src/queue.rs#L348), [349](../../src/queue.rs#L349) | receiver-type-required |
-| `validate_existing_replacement` | `value.get("steer").and_then` | [347](../../src/queue.rs#L347) | receiver-type-required |
-| `validate_existing_replacement` | `assets.as_ref` | [348](../../src/queue.rs#L348) | receiver-type-required |
-| `validate_existing_replacement` | `replacement.3.as_ref` | [349](../../src/queue.rs#L349) | receiver-type-required |
-| `validate_existing_replacement` | `Err` | [351](../../src/queue.rs#L351) | external-constructor-callback-or-unresolved |
-| `validate_existing_replacement` | `"queue transaction replacement origin resolves to mismatched bytes".to_owned` | [352](../../src/queue.rs#L352) | receiver-type-required |
-| `validate_existing_replacement` | `Ok` | [355](../../src/queue.rs#L355) | external-constructor-callback-or-unresolved |
+| `queue_steer_window_open` | `ledger         .projection()         .is_some_and` | [280](../../src/queue.rs#L280) | receiver-type-required |
+| `queue_steer_window_open` | `ledger         .projection` | [280](../../src/queue.rs#L280) | receiver-type-required |
+| `queue_steer_window_open` | `projection.lifecycle.steer_window_open` | [282](../../src/queue.rs#L282) | receiver-type-required |
+| `verify_queue_assets` | `ledger         .path()         .parent()         .ok_or_else(&#124;&#124; StoreError::Corruption("ledger has no thread folder".to_owned()))?         .join` | [289](../../src/queue.rs#L289) | receiver-type-required |
+| `verify_queue_assets` | `ledger         .path()         .parent()         .ok_or_else` | [289](../../src/queue.rs#L289) | receiver-type-required |
+| `verify_queue_assets` | `ledger         .path()         .parent` | [289](../../src/queue.rs#L289) | receiver-type-required |
+| `verify_queue_assets` | `ledger         .path` | [289](../../src/queue.rs#L289) | receiver-type-required |
+| `verify_queue_assets` | `StoreError::Corruption` | [292](../../src/queue.rs#L292) | external-constructor-callback-or-unresolved |
+| `verify_queue_assets` | `"ledger has no thread folder".to_owned` | [292](../../src/queue.rs#L292) | receiver-type-required |
+| `verify_queue_assets` | `AssetStore::new` | [294](../../src/queue.rs#L294) | external-constructor-callback-or-unresolved |
+| `verify_queue_assets` | `store.verify_named` | [296](../../src/queue.rs#L296) | receiver-type-required |
+| `verify_queue_assets` | `Ok` | [298](../../src/queue.rs#L298) | external-constructor-callback-or-unresolved |
+| `validate_existing_retraction` | `event_at` | [306](../../src/queue.rs#L306) | external-constructor-callback-or-unresolved |
+| `validate_existing_retraction` | `event_json(event).map_err` | [307](../../src/queue.rs#L307) | receiver-type-required |
+| `validate_existing_retraction` | `event_json` | [307](../../src/queue.rs#L307) | external-constructor-callback-or-unresolved |
+| `validate_existing_retraction` | `StoreError::Corruption` | [307](../../src/queue.rs#L307), [313](../../src/queue.rs#L313) | external-constructor-callback-or-unresolved |
+| `validate_existing_retraction` | `error.to_string` | [307](../../src/queue.rs#L307) | receiver-type-required |
+| `validate_existing_retraction` | `event.string_field` | [309](../../src/queue.rs#L309) | receiver-type-required |
+| `validate_existing_retraction` | `Some` | [309](../../src/queue.rs#L309), [310](../../src/queue.rs#L310), [311](../../src/queue.rs#L311) | external-constructor-callback-or-unresolved |
+| `validate_existing_retraction` | `event.origin_tuple` | [310](../../src/queue.rs#L310) | receiver-type-required |
+| `validate_existing_retraction` | `transaction.retract_origin.clone` | [310](../../src/queue.rs#L310) | receiver-type-required |
+| `validate_existing_retraction` | `value.get` | [311](../../src/queue.rs#L311) | receiver-type-required |
+| `validate_existing_retraction` | `Err` | [313](../../src/queue.rs#L313) | external-constructor-callback-or-unresolved |
+| `validate_existing_retraction` | `"queue transaction retraction origin resolves to mismatched bytes".to_owned` | [314](../../src/queue.rs#L314) | receiver-type-required |
+| `validate_existing_retraction` | `Ok` | [317](../../src/queue.rs#L317) | external-constructor-callback-or-unresolved |
+| `validate_existing_replacement` | `event_at` | [331](../../src/queue.rs#L331) | external-constructor-callback-or-unresolved |
+| `validate_existing_replacement` | `event_json(event).map_err` | [332](../../src/queue.rs#L332) | receiver-type-required |
+| `validate_existing_replacement` | `event_json` | [332](../../src/queue.rs#L332) | external-constructor-callback-or-unresolved |
+| `validate_existing_replacement` | `StoreError::Corruption` | [332](../../src/queue.rs#L332), [334](../../src/queue.rs#L334), [340](../../src/queue.rs#L340), [348](../../src/queue.rs#L348) | external-constructor-callback-or-unresolved |
+| `validate_existing_replacement` | `error.to_string` | [332](../../src/queue.rs#L332), [334](../../src/queue.rs#L334), [340](../../src/queue.rs#L340) | receiver-type-required |
+| `validate_existing_replacement` | `serde_json::to_value(&replacement.0)         .map_err` | [333](../../src/queue.rs#L333) | receiver-type-required |
+| `validate_existing_replacement` | `serde_json::to_value` | [333](../../src/queue.rs#L333) | external-constructor-callback-or-unresolved |
+| `validate_existing_replacement` | `replacement         .2         .as_ref()         .map(serde_json::to_value)         .transpose()         .map_err` | [335](../../src/queue.rs#L335) | receiver-type-required |
+| `validate_existing_replacement` | `replacement         .2         .as_ref()         .map(serde_json::to_value)         .transpose` | [335](../../src/queue.rs#L335) | receiver-type-required |
+| `validate_existing_replacement` | `replacement         .2         .as_ref()         .map` | [335](../../src/queue.rs#L335) | receiver-type-required |
+| `validate_existing_replacement` | `replacement         .2         .as_ref` | [335](../../src/queue.rs#L335) | receiver-type-required |
+| `validate_existing_replacement` | `event.string_field` | [341](../../src/queue.rs#L341) | receiver-type-required |
+| `validate_existing_replacement` | `Some` | [341](../../src/queue.rs#L341), [343](../../src/queue.rs#L343), [344](../../src/queue.rs#L344) | external-constructor-callback-or-unresolved |
+| `validate_existing_replacement` | `event.origin_tuple` | [342](../../src/queue.rs#L342) | receiver-type-required |
+| `validate_existing_replacement` | `transaction.replacement_origin().cloned` | [342](../../src/queue.rs#L342) | receiver-type-required |
+| `validate_existing_replacement` | `transaction.replacement_origin` | [342](../../src/queue.rs#L342) | receiver-type-required |
+| `validate_existing_replacement` | `value.get` | [343](../../src/queue.rs#L343), [344](../../src/queue.rs#L344), [345](../../src/queue.rs#L345), [346](../../src/queue.rs#L346) | receiver-type-required |
+| `validate_existing_replacement` | `value.get("steer").and_then` | [344](../../src/queue.rs#L344) | receiver-type-required |
+| `validate_existing_replacement` | `assets.as_ref` | [345](../../src/queue.rs#L345) | receiver-type-required |
+| `validate_existing_replacement` | `replacement.3.as_ref` | [346](../../src/queue.rs#L346) | receiver-type-required |
+| `validate_existing_replacement` | `Err` | [348](../../src/queue.rs#L348) | external-constructor-callback-or-unresolved |
+| `validate_existing_replacement` | `"queue transaction replacement origin resolves to mismatched bytes".to_owned` | [349](../../src/queue.rs#L349) | receiver-type-required |
+| `validate_existing_replacement` | `Ok` | [352](../../src/queue.rs#L352) | external-constructor-callback-or-unresolved |

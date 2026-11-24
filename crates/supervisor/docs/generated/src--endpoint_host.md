@@ -994,7 +994,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `create_session` | `to_ijson` | [962](../../src/endpoint_host.rs#L962) | [tekes-supervisor::endpoint_host::to_ijson](../../src/endpoint_host.rs#L2305) |
 | `draft_models` | `require_object_fields` | [966](../../src/endpoint_host.rs#L966) | [tekes-supervisor::endpoint_host::require_object_fields](../../src/endpoint_host.rs#L2279) |
 | `draft_models` | `profile::ConfigRepository::open(&self.storage_root).map_err` | [968](../../src/endpoint_host.rs#L968) | receiver-type-required |
-| `draft_models` | `profile::ConfigRepository::open` | [968](../../src/endpoint_host.rs#L968) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L543) |
+| `draft_models` | `profile::ConfigRepository::open` | [968](../../src/endpoint_host.rs#L968) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L568) |
 | `draft_models` | `internal_failure` | [968](../../src/endpoint_host.rs#L968), [969](../../src/endpoint_host.rs#L969), [970](../../src/endpoint_host.rs#L970) | [tekes-supervisor::endpoint_host::internal_failure](../../src/endpoint_host.rs#L2222) |
 | `draft_models` | `repository.providers().map_err` | [969](../../src/endpoint_host.rs#L969) | receiver-type-required |
 | `draft_models` | `repository.providers` | [969](../../src/endpoint_host.rs#L969) | receiver-type-required |

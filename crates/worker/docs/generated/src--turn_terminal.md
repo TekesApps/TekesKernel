@@ -19,16 +19,16 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-worker::turn_terminal::provider_error_detail](../../src/turn_terminal.rs#L250) | function_item | `private` |  |
 | [tekes-worker::turn_terminal::append_context_overflow](../../src/turn_terminal.rs#L265) | function_item | `pub(crate)` |  |
 | [tekes-worker::turn_terminal::append_provider_failure](../../src/turn_terminal.rs#L291) | function_item | `pub(crate)` |  |
-| [tekes-worker::turn_terminal::partial_carrier_for_eager_calls](../../src/turn_terminal.rs#L404) | function_item | `private` |  |
-| [tekes-worker::turn_terminal::ProviderAdmissionRetry](../../src/turn_terminal.rs#L441) | struct_item | `pub(crate)` |  |
-| [tekes-worker::turn_terminal::wait_provider_admission](../../src/turn_terminal.rs#L455) | function_item | `pub(crate)` |  |
-| [tekes-worker::turn_terminal::settle_internal_worker_failure](../../src/turn_terminal.rs#L495) | function_item | `pub(crate)` |  |
-| [tekes-worker::turn_terminal::bounded_ledger_detail](../../src/turn_terminal.rs#L527) | function_item | `pub(crate)` |  |
-| [tekes-worker::turn_terminal::usage_object](../../src/turn_terminal.rs#L549) | function_item | `pub(crate)` |  |
-| [tekes-worker::turn_terminal::record_input_transformations](../../src/turn_terminal.rs#L571) | function_item | `pub(crate)` |  |
-| [tekes-worker::turn_terminal::sealed_fragments](../../src/turn_terminal.rs#L591) | function_item | `pub(crate)` |  |
-| [tekes-worker::turn_terminal::spill_json](../../src/turn_terminal.rs#L605) | function_item | `pub(crate)` |  |
-| [tekes-worker::turn_terminal::append_settle](../../src/turn_terminal.rs#L618) | function_item | `pub(crate)` |  |
+| [tekes-worker::turn_terminal::partial_carrier_for_eager_calls](../../src/turn_terminal.rs#L408) | function_item | `private` |  |
+| [tekes-worker::turn_terminal::ProviderAdmissionRetry](../../src/turn_terminal.rs#L445) | struct_item | `pub(crate)` |  |
+| [tekes-worker::turn_terminal::wait_provider_admission](../../src/turn_terminal.rs#L459) | function_item | `pub(crate)` |  |
+| [tekes-worker::turn_terminal::settle_internal_worker_failure](../../src/turn_terminal.rs#L499) | function_item | `pub(crate)` |  |
+| [tekes-worker::turn_terminal::bounded_ledger_detail](../../src/turn_terminal.rs#L531) | function_item | `pub(crate)` |  |
+| [tekes-worker::turn_terminal::usage_object](../../src/turn_terminal.rs#L553) | function_item | `pub(crate)` |  |
+| [tekes-worker::turn_terminal::record_input_transformations](../../src/turn_terminal.rs#L575) | function_item | `pub(crate)` |  |
+| [tekes-worker::turn_terminal::sealed_fragments](../../src/turn_terminal.rs#L595) | function_item | `pub(crate)` |  |
+| [tekes-worker::turn_terminal::spill_json](../../src/turn_terminal.rs#L609) | function_item | `pub(crate)` |  |
+| [tekes-worker::turn_terminal::append_settle](../../src/turn_terminal.rs#L622) | function_item | `pub(crate)` |  |
 
 ## Imports / reexports
 
@@ -128,7 +128,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_terminal` | `"server-managed provider terminal lacks continuation identity".into` | [121](../../src/turn_terminal.rs#L121) | receiver-type-required |
 | `append_terminal` | `Vec::new` | [123](../../src/turn_terminal.rs#L123) | external-constructor-callback-or-unresolved |
 | `append_terminal` | `output_content.push` | [126](../../src/turn_terminal.rs#L126) | receiver-type-required |
-| `append_terminal` | `sealed_fragments` | [128](../../src/turn_terminal.rs#L128), [154](../../src/turn_terminal.rs#L154) | [tekes-worker::turn_terminal::sealed_fragments](../../src/turn_terminal.rs#L591) |
+| `append_terminal` | `sealed_fragments` | [128](../../src/turn_terminal.rs#L128), [154](../../src/turn_terminal.rs#L154) | [tekes-worker::turn_terminal::sealed_fragments](../../src/turn_terminal.rs#L595) |
 | `append_terminal` | `text.as_bytes` | [128](../../src/turn_terminal.rs#L128) | receiver-type-required |
 | `append_terminal` | `make_event` | [129](../../src/turn_terminal.rs#L129), [167](../../src/turn_terminal.rs#L167) | external-constructor-callback-or-unresolved |
 | `append_terminal` | `ledger.append_contract` | [133](../../src/turn_terminal.rs#L133), [169](../../src/turn_terminal.rs#L169) | receiver-type-required |
@@ -152,7 +152,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_provider_terminal_error` | `terminal                 .stop_details                 .as_ref()                 .and_then` | [208](../../src/turn_terminal.rs#L208) | receiver-type-required |
 | `append_provider_terminal_error` | `terminal                 .stop_details                 .as_ref` | [208](../../src/turn_terminal.rs#L208) | receiver-type-required |
 | `append_provider_terminal_error` | `details.get` | [211](../../src/turn_terminal.rs#L211) | receiver-type-required |
-| `append_provider_terminal_error` | `bounded_ledger_detail` | [214](../../src/turn_terminal.rs#L214), [224](../../src/turn_terminal.rs#L224), [228](../../src/turn_terminal.rs#L228) | [tekes-worker::turn_terminal::bounded_ledger_detail](../../src/turn_terminal.rs#L527) |
+| `append_provider_terminal_error` | `bounded_ledger_detail` | [214](../../src/turn_terminal.rs#L214), [224](../../src/turn_terminal.rs#L224), [228](../../src/turn_terminal.rs#L228) | [tekes-worker::turn_terminal::bounded_ledger_detail](../../src/turn_terminal.rs#L531) |
 | `append_provider_terminal_error` | `"content_filter".to_owned` | [215](../../src/turn_terminal.rs#L215) | receiver-type-required |
 | `append_provider_terminal_error` | `terminal             .provider_error             .as_ref()             .and_then(provider_error_detail)             .or_else(&#124;&#124; terminal.incomplete_reason.clone())             .map` | [219](../../src/turn_terminal.rs#L219) | receiver-type-required |
 | `append_provider_terminal_error` | `terminal             .provider_error             .as_ref()             .and_then(provider_error_detail)             .or_else` | [219](../../src/turn_terminal.rs#L219) | receiver-type-required |
@@ -187,141 +187,141 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_context_overflow` | `Vec::new` | [286](../../src/turn_terminal.rs#L286) | external-constructor-callback-or-unresolved |
 | `append_provider_failure` | `detail.as_ref().map_or_else` | [304](../../src/turn_terminal.rs#L304) | receiver-type-required |
 | `append_provider_failure` | `detail.as_ref` | [304](../../src/turn_terminal.rs#L304) | receiver-type-required |
-| `append_provider_failure` | `Some` | [310](../../src/turn_terminal.rs#L310), [345](../../src/turn_terminal.rs#L345), [355](../../src/turn_terminal.rs#L355) | external-constructor-callback-or-unresolved |
+| `append_provider_failure` | `Some` | [310](../../src/turn_terminal.rs#L310), [345](../../src/turn_terminal.rs#L345), [359](../../src/turn_terminal.rs#L359) | external-constructor-callback-or-unresolved |
 | `append_provider_failure` | `status.map_or_else` | [332](../../src/turn_terminal.rs#L332) | receiver-type-required |
 | `append_provider_failure` | `detail.clone` | [333](../../src/turn_terminal.rs#L333) | receiver-type-required |
 | `append_provider_failure` | `cancellation.supervisor_lost` | [347](../../src/turn_terminal.rs#L347) | receiver-type-required |
-| `append_provider_failure` | `"supervisor_lost".to_owned` | [348](../../src/turn_terminal.rs#L348) | receiver-type-required |
-| `append_provider_failure` | `cancellation.stop_requested` | [350](../../src/turn_terminal.rs#L350) | receiver-type-required |
-| `append_provider_failure` | `"user_stop".to_owned` | [352](../../src/turn_terminal.rs#L352) | receiver-type-required |
-| `append_provider_failure` | `"cancelled".to_owned` | [357](../../src/turn_terminal.rs#L357) | receiver-type-required |
-| `append_provider_failure` | `bounded_ledger_detail` | [359](../../src/turn_terminal.rs#L359) | [tekes-worker::turn_terminal::bounded_ledger_detail](../../src/turn_terminal.rs#L527) |
-| `append_provider_failure` | `partial_carrier_for_eager_calls` | [369](../../src/turn_terminal.rs#L369) | [tekes-worker::turn_terminal::partial_carrier_for_eager_calls](../../src/turn_terminal.rs#L404) |
-| `append_provider_failure` | `error             .as_object_mut()             .expect("error object")             .insert` | [371](../../src/turn_terminal.rs#L371) | receiver-type-required |
-| `append_provider_failure` | `error             .as_object_mut()             .expect` | [371](../../src/turn_terminal.rs#L371) | receiver-type-required |
-| `append_provider_failure` | `error             .as_object_mut` | [371](../../src/turn_terminal.rs#L371) | receiver-type-required |
-| `append_provider_failure` | `"sealed".to_owned` | [374](../../src/turn_terminal.rs#L374) | receiver-type-required |
-| `append_provider_failure` | `make_event` | [376](../../src/turn_terminal.rs#L376) | external-constructor-callback-or-unresolved |
-| `append_provider_failure` | `event.seq` | [377](../../src/turn_terminal.rs#L377) | receiver-type-required |
-| `append_provider_failure` | `ledger.append_contract` | [378](../../src/turn_terminal.rs#L378) | receiver-type-required |
-| `append_provider_failure` | `BarrierContext::default` | [378](../../src/turn_terminal.rs#L378) | external-constructor-callback-or-unresolved |
-| `append_provider_failure` | `Ok` | [379](../../src/turn_terminal.rs#L379) | external-constructor-callback-or-unresolved |
-| `append_provider_failure` | `retry.then_some` | [383](../../src/turn_terminal.rs#L383) | receiver-type-required |
-| `append_provider_failure` | `Vec::new` | [392](../../src/turn_terminal.rs#L392) | external-constructor-callback-or-unresolved |
-| `partial_carrier_for_eager_calls` | `eager.calls.is_empty` | [410](../../src/turn_terminal.rs#L410) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `Ok` | [411](../../src/turn_terminal.rs#L411), [414](../../src/turn_terminal.rs#L414), [431](../../src/turn_terminal.rs#L431), [435](../../src/turn_terminal.rs#L435) | external-constructor-callback-or-unresolved |
-| `partial_carrier_for_eager_calls` | `partial.as_array` | [413](../../src/turn_terminal.rs#L413) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `items         .iter()         .filter_map(&#124;item&#124; {             match item.get("type").and_then(Value::as_str)? {                 "tool_use" => item.get("id"),                 _ => item.get("call_id"),             }             .and_then(Value::as_str)         })         .collect::<BTreeSet<_>>` | [416](../../src/turn_terminal.rs#L416) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `items         .iter()         .filter_map` | [416](../../src/turn_terminal.rs#L416) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `items         .iter` | [416](../../src/turn_terminal.rs#L416) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `match item.get("type").and_then(Value::as_str)? {                 "tool_use" => item.get("id"),                 _ => item.get("call_id"),             }             .and_then` | [419](../../src/turn_terminal.rs#L419) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `item.get("type").and_then` | [419](../../src/turn_terminal.rs#L419) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `item.get` | [419](../../src/turn_terminal.rs#L419), [420](../../src/turn_terminal.rs#L420), [421](../../src/turn_terminal.rs#L421) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `eager.calls.iter().all` | [426](../../src/turn_terminal.rs#L426) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `eager.calls.iter` | [426](../../src/turn_terminal.rs#L426) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `eager.wire_ids.get(&call.call_id).unwrap_or` | [427](../../src/turn_terminal.rs#L427) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `eager.wire_ids.get` | [427](../../src/turn_terminal.rs#L427) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `sealed_calls.contains` | [428](../../src/turn_terminal.rs#L428) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `wire_id.as_str` | [428](../../src/turn_terminal.rs#L428) | receiver-type-required |
-| `partial_carrier_for_eager_calls` | `serde_json_canonicalizer::to_vec` | [433](../../src/turn_terminal.rs#L433) | external-constructor-callback-or-unresolved |
-| `partial_carrier_for_eager_calls` | `sealed_fragments` | [434](../../src/turn_terminal.rs#L434) | [tekes-worker::turn_terminal::sealed_fragments](../../src/turn_terminal.rs#L591) |
-| `partial_carrier_for_eager_calls` | `Some` | [435](../../src/turn_terminal.rs#L435) | external-constructor-callback-or-unresolved |
-| `wait_provider_admission` | `PROVIDER_RETRIES.saturating_sub` | [468](../../src/turn_terminal.rs#L468) | receiver-type-required |
-| `wait_provider_admission` | `Duration::from_secs` | [469](../../src/turn_terminal.rs#L469) | external-constructor-callback-or-unresolved |
-| `wait_provider_admission` | `u32::from` | [469](../../src/turn_terminal.rs#L469) | external-constructor-callback-or-unresolved |
-| `wait_provider_admission` | `exhausted.min` | [469](../../src/turn_terminal.rs#L469) | receiver-type-required |
-| `wait_provider_admission` | `retry_after_seconds         .map_or(backoff, Duration::from_secs)         .clamp` | [470](../../src/turn_terminal.rs#L470) | receiver-type-required |
-| `wait_provider_admission` | `retry_after_seconds         .map_or` | [470](../../src/turn_terminal.rs#L470) | receiver-type-required |
-| `wait_provider_admission` | `rfc3339_after` | [473](../../src/turn_terminal.rs#L473) | external-constructor-callback-or-unresolved |
-| `wait_provider_admission` | `make_event` | [474](../../src/turn_terminal.rs#L474) | external-constructor-callback-or-unresolved |
-| `wait_provider_admission` | `ledger.append_contract` | [484](../../src/turn_terminal.rs#L484) | receiver-type-required |
-| `wait_provider_admission` | `BarrierContext::default` | [484](../../src/turn_terminal.rs#L484) | external-constructor-callback-or-unresolved |
-| `wait_provider_admission` | `Instant::now` | [485](../../src/turn_terminal.rs#L485), [486](../../src/turn_terminal.rs#L486), [490](../../src/turn_terminal.rs#L490) | external-constructor-callback-or-unresolved |
-| `wait_provider_admission` | `cancellation.stop_requested` | [487](../../src/turn_terminal.rs#L487) | receiver-type-required |
-| `wait_provider_admission` | `cancellation.supervisor_lost` | [487](../../src/turn_terminal.rs#L487) | receiver-type-required |
-| `wait_provider_admission` | `std::thread::sleep` | [490](../../src/turn_terminal.rs#L490) | external-constructor-callback-or-unresolved |
-| `wait_provider_admission` | `(deadline - Instant::now()).min` | [490](../../src/turn_terminal.rs#L490) | receiver-type-required |
-| `wait_provider_admission` | `Duration::from_millis` | [490](../../src/turn_terminal.rs#L490) | external-constructor-callback-or-unresolved |
-| `wait_provider_admission` | `Ok` | [492](../../src/turn_terminal.rs#L492) | external-constructor-callback-or-unresolved |
-| `settle_internal_worker_failure` | `ledger.projection` | [500](../../src/turn_terminal.rs#L500) | receiver-type-required |
-| `settle_internal_worker_failure` | `Err` | [501](../../src/turn_terminal.rs#L501), [507](../../src/turn_terminal.rs#L507), [510](../../src/turn_terminal.rs#L510) | external-constructor-callback-or-unresolved |
-| `settle_internal_worker_failure` | `"worker ledger projection missing while reporting failure".into` | [501](../../src/turn_terminal.rs#L501) | receiver-type-required |
-| `settle_internal_worker_failure` | `unresolved_attempt(ledger)?.is_some` | [505](../../src/turn_terminal.rs#L505) | receiver-type-required |
-| `settle_internal_worker_failure` | `unresolved_attempt` | [505](../../src/turn_terminal.rs#L505) | external-constructor-callback-or-unresolved |
-| `settle_internal_worker_failure` | `error.to_string().into` | [507](../../src/turn_terminal.rs#L507), [510](../../src/turn_terminal.rs#L510) | receiver-type-required |
-| `settle_internal_worker_failure` | `error.to_string` | [507](../../src/turn_terminal.rs#L507), [510](../../src/turn_terminal.rs#L510) | receiver-type-required |
-| `settle_internal_worker_failure` | `make_event` | [512](../../src/turn_terminal.rs#L512) | external-constructor-callback-or-unresolved |
-| `settle_internal_worker_failure` | `ledger.append_contract` | [517](../../src/turn_terminal.rs#L517) | receiver-type-required |
-| `settle_internal_worker_failure` | `BarrierContext::default` | [517](../../src/turn_terminal.rs#L517) | external-constructor-callback-or-unresolved |
-| `settle_internal_worker_failure` | `append_settle` | [518](../../src/turn_terminal.rs#L518) | [tekes-worker::turn_terminal::append_settle](../../src/turn_terminal.rs#L618) |
-| `settle_internal_worker_failure` | `options.event_timestamp` | [520](../../src/turn_terminal.rs#L520) | receiver-type-required |
-| `settle_internal_worker_failure` | `Some` | [523](../../src/turn_terminal.rs#L523) | external-constructor-callback-or-unresolved |
-| `bounded_ledger_detail` | `value.replace` | [528](../../src/turn_terminal.rs#L528) | receiver-type-required |
-| `bounded_ledger_detail` | `IJsonValue::parse(         &serde_json::to_vec(&sanitized).expect("diagnostic string is JSON serializable"),     )     .map` | [529](../../src/turn_terminal.rs#L529) | receiver-type-required |
-| `bounded_ledger_detail` | `IJsonValue::parse` | [529](../../src/turn_terminal.rs#L529) | external-constructor-callback-or-unresolved |
-| `bounded_ledger_detail` | `serde_json::to_vec(&sanitized).expect` | [530](../../src/turn_terminal.rs#L530) | receiver-type-required |
-| `bounded_ledger_detail` | `serde_json::to_vec` | [530](../../src/turn_terminal.rs#L530) | external-constructor-callback-or-unresolved |
-| `bounded_ledger_detail` | `SecretScanner::default().scan` | [532](../../src/turn_terminal.rs#L532) | receiver-type-required |
-| `bounded_ledger_detail` | `SecretScanner::default` | [532](../../src/turn_terminal.rs#L532) | external-constructor-callback-or-unresolved |
-| `bounded_ledger_detail` | `serde_json::to_value(value)             .ok()             .and_then(&#124;value&#124; value.as_str().map(str::to_owned))             .unwrap_or_else` | [534](../../src/turn_terminal.rs#L534) | receiver-type-required |
-| `bounded_ledger_detail` | `serde_json::to_value(value)             .ok()             .and_then` | [534](../../src/turn_terminal.rs#L534) | receiver-type-required |
-| `bounded_ledger_detail` | `serde_json::to_value(value)             .ok` | [534](../../src/turn_terminal.rs#L534) | receiver-type-required |
-| `bounded_ledger_detail` | `serde_json::to_value` | [534](../../src/turn_terminal.rs#L534) | external-constructor-callback-or-unresolved |
-| `bounded_ledger_detail` | `value.as_str().map` | [536](../../src/turn_terminal.rs#L536) | receiver-type-required |
-| `bounded_ledger_detail` | `value.as_str` | [536](../../src/turn_terminal.rs#L536) | receiver-type-required |
-| `bounded_ledger_detail` | `"diagnostic unavailable".to_owned` | [537](../../src/turn_terminal.rs#L537) | receiver-type-required |
-| `bounded_ledger_detail` | `"diagnostic withheld".to_owned` | [538](../../src/turn_terminal.rs#L538) | receiver-type-required |
-| `bounded_ledger_detail` | `sanitized.len().min` | [540](../../src/turn_terminal.rs#L540) | receiver-type-required |
-| `bounded_ledger_detail` | `sanitized.len` | [540](../../src/turn_terminal.rs#L540) | receiver-type-required |
-| `bounded_ledger_detail` | `sanitized.is_char_boundary` | [541](../../src/turn_terminal.rs#L541) | receiver-type-required |
-| `bounded_ledger_detail` | `sanitized[..end].to_owned` | [544](../../src/turn_terminal.rs#L544) | receiver-type-required |
-| `usage_object` | `value.as_object_mut().expect` | [554](../../src/turn_terminal.rs#L554) | receiver-type-required |
-| `usage_object` | `value.as_object_mut` | [554](../../src/turn_terminal.rs#L554) | receiver-type-required |
-| `usage_object` | `usage.input_tokens.as_ref` | [556](../../src/turn_terminal.rs#L556) | receiver-type-required |
-| `usage_object` | `usage.output_tokens.as_ref` | [557](../../src/turn_terminal.rs#L557) | receiver-type-required |
-| `usage_object` | `usage.cache_read.as_ref` | [558](../../src/turn_terminal.rs#L558) | receiver-type-required |
-| `usage_object` | `usage.cache_miss.as_ref` | [559](../../src/turn_terminal.rs#L559) | receiver-type-required |
-| `usage_object` | `usage.cache_write.as_ref` | [560](../../src/turn_terminal.rs#L560) | receiver-type-required |
-| `usage_object` | `usage.reasoning_tokens.as_ref` | [561](../../src/turn_terminal.rs#L561) | receiver-type-required |
-| `usage_object` | `object.insert` | [564](../../src/turn_terminal.rs#L564) | receiver-type-required |
-| `usage_object` | `field.to_owned` | [564](../../src/turn_terminal.rs#L564) | receiver-type-required |
-| `usage_object` | `Value::String` | [564](../../src/turn_terminal.rs#L564) | external-constructor-callback-or-unresolved |
-| `usage_object` | `figure.clone` | [564](../../src/turn_terminal.rs#L564) | receiver-type-required |
-| `record_input_transformations` | `sealed_fragments` | [580](../../src/turn_terminal.rs#L580) | [tekes-worker::turn_terminal::sealed_fragments](../../src/turn_terminal.rs#L591) |
-| `record_input_transformations` | `serde_json_canonicalizer::to_vec` | [580](../../src/turn_terminal.rs#L580) | external-constructor-callback-or-unresolved |
-| `record_input_transformations` | `make_event` | [581](../../src/turn_terminal.rs#L581) | external-constructor-callback-or-unresolved |
-| `record_input_transformations` | `ledger.append_contract` | [587](../../src/turn_terminal.rs#L587) | receiver-type-required |
-| `record_input_transformations` | `BarrierContext::default` | [587](../../src/turn_terminal.rs#L587) | external-constructor-callback-or-unresolved |
-| `record_input_transformations` | `Ok` | [588](../../src/turn_terminal.rs#L588) | external-constructor-callback-or-unresolved |
-| `sealed_fragments` | `std::str::from_utf8` | [595](../../src/turn_terminal.rs#L595) | external-constructor-callback-or-unresolved |
-| `sealed_fragments` | `serde_json_canonicalizer::to_vec` | [596](../../src/turn_terminal.rs#L596) | external-constructor-callback-or-unresolved |
-| `sealed_fragments` | `Value::String` | [596](../../src/turn_terminal.rs#L596), [598](../../src/turn_terminal.rs#L598) | external-constructor-callback-or-unresolved |
-| `sealed_fragments` | `text.to_owned` | [596](../../src/turn_terminal.rs#L596), [598](../../src/turn_terminal.rs#L598) | receiver-type-required |
-| `sealed_fragments` | `encoded.len` | [597](../../src/turn_terminal.rs#L597) | receiver-type-required |
-| `sealed_fragments` | `Ok` | [598](../../src/turn_terminal.rs#L598), [602](../../src/turn_terminal.rs#L602) | external-constructor-callback-or-unresolved |
-| `sealed_fragments` | `ledger.path().parent().ok_or` | [600](../../src/turn_terminal.rs#L600) | receiver-type-required |
-| `sealed_fragments` | `ledger.path().parent` | [600](../../src/turn_terminal.rs#L600) | receiver-type-required |
-| `sealed_fragments` | `ledger.path` | [600](../../src/turn_terminal.rs#L600) | receiver-type-required |
-| `sealed_fragments` | `store::AssetStore::new(folder.join("assets"))?.publish` | [601](../../src/turn_terminal.rs#L601) | receiver-type-required |
-| `sealed_fragments` | `store::AssetStore::new` | [601](../../src/turn_terminal.rs#L601) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
-| `sealed_fragments` | `folder.join` | [601](../../src/turn_terminal.rs#L601) | receiver-type-required |
-| `spill_json` | `serde_json_canonicalizer::to_vec` | [609](../../src/turn_terminal.rs#L609) | external-constructor-callback-or-unresolved |
-| `spill_json` | `bytes.len` | [610](../../src/turn_terminal.rs#L610) | receiver-type-required |
-| `spill_json` | `Ok` | [611](../../src/turn_terminal.rs#L611), [615](../../src/turn_terminal.rs#L615) | external-constructor-callback-or-unresolved |
-| `spill_json` | `value.clone` | [611](../../src/turn_terminal.rs#L611) | receiver-type-required |
-| `spill_json` | `ledger.path().parent().ok_or` | [613](../../src/turn_terminal.rs#L613) | receiver-type-required |
-| `spill_json` | `ledger.path().parent` | [613](../../src/turn_terminal.rs#L613) | receiver-type-required |
-| `spill_json` | `ledger.path` | [613](../../src/turn_terminal.rs#L613) | receiver-type-required |
-| `spill_json` | `AssetStore::new(folder.join("assets"))?.publish` | [614](../../src/turn_terminal.rs#L614) | receiver-type-required |
-| `spill_json` | `AssetStore::new` | [614](../../src/turn_terminal.rs#L614) | external-constructor-callback-or-unresolved |
-| `spill_json` | `folder.join` | [614](../../src/turn_terminal.rs#L614) | receiver-type-required |
-| `append_settle` | `value.as_object_mut().expect("settle object").insert` | [630](../../src/turn_terminal.rs#L630) | receiver-type-required |
-| `append_settle` | `value.as_object_mut().expect` | [630](../../src/turn_terminal.rs#L630) | receiver-type-required |
-| `append_settle` | `value.as_object_mut` | [630](../../src/turn_terminal.rs#L630) | receiver-type-required |
-| `append_settle` | `if outcome == "error" {                 "classification"             } else {                 "reason"             }             .to_owned` | [631](../../src/turn_terminal.rs#L631) | receiver-type-required |
-| `append_settle` | `Value::String` | [637](../../src/turn_terminal.rs#L637) | external-constructor-callback-or-unresolved |
-| `append_settle` | `reason.to_owned` | [637](../../src/turn_terminal.rs#L637) | receiver-type-required |
-| `append_settle` | `ledger.append_contract` | [640](../../src/turn_terminal.rs#L640) | receiver-type-required |
-| `append_settle` | `make_event` | [640](../../src/turn_terminal.rs#L640) | external-constructor-callback-or-unresolved |
-| `append_settle` | `BarrierContext::default` | [640](../../src/turn_terminal.rs#L640) | external-constructor-callback-or-unresolved |
-| `append_settle` | `Ok` | [641](../../src/turn_terminal.rs#L641) | external-constructor-callback-or-unresolved |
+| `append_provider_failure` | `"supervisor_lost".to_owned` | [349](../../src/turn_terminal.rs#L349) | receiver-type-required |
+| `append_provider_failure` | `cancellation.stop_requested` | [354](../../src/turn_terminal.rs#L354) | receiver-type-required |
+| `append_provider_failure` | `"user_stop".to_owned` | [356](../../src/turn_terminal.rs#L356) | receiver-type-required |
+| `append_provider_failure` | `"cancelled".to_owned` | [361](../../src/turn_terminal.rs#L361) | receiver-type-required |
+| `append_provider_failure` | `bounded_ledger_detail` | [363](../../src/turn_terminal.rs#L363) | [tekes-worker::turn_terminal::bounded_ledger_detail](../../src/turn_terminal.rs#L531) |
+| `append_provider_failure` | `partial_carrier_for_eager_calls` | [373](../../src/turn_terminal.rs#L373) | [tekes-worker::turn_terminal::partial_carrier_for_eager_calls](../../src/turn_terminal.rs#L408) |
+| `append_provider_failure` | `error             .as_object_mut()             .expect("error object")             .insert` | [375](../../src/turn_terminal.rs#L375) | receiver-type-required |
+| `append_provider_failure` | `error             .as_object_mut()             .expect` | [375](../../src/turn_terminal.rs#L375) | receiver-type-required |
+| `append_provider_failure` | `error             .as_object_mut` | [375](../../src/turn_terminal.rs#L375) | receiver-type-required |
+| `append_provider_failure` | `"sealed".to_owned` | [378](../../src/turn_terminal.rs#L378) | receiver-type-required |
+| `append_provider_failure` | `make_event` | [380](../../src/turn_terminal.rs#L380) | external-constructor-callback-or-unresolved |
+| `append_provider_failure` | `event.seq` | [381](../../src/turn_terminal.rs#L381) | receiver-type-required |
+| `append_provider_failure` | `ledger.append_contract` | [382](../../src/turn_terminal.rs#L382) | receiver-type-required |
+| `append_provider_failure` | `BarrierContext::default` | [382](../../src/turn_terminal.rs#L382) | external-constructor-callback-or-unresolved |
+| `append_provider_failure` | `Ok` | [383](../../src/turn_terminal.rs#L383) | external-constructor-callback-or-unresolved |
+| `append_provider_failure` | `retry.then_some` | [387](../../src/turn_terminal.rs#L387) | receiver-type-required |
+| `append_provider_failure` | `Vec::new` | [396](../../src/turn_terminal.rs#L396) | external-constructor-callback-or-unresolved |
+| `partial_carrier_for_eager_calls` | `eager.calls.is_empty` | [414](../../src/turn_terminal.rs#L414) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `Ok` | [415](../../src/turn_terminal.rs#L415), [418](../../src/turn_terminal.rs#L418), [435](../../src/turn_terminal.rs#L435), [439](../../src/turn_terminal.rs#L439) | external-constructor-callback-or-unresolved |
+| `partial_carrier_for_eager_calls` | `partial.as_array` | [417](../../src/turn_terminal.rs#L417) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `items         .iter()         .filter_map(&#124;item&#124; {             match item.get("type").and_then(Value::as_str)? {                 "tool_use" => item.get("id"),                 _ => item.get("call_id"),             }             .and_then(Value::as_str)         })         .collect::<BTreeSet<_>>` | [420](../../src/turn_terminal.rs#L420) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `items         .iter()         .filter_map` | [420](../../src/turn_terminal.rs#L420) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `items         .iter` | [420](../../src/turn_terminal.rs#L420) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `match item.get("type").and_then(Value::as_str)? {                 "tool_use" => item.get("id"),                 _ => item.get("call_id"),             }             .and_then` | [423](../../src/turn_terminal.rs#L423) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `item.get("type").and_then` | [423](../../src/turn_terminal.rs#L423) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `item.get` | [423](../../src/turn_terminal.rs#L423), [424](../../src/turn_terminal.rs#L424), [425](../../src/turn_terminal.rs#L425) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `eager.calls.iter().all` | [430](../../src/turn_terminal.rs#L430) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `eager.calls.iter` | [430](../../src/turn_terminal.rs#L430) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `eager.wire_ids.get(&call.call_id).unwrap_or` | [431](../../src/turn_terminal.rs#L431) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `eager.wire_ids.get` | [431](../../src/turn_terminal.rs#L431) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `sealed_calls.contains` | [432](../../src/turn_terminal.rs#L432) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `wire_id.as_str` | [432](../../src/turn_terminal.rs#L432) | receiver-type-required |
+| `partial_carrier_for_eager_calls` | `serde_json_canonicalizer::to_vec` | [437](../../src/turn_terminal.rs#L437) | external-constructor-callback-or-unresolved |
+| `partial_carrier_for_eager_calls` | `sealed_fragments` | [438](../../src/turn_terminal.rs#L438) | [tekes-worker::turn_terminal::sealed_fragments](../../src/turn_terminal.rs#L595) |
+| `partial_carrier_for_eager_calls` | `Some` | [439](../../src/turn_terminal.rs#L439) | external-constructor-callback-or-unresolved |
+| `wait_provider_admission` | `PROVIDER_RETRIES.saturating_sub` | [472](../../src/turn_terminal.rs#L472) | receiver-type-required |
+| `wait_provider_admission` | `Duration::from_secs` | [473](../../src/turn_terminal.rs#L473) | external-constructor-callback-or-unresolved |
+| `wait_provider_admission` | `u32::from` | [473](../../src/turn_terminal.rs#L473) | external-constructor-callback-or-unresolved |
+| `wait_provider_admission` | `exhausted.min` | [473](../../src/turn_terminal.rs#L473) | receiver-type-required |
+| `wait_provider_admission` | `retry_after_seconds         .map_or(backoff, Duration::from_secs)         .clamp` | [474](../../src/turn_terminal.rs#L474) | receiver-type-required |
+| `wait_provider_admission` | `retry_after_seconds         .map_or` | [474](../../src/turn_terminal.rs#L474) | receiver-type-required |
+| `wait_provider_admission` | `rfc3339_after` | [477](../../src/turn_terminal.rs#L477) | external-constructor-callback-or-unresolved |
+| `wait_provider_admission` | `make_event` | [478](../../src/turn_terminal.rs#L478) | external-constructor-callback-or-unresolved |
+| `wait_provider_admission` | `ledger.append_contract` | [488](../../src/turn_terminal.rs#L488) | receiver-type-required |
+| `wait_provider_admission` | `BarrierContext::default` | [488](../../src/turn_terminal.rs#L488) | external-constructor-callback-or-unresolved |
+| `wait_provider_admission` | `Instant::now` | [489](../../src/turn_terminal.rs#L489), [490](../../src/turn_terminal.rs#L490), [494](../../src/turn_terminal.rs#L494) | external-constructor-callback-or-unresolved |
+| `wait_provider_admission` | `cancellation.stop_requested` | [491](../../src/turn_terminal.rs#L491) | receiver-type-required |
+| `wait_provider_admission` | `cancellation.supervisor_lost` | [491](../../src/turn_terminal.rs#L491) | receiver-type-required |
+| `wait_provider_admission` | `std::thread::sleep` | [494](../../src/turn_terminal.rs#L494) | external-constructor-callback-or-unresolved |
+| `wait_provider_admission` | `(deadline - Instant::now()).min` | [494](../../src/turn_terminal.rs#L494) | receiver-type-required |
+| `wait_provider_admission` | `Duration::from_millis` | [494](../../src/turn_terminal.rs#L494) | external-constructor-callback-or-unresolved |
+| `wait_provider_admission` | `Ok` | [496](../../src/turn_terminal.rs#L496) | external-constructor-callback-or-unresolved |
+| `settle_internal_worker_failure` | `ledger.projection` | [504](../../src/turn_terminal.rs#L504) | receiver-type-required |
+| `settle_internal_worker_failure` | `Err` | [505](../../src/turn_terminal.rs#L505), [511](../../src/turn_terminal.rs#L511), [514](../../src/turn_terminal.rs#L514) | external-constructor-callback-or-unresolved |
+| `settle_internal_worker_failure` | `"worker ledger projection missing while reporting failure".into` | [505](../../src/turn_terminal.rs#L505) | receiver-type-required |
+| `settle_internal_worker_failure` | `unresolved_attempt(ledger)?.is_some` | [509](../../src/turn_terminal.rs#L509) | receiver-type-required |
+| `settle_internal_worker_failure` | `unresolved_attempt` | [509](../../src/turn_terminal.rs#L509) | external-constructor-callback-or-unresolved |
+| `settle_internal_worker_failure` | `error.to_string().into` | [511](../../src/turn_terminal.rs#L511), [514](../../src/turn_terminal.rs#L514) | receiver-type-required |
+| `settle_internal_worker_failure` | `error.to_string` | [511](../../src/turn_terminal.rs#L511), [514](../../src/turn_terminal.rs#L514) | receiver-type-required |
+| `settle_internal_worker_failure` | `make_event` | [516](../../src/turn_terminal.rs#L516) | external-constructor-callback-or-unresolved |
+| `settle_internal_worker_failure` | `ledger.append_contract` | [521](../../src/turn_terminal.rs#L521) | receiver-type-required |
+| `settle_internal_worker_failure` | `BarrierContext::default` | [521](../../src/turn_terminal.rs#L521) | external-constructor-callback-or-unresolved |
+| `settle_internal_worker_failure` | `append_settle` | [522](../../src/turn_terminal.rs#L522) | [tekes-worker::turn_terminal::append_settle](../../src/turn_terminal.rs#L622) |
+| `settle_internal_worker_failure` | `options.event_timestamp` | [524](../../src/turn_terminal.rs#L524) | receiver-type-required |
+| `settle_internal_worker_failure` | `Some` | [527](../../src/turn_terminal.rs#L527) | external-constructor-callback-or-unresolved |
+| `bounded_ledger_detail` | `value.replace` | [532](../../src/turn_terminal.rs#L532) | receiver-type-required |
+| `bounded_ledger_detail` | `IJsonValue::parse(         &serde_json::to_vec(&sanitized).expect("diagnostic string is JSON serializable"),     )     .map` | [533](../../src/turn_terminal.rs#L533) | receiver-type-required |
+| `bounded_ledger_detail` | `IJsonValue::parse` | [533](../../src/turn_terminal.rs#L533) | external-constructor-callback-or-unresolved |
+| `bounded_ledger_detail` | `serde_json::to_vec(&sanitized).expect` | [534](../../src/turn_terminal.rs#L534) | receiver-type-required |
+| `bounded_ledger_detail` | `serde_json::to_vec` | [534](../../src/turn_terminal.rs#L534) | external-constructor-callback-or-unresolved |
+| `bounded_ledger_detail` | `SecretScanner::default().scan` | [536](../../src/turn_terminal.rs#L536) | receiver-type-required |
+| `bounded_ledger_detail` | `SecretScanner::default` | [536](../../src/turn_terminal.rs#L536) | external-constructor-callback-or-unresolved |
+| `bounded_ledger_detail` | `serde_json::to_value(value)             .ok()             .and_then(&#124;value&#124; value.as_str().map(str::to_owned))             .unwrap_or_else` | [538](../../src/turn_terminal.rs#L538) | receiver-type-required |
+| `bounded_ledger_detail` | `serde_json::to_value(value)             .ok()             .and_then` | [538](../../src/turn_terminal.rs#L538) | receiver-type-required |
+| `bounded_ledger_detail` | `serde_json::to_value(value)             .ok` | [538](../../src/turn_terminal.rs#L538) | receiver-type-required |
+| `bounded_ledger_detail` | `serde_json::to_value` | [538](../../src/turn_terminal.rs#L538) | external-constructor-callback-or-unresolved |
+| `bounded_ledger_detail` | `value.as_str().map` | [540](../../src/turn_terminal.rs#L540) | receiver-type-required |
+| `bounded_ledger_detail` | `value.as_str` | [540](../../src/turn_terminal.rs#L540) | receiver-type-required |
+| `bounded_ledger_detail` | `"diagnostic unavailable".to_owned` | [541](../../src/turn_terminal.rs#L541) | receiver-type-required |
+| `bounded_ledger_detail` | `"diagnostic withheld".to_owned` | [542](../../src/turn_terminal.rs#L542) | receiver-type-required |
+| `bounded_ledger_detail` | `sanitized.len().min` | [544](../../src/turn_terminal.rs#L544) | receiver-type-required |
+| `bounded_ledger_detail` | `sanitized.len` | [544](../../src/turn_terminal.rs#L544) | receiver-type-required |
+| `bounded_ledger_detail` | `sanitized.is_char_boundary` | [545](../../src/turn_terminal.rs#L545) | receiver-type-required |
+| `bounded_ledger_detail` | `sanitized[..end].to_owned` | [548](../../src/turn_terminal.rs#L548) | receiver-type-required |
+| `usage_object` | `value.as_object_mut().expect` | [558](../../src/turn_terminal.rs#L558) | receiver-type-required |
+| `usage_object` | `value.as_object_mut` | [558](../../src/turn_terminal.rs#L558) | receiver-type-required |
+| `usage_object` | `usage.input_tokens.as_ref` | [560](../../src/turn_terminal.rs#L560) | receiver-type-required |
+| `usage_object` | `usage.output_tokens.as_ref` | [561](../../src/turn_terminal.rs#L561) | receiver-type-required |
+| `usage_object` | `usage.cache_read.as_ref` | [562](../../src/turn_terminal.rs#L562) | receiver-type-required |
+| `usage_object` | `usage.cache_miss.as_ref` | [563](../../src/turn_terminal.rs#L563) | receiver-type-required |
+| `usage_object` | `usage.cache_write.as_ref` | [564](../../src/turn_terminal.rs#L564) | receiver-type-required |
+| `usage_object` | `usage.reasoning_tokens.as_ref` | [565](../../src/turn_terminal.rs#L565) | receiver-type-required |
+| `usage_object` | `object.insert` | [568](../../src/turn_terminal.rs#L568) | receiver-type-required |
+| `usage_object` | `field.to_owned` | [568](../../src/turn_terminal.rs#L568) | receiver-type-required |
+| `usage_object` | `Value::String` | [568](../../src/turn_terminal.rs#L568) | external-constructor-callback-or-unresolved |
+| `usage_object` | `figure.clone` | [568](../../src/turn_terminal.rs#L568) | receiver-type-required |
+| `record_input_transformations` | `sealed_fragments` | [584](../../src/turn_terminal.rs#L584) | [tekes-worker::turn_terminal::sealed_fragments](../../src/turn_terminal.rs#L595) |
+| `record_input_transformations` | `serde_json_canonicalizer::to_vec` | [584](../../src/turn_terminal.rs#L584) | external-constructor-callback-or-unresolved |
+| `record_input_transformations` | `make_event` | [585](../../src/turn_terminal.rs#L585) | external-constructor-callback-or-unresolved |
+| `record_input_transformations` | `ledger.append_contract` | [591](../../src/turn_terminal.rs#L591) | receiver-type-required |
+| `record_input_transformations` | `BarrierContext::default` | [591](../../src/turn_terminal.rs#L591) | external-constructor-callback-or-unresolved |
+| `record_input_transformations` | `Ok` | [592](../../src/turn_terminal.rs#L592) | external-constructor-callback-or-unresolved |
+| `sealed_fragments` | `std::str::from_utf8` | [599](../../src/turn_terminal.rs#L599) | external-constructor-callback-or-unresolved |
+| `sealed_fragments` | `serde_json_canonicalizer::to_vec` | [600](../../src/turn_terminal.rs#L600) | external-constructor-callback-or-unresolved |
+| `sealed_fragments` | `Value::String` | [600](../../src/turn_terminal.rs#L600), [602](../../src/turn_terminal.rs#L602) | external-constructor-callback-or-unresolved |
+| `sealed_fragments` | `text.to_owned` | [600](../../src/turn_terminal.rs#L600), [602](../../src/turn_terminal.rs#L602) | receiver-type-required |
+| `sealed_fragments` | `encoded.len` | [601](../../src/turn_terminal.rs#L601) | receiver-type-required |
+| `sealed_fragments` | `Ok` | [602](../../src/turn_terminal.rs#L602), [606](../../src/turn_terminal.rs#L606) | external-constructor-callback-or-unresolved |
+| `sealed_fragments` | `ledger.path().parent().ok_or` | [604](../../src/turn_terminal.rs#L604) | receiver-type-required |
+| `sealed_fragments` | `ledger.path().parent` | [604](../../src/turn_terminal.rs#L604) | receiver-type-required |
+| `sealed_fragments` | `ledger.path` | [604](../../src/turn_terminal.rs#L604) | receiver-type-required |
+| `sealed_fragments` | `store::AssetStore::new(folder.join("assets"))?.publish` | [605](../../src/turn_terminal.rs#L605) | receiver-type-required |
+| `sealed_fragments` | `store::AssetStore::new` | [605](../../src/turn_terminal.rs#L605) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
+| `sealed_fragments` | `folder.join` | [605](../../src/turn_terminal.rs#L605) | receiver-type-required |
+| `spill_json` | `serde_json_canonicalizer::to_vec` | [613](../../src/turn_terminal.rs#L613) | external-constructor-callback-or-unresolved |
+| `spill_json` | `bytes.len` | [614](../../src/turn_terminal.rs#L614) | receiver-type-required |
+| `spill_json` | `Ok` | [615](../../src/turn_terminal.rs#L615), [619](../../src/turn_terminal.rs#L619) | external-constructor-callback-or-unresolved |
+| `spill_json` | `value.clone` | [615](../../src/turn_terminal.rs#L615) | receiver-type-required |
+| `spill_json` | `ledger.path().parent().ok_or` | [617](../../src/turn_terminal.rs#L617) | receiver-type-required |
+| `spill_json` | `ledger.path().parent` | [617](../../src/turn_terminal.rs#L617) | receiver-type-required |
+| `spill_json` | `ledger.path` | [617](../../src/turn_terminal.rs#L617) | receiver-type-required |
+| `spill_json` | `AssetStore::new(folder.join("assets"))?.publish` | [618](../../src/turn_terminal.rs#L618) | receiver-type-required |
+| `spill_json` | `AssetStore::new` | [618](../../src/turn_terminal.rs#L618) | external-constructor-callback-or-unresolved |
+| `spill_json` | `folder.join` | [618](../../src/turn_terminal.rs#L618) | receiver-type-required |
+| `append_settle` | `value.as_object_mut().expect("settle object").insert` | [634](../../src/turn_terminal.rs#L634) | receiver-type-required |
+| `append_settle` | `value.as_object_mut().expect` | [634](../../src/turn_terminal.rs#L634) | receiver-type-required |
+| `append_settle` | `value.as_object_mut` | [634](../../src/turn_terminal.rs#L634) | receiver-type-required |
+| `append_settle` | `if outcome == "error" {                 "classification"             } else {                 "reason"             }             .to_owned` | [635](../../src/turn_terminal.rs#L635) | receiver-type-required |
+| `append_settle` | `Value::String` | [641](../../src/turn_terminal.rs#L641) | external-constructor-callback-or-unresolved |
+| `append_settle` | `reason.to_owned` | [641](../../src/turn_terminal.rs#L641) | receiver-type-required |
+| `append_settle` | `ledger.append_contract` | [644](../../src/turn_terminal.rs#L644) | receiver-type-required |
+| `append_settle` | `make_event` | [644](../../src/turn_terminal.rs#L644) | external-constructor-callback-or-unresolved |
+| `append_settle` | `BarrierContext::default` | [644](../../src/turn_terminal.rs#L644) | external-constructor-callback-or-unresolved |
+| `append_settle` | `Ok` | [645](../../src/turn_terminal.rs#L645) | external-constructor-callback-or-unresolved |

@@ -2101,7 +2101,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `question_denial_projects_as_cancelled_and_answer_as_answered` | `serde_json_canonicalizer::to_vec` | [3599](../../src/endpoint_carrier.rs#L3599) | external-constructor-callback-or-unresolved |
 | `question_denial_projects_as_cancelled_and_answer_as_answered` | `bytes.push` | [3600](../../src/endpoint_carrier.rs#L3600) | receiver-type-required |
 | `question_denial_projects_as_cancelled_and_answer_as_answered` | `schema::validate_ledger(&bytes, schema::READER_VERSION).expect` | [3602](../../src/endpoint_carrier.rs#L3602) | receiver-type-required |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `schema::validate_ledger` | [3602](../../src/endpoint_carrier.rs#L3602) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `schema::validate_ledger` | [3602](../../src/endpoint_carrier.rs#L3602) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1101) |
 | `question_denial_projects_as_cancelled_and_answer_as_answered` | `ledger` | [3604](../../src/endpoint_carrier.rs#L3604), [3613](../../src/endpoint_carrier.rs#L3613) | external-constructor-callback-or-unresolved |
 | `question_denial_projects_as_cancelled_and_answer_as_answered` | `line_requests(thread, None, &cancelled).expect` | [3607](../../src/endpoint_carrier.rs#L3607) | receiver-type-required |
 | `question_denial_projects_as_cancelled_and_answer_as_answered` | `line_requests` | [3607](../../src/endpoint_carrier.rs#L3607), [3616](../../src/endpoint_carrier.rs#L3616) | external-constructor-callback-or-unresolved |

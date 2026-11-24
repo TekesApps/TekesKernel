@@ -4670,6 +4670,7 @@ fn overflow_profile_with_trigger(
             revision: 1,
             default_provider: Some("fixture".into()),
             default_model: Some("gpt-5".into()),
+            automatic_title: None,
             ..SettingsConfig::default()
         },
         session_settings: None,
@@ -9975,4 +9976,371 @@ fn assert_child_seed_is(ledger: &LockedLedger, spawn: &DurableChildSpawn, seed: 
             .unwrap(),
         expected
     );
+}
+
+#[test]
+fn mid_stream_supervisor_eof_and_broken_pipe_records_single_supervisor_lost_and_recovers_without_retry()
+ {
+    use std::io::Read as _;
+    use std::net::TcpListener;
+    use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+
+    let (directory, mut ledger) = context_ledger("openai_responses_v1", false);
+    let profile = configured_test_provider_profile(directory.path());
+    let options = test_options(&ledger);
+
+    let listener = TcpListener::bind("127.0.0.1:0").expect("bind loopback");
+    let addr = listener.local_addr().expect("addr");
+    let request_count = Arc::new(AtomicUsize::new(0));
+    let finish_server = Arc::new(AtomicBool::new(false));
+    let server_requests = Arc::clone(&request_count);
+    let server_done = Arc::clone(&finish_server);
+    let server = std::thread::spawn(move || {
+        while !server_done.load(Ordering::Acquire) {
+            let Ok((mut stream, _)) = listener.accept() else {
+                break;
+            };
+            server_requests.fetch_add(1, Ordering::AcqRel);
+            let mut buf = [0_u8; 8192];
+            let _ = stream.read(&mut buf);
+            let headers = concat!(
+                "HTTP/1.1 200 OK\r\n",
+                "Content-Type: text/event-stream\r\n",
+                "Cache-Control: no-cache\r\n",
+                "Connection: close\r\n",
+                "\r\n",
+                "event: response.created\n",
+                "data: {\"type\":\"response.created\",\"response\":{\"id\":\"resp_168\"}}\n\n",
+                "event: response.output_text.delta\n",
+                "data: {\"type\":\"response.output_text.delta\",\"item_id\":\"msg_1\",\"output_index\":0,\"content_index\":0,\"delta\":\"partial-before-crash\"}\n\n",
+            );
+            let _ = stream.write_all(headers.as_bytes());
+            let _ = stream.flush();
+            let hold_until = Instant::now() + Duration::from_secs(3);
+            while !server_done.load(Ordering::Acquire) && Instant::now() < hold_until {
+                std::thread::sleep(Duration::from_millis(10));
+            }
+        }
+    });
+
+    struct PipeLossWriter {
+        lines: std::sync::Mutex<Vec<String>>,
+        in_tx: Option<std::sync::mpsc::SyncSender<String>>,
+        broke: bool,
+    }
+
+    impl Write for PipeLossWriter {
+        fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+            if self.broke {
+                return Err(io::Error::new(
+                    io::ErrorKind::BrokenPipe,
+                    "supervisor stdout pipe closed",
+                ));
+            }
+            let text = String::from_utf8_lossy(buf).into_owned();
+            if let Ok(parsed) = serde_json::from_str::<Value>(&text) {
+                if let Some(attempt) = parsed
+                    .pointer("/lease_request/attempt")
+                    .and_then(Value::as_str)
+                {
+                    if let Some(tx) = &self.in_tx {
+                        let _ = tx.send(
+                            serde_json::json!({"lease":{"attempt":attempt,"granted":true}})
+                                .to_string(),
+                        );
+                    }
+                } else if parsed.get("frame").is_some() {
+                    // Simulate race: stdout pipe breaks right when supervisor vanishes,
+                    // even before the control reader finishes seeing EOF.
+                    self.in_tx.take();
+                    self.broke = true;
+                    return Err(io::Error::new(
+                        io::ErrorKind::BrokenPipe,
+                        "supervisor stdout pipe closed on frame",
+                    ));
+                }
+            }
+            self.lines.lock().unwrap().push(text);
+            Ok(buf.len())
+        }
+
+        fn flush(&mut self) -> io::Result<()> {
+            if self.broke {
+                Err(io::Error::new(io::ErrorKind::BrokenPipe, "broken flush"))
+            } else {
+                Ok(())
+            }
+        }
+    }
+
+    let (raw_tx, raw_rx) = std::sync::mpsc::sync_channel::<String>(4);
+    let cancellation = RuntimeCancellation::default();
+    let (ctrl_tx, ctrl_rx) = sync_channel(4);
+    let reader_cancel = cancellation.clone();
+    let reader_thread = std::thread::spawn(move || {
+        forward_control_lines(raw_rx.into_iter().map(Ok), ctrl_tx, reader_cancel);
+    });
+    let mut replies = ControlLines {
+        receiver: ctrl_rx,
+        cancellation: cancellation.clone(),
+    };
+    let mut writer = PipeLossWriter {
+        lines: std::sync::Mutex::new(Vec::new()),
+        in_tx: Some(raw_tx),
+        broke: false,
+    };
+
+    set_provider_test_redirect(Some(format!("http://{addr}")));
+    let result = run_provider_turn(
+        &mut ledger,
+        &options,
+        &profile,
+        &Selected { version: 2 },
+        &mut None,
+        &mut replies,
+        &mut writer,
+        &cancellation,
+    );
+    set_provider_test_redirect(None);
+    finish_server.store(true, Ordering::Release);
+    let _ = std::net::TcpStream::connect(addr);
+    let _ = server.join();
+    let _ = reader_thread.join();
+
+    let err = result.expect_err("mid-stream supervisor loss must return ProtocolFailure");
+    assert!(
+        is_protocol_failure(err.as_ref()),
+        "must return ProtocolFailure so main loop never calls settle_internal_worker_failure: {err}"
+    );
+    assert!(cancellation.supervisor_lost());
+
+    let emitted = writer.lines.lock().unwrap();
+    assert!(
+        !emitted.iter().any(|line| line.contains("attempt_settled")),
+        "attempt_settled must not be emitted on dead supervisor pipe: {emitted:?}"
+    );
+    drop(emitted);
+
+    let errors: Vec<_> = ledger
+        .projection()
+        .expect("projection")
+        .events
+        .iter()
+        .filter(|ev| *ev.kind() == EventKind::Error)
+        .map(|ev| serde_json::to_value(ev.raw()).expect("json"))
+        .collect();
+    assert_eq!(
+        errors.len(),
+        1,
+        "must write single supervisor_lost error without second Broken pipe internal error: {errors:?}"
+    );
+    assert_eq!(errors[0]["classification"], "transport");
+    assert_eq!(errors[0]["detail"], "supervisor_lost");
+    assert_eq!(errors[0]["recoverable"], false);
+
+    assert!(
+        ledger
+            .projection()
+            .unwrap()
+            .events
+            .iter()
+            .all(|ev| !(ev.turn() == Some(2) && *ev.kind() == EventKind::Output)),
+        "partial delta before supervisor loss must not promote to output"
+    );
+
+    reconcile_provider_attempt(&mut ledger, &options, &mut Vec::new()).expect("recover reconcile");
+    let projection = ledger.projection().expect("reconciled");
+    assert_eq!(request_count.load(Ordering::Acquire), 1);
+    let settles: Vec<_> = projection
+        .events
+        .iter()
+        .filter(|ev| ev.turn() == Some(2) && *ev.kind() == EventKind::Settle)
+        .map(|ev| serde_json::to_value(ev.raw()).expect("settle"))
+        .collect();
+    assert_eq!(settles.len(), 1);
+    assert_eq!(settles[0]["outcome"], "interrupted");
+    assert_eq!(settles[0]["reason"], "recovered");
+}
+
+#[test]
+fn handle_delivery_rejects_steer_when_window_closed_and_deduplicates_accepted() {
+    use worker_control::{Input, SupervisorMessage};
+
+    let selected = Selected { version: 2 };
+    let origin = |key: &str| schema::OriginTuple {
+        principal: "test".to_owned(),
+        client: "test".to_owned(),
+        target: "018f0000-0000-7000-8000-000000000003".to_owned(),
+        op: "session.prompt".to_owned(),
+        key: key.to_owned(),
+    };
+    let make_input = |key: &str| {
+        SupervisorMessage::Input(Input {
+            delivery: key.to_owned(),
+            origin: origin(key),
+            content: vec![schema::Block::Text {
+                text: "steer".to_owned(),
+            }],
+            submission: None,
+            steer: Some(true),
+            assets: None,
+        })
+    };
+
+    let receipt_of = |out: &[u8]| -> Value {
+        let first = std::str::from_utf8(out)
+            .expect("utf8")
+            .lines()
+            .next()
+            .expect("receipt line");
+        serde_json::from_str(first).expect("receipt json")
+    };
+
+    // 1. Unstarted idle ledger (only genesis)
+    {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("main.jsonl");
+        let genesis = "{\"config\":{\"digest\":\"cfg\"},\"format\":1,\"kind\":\"genesis\",\"min_reader\":1,\"min_writer\":1,\"origin_key\":\"create\",\"origin_tuple\":{\"client\":\"cli\",\"key\":\"create\",\"op\":\"create\",\"principal\":\"p\",\"target\":\"018f0000-0000-7000-8000-000000000003\"},\"resume\":\"never\",\"seq\":1,\"thread\":\"018f0000-0000-7000-8000-000000000003\",\"ts\":\"2026-08-27T09:00:00.000Z\",\"v\":1,\"workspace\":\"ws\"}\n";
+        fs::write(&path, genesis).unwrap();
+        let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
+        let options = test_options(&ledger);
+        let mut out = Vec::new();
+        handle_delivery(
+            &mut ledger,
+            &options,
+            &selected,
+            &mut out,
+            make_input("s-idle"),
+        )
+        .unwrap();
+        let row = receipt_of(&out);
+        assert_eq!(row["receipt"]["rejected"], "steer-unavailable");
+        assert_eq!(row["receipt"]["seq"], 0);
+        assert_eq!(ledger.projection().unwrap().events.len(), 1);
+    }
+
+    // 2. Settled turn ledger
+    {
+        let (_dir, mut ledger) = context_ledger("openai_responses_v1", false);
+        let options = test_options(&ledger);
+        let settle = make_event(json!({
+            "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"settle",
+            "ts":"2026-08-27T09:00:02.000Z","outcome":"completed"
+        }))
+        .unwrap();
+        ledger
+            .append_contract(settle, BarrierContext::default())
+            .unwrap();
+        let before = ledger.projection().unwrap().events.len();
+        let mut out = Vec::new();
+        handle_delivery(
+            &mut ledger,
+            &options,
+            &selected,
+            &mut out,
+            make_input("s-settled"),
+        )
+        .unwrap();
+        let row = receipt_of(&out);
+        assert_eq!(row["receipt"]["rejected"], "steer-unavailable");
+        assert_eq!(ledger.projection().unwrap().events.len(), before);
+    }
+
+    // 3. Stopped active ledger
+    {
+        let (_dir, mut ledger) = context_ledger("openai_responses_v1", false);
+        let options = test_options(&ledger);
+        let stop = make_event(json!({
+            "v":1,"seq":12,"kind":"stop_requested","generation":1,
+            "origin_key":"stop1","origin_tuple":{"client":"cli","key":"stop1","op":"session.cancel","principal":"p","target":"t"},
+            "ts":"2026-08-27T09:00:02.000Z"
+        }))
+        .unwrap();
+        ledger
+            .append_contract(stop, BarrierContext::default())
+            .unwrap();
+        let before = ledger.projection().unwrap().events.len();
+        let mut out = Vec::new();
+        handle_delivery(
+            &mut ledger,
+            &options,
+            &selected,
+            &mut out,
+            make_input("s-stopped"),
+        )
+        .unwrap();
+        let row = receipt_of(&out);
+        assert_eq!(row["receipt"]["rejected"], "steer-unavailable");
+        assert_eq!(ledger.projection().unwrap().events.len(), before);
+    }
+
+    // 4. Open hold ledger
+    {
+        let (_dir, mut ledger) = context_ledger("openai_responses_v1", false);
+        let options = test_options(&ledger);
+        append_test_call(&mut ledger, "a2", "c1", "shell", json!({"command":"pwd"}));
+        let hold = make_event(json!({
+            "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"approval_request",
+            "call":"c1","scope":"answer","ts":"2026-08-27T09:00:02.000Z"
+        }))
+        .unwrap();
+        ledger
+            .append_contract(hold, BarrierContext::default())
+            .unwrap();
+        let before = ledger.projection().unwrap().events.len();
+        let mut out = Vec::new();
+        handle_delivery(
+            &mut ledger,
+            &options,
+            &selected,
+            &mut out,
+            make_input("s-held"),
+        )
+        .unwrap();
+        let row = receipt_of(&out);
+        assert_eq!(row["receipt"]["rejected"], "steer-unavailable");
+        assert_eq!(ledger.projection().unwrap().events.len(), before);
+    }
+
+    // 5. Open active turn accepts steer, and exact retry after settle deduplicates
+    {
+        let (_dir, mut ledger) = context_ledger("openai_responses_v1", false);
+        let options = test_options(&ledger);
+        let mut out = Vec::new();
+        handle_delivery(
+            &mut ledger,
+            &options,
+            &selected,
+            &mut out,
+            make_input("s-open"),
+        )
+        .unwrap();
+        let row = receipt_of(&out);
+        assert_eq!(row["receipt"]["seq"], 12);
+        assert_eq!(row["receipt"]["deduplicated"], false);
+        assert!(row["receipt"].get("rejected").is_none());
+
+        let settle = make_event(json!({
+            "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"settle",
+            "ts":"2026-08-27T09:00:02.000Z","outcome":"completed"
+        }))
+        .unwrap();
+        ledger
+            .append_contract(settle, BarrierContext::default())
+            .unwrap();
+
+        let mut retry_out = Vec::new();
+        handle_delivery(
+            &mut ledger,
+            &options,
+            &selected,
+            &mut retry_out,
+            make_input("s-open"),
+        )
+        .unwrap();
+        let retry_row = receipt_of(&retry_out);
+        assert_eq!(retry_row["receipt"]["seq"], 12);
+        assert_eq!(retry_row["receipt"]["deduplicated"], true);
+        assert!(retry_row["receipt"].get("rejected").is_none());
+    }
 }

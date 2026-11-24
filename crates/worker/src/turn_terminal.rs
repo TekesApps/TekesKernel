@@ -344,9 +344,13 @@ pub(crate) fn append_provider_failure(
             false,
             Some(("error", Some("provider_terminal"))),
         ),
-        ProviderFailure::Cancelled if cancellation.supervisor_lost() => {
-            ("transport", "supervisor_lost".to_owned(), true, false, None)
-        }
+        ProviderFailure::Cancelled if cancellation.supervisor_lost() => (
+            "transport",
+            "supervisor_lost".to_owned(),
+            false,
+            false,
+            None,
+        ),
         ProviderFailure::Cancelled if cancellation.stop_requested() => (
             "transport",
             "user_stop".to_owned(),

@@ -53,14 +53,14 @@ sequenceDiagram
         Note over W,S: validation may launch child, request repair, hold, or durably settle
     end
     W-->>P: appended / execution state
-    P->>E: Projector / durable carrier / v3 streams
+    P->>E: Projector / durable carrier / V4 streams
     E-->>T: journal / control / inventory frames
     T-->>C: /api/remote.mux stream frames
 ```
 
 Request preparation and lease admission precede attempt persistence; see the worker functions and provider-runtime spec for exact commit order.
 Stream forwarding and durable journal updates can interleave; the sequence diagram does not combine streamed output and durable results into one fact.
-V3 `journal-transient` does not advance the durable journal cursor; final authoritative events or a reconnect snapshot replace transient presentation.
+V4 `journal-transient` does not advance the durable journal cursor; final authoritative events or a reconnect snapshot replace transient presentation.
 
 ## Concrete call chains
 

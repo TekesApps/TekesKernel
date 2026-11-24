@@ -164,13 +164,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `"other".into` | [255](../../src/continuation.rs#L255) | receiver-type-required |
 | `encode_tool_continuation` | `request         .validate()         .map_err` | [271](../../src/continuation.rs#L271) | receiver-type-required |
 | `encode_tool_continuation` | `request         .validate` | [271](../../src/continuation.rs#L271) | receiver-type-required |
-| `encode_tool_continuation` | `crate::encode_line` | [274](../../src/continuation.rs#L274) | [worker-control::encode_line](../../src/lib.rs#L359) |
-| `decode_tool_continuation` | `crate::decode_named` | [280](../../src/continuation.rs#L280) | [worker-control::decode_named](../../src/lib.rs#L367) |
+| `encode_tool_continuation` | `crate::encode_line` | [274](../../src/continuation.rs#L274) | [worker-control::encode_line](../../src/lib.rs#L361) |
+| `decode_tool_continuation` | `crate::decode_named` | [280](../../src/continuation.rs#L280) | [worker-control::decode_named](../../src/lib.rs#L369) |
 | `decode_tool_continuation` | `request         .validate()         .map_err` | [281](../../src/continuation.rs#L281) | receiver-type-required |
 | `decode_tool_continuation` | `request         .validate` | [281](../../src/continuation.rs#L281) | receiver-type-required |
 | `decode_tool_continuation` | `Ok` | [284](../../src/continuation.rs#L284) | external-constructor-callback-or-unresolved |
-| `encode_tool_continuation_result` | `crate::encode_line` | [290](../../src/continuation.rs#L290) | [worker-control::encode_line](../../src/lib.rs#L359) |
-| `decode_tool_continuation_result` | `crate::decode_named` | [296](../../src/continuation.rs#L296) | [worker-control::decode_named](../../src/lib.rs#L367) |
+| `encode_tool_continuation_result` | `crate::encode_line` | [290](../../src/continuation.rs#L290) | [worker-control::encode_line](../../src/lib.rs#L361) |
+| `decode_tool_continuation_result` | `crate::decode_named` | [296](../../src/continuation.rs#L296) | [worker-control::decode_named](../../src/lib.rs#L369) |
 | `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `ToolControl::new(             "018f0000-0000-7000-8000-000000000003",             "018f0000-0000-7000-8000-000000000003",             1,             "call-1",             "mcp__test__task",             IJsonValue::parse_str("{}").unwrap(),         )         .unwrap` | [304](../../src/continuation.rs#L304) | receiver-type-required |
 | `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `ToolControl::new` | [304](../../src/continuation.rs#L304) | external-constructor-callback-or-unresolved |
 | `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `IJsonValue::parse_str("{}").unwrap` | [310](../../src/continuation.rs#L310) | receiver-type-required |

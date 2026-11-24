@@ -43,7 +43,7 @@ packages owning platform bindings explicitly opt into their declared exceptions.
 See the actual Cargo manifests rather than assuming every source has a crate-level
 `forbid` attribute. Async scheduling is never a durable ordering authority.
 
-The current public client protocol is [V3](../../spec/session-endpoint.md#routes-and-streams).
+The current public client protocol is [V4](../../spec/session-endpoint.md#routes-and-streams).
 The Slice mappings below preserve their original gate identity and V2 baseline;
 they are not proof that those old routes are still exposed.
 

@@ -99,6 +99,28 @@ pub struct Limits {
     pub max_provider_leases: Option<u64>,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum AutomaticTitleMode {
+    Local,
+    Model,
+}
+
+pub const DEFAULT_AUTOMATIC_TITLE_MAX_INPUT_CHARS: usize = 500;
+pub const MAX_AUTOMATIC_TITLE_MAX_INPUT_CHARS: u64 = 4_000;
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct AutomaticTitleSettings {
+    pub mode: AutomaticTitleMode,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provider: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub model: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_input_chars: Option<u64>,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SettingsConfig {
@@ -110,6 +132,8 @@ pub struct SettingsConfig {
     pub default_model: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<Limits>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub automatic_title: Option<AutomaticTitleSettings>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -131,6 +155,7 @@ impl Default for SettingsConfig {
             default_provider: None,
             default_model: None,
             limits: None,
+            automatic_title: None,
         }
     }
 }
@@ -982,6 +1007,40 @@ fn validate_settings(
             }
         }
     }
+    if let Some(automatic_title) = &value.automatic_title {
+        match automatic_title.mode {
+            AutomaticTitleMode::Local => {
+                if automatic_title.provider.is_some()
+                    || automatic_title.model.is_some()
+                    || automatic_title.max_input_chars.is_some()
+                {
+                    return invalid(
+                        path,
+                        "automatic_title local mode forbids provider, model, and max_input_chars",
+                    );
+                }
+            }
+            AutomaticTitleMode::Model => {
+                let Some(provider) = automatic_title.provider.as_deref() else {
+                    return invalid(path, "automatic_title model mode requires provider");
+                };
+                validate_id(provider, "automatic_title.provider", path)?;
+                let Some(model) = automatic_title.model.as_deref() else {
+                    return invalid(path, "automatic_title model mode requires model");
+                };
+                validate_id(model, "automatic_title.model", path)?;
+                if let Some(limit) = automatic_title.max_input_chars {
+                    validate_safe_integer(limit, "automatic_title.max_input_chars", path)?;
+                    if limit == 0 || limit > MAX_AUTOMATIC_TITLE_MAX_INPUT_CHARS {
+                        return invalid(
+                            path,
+                            "automatic_title.max_input_chars must be between 1 and 4000",
+                        );
+                    }
+                }
+            }
+        }
+    }
     Ok(())
 }
 
@@ -1317,5 +1376,93 @@ mod private_directory_tests {
         )
         .expect_err("symlink must fail closed");
         assert!(error.to_string().contains("traverses a symlink"));
+    }
+}
+
+#[cfg(test)]
+mod automatic_title_settings_tests {
+    use super::{
+        AutomaticTitleMode, AutomaticTitleSettings, MAX_AUTOMATIC_TITLE_MAX_INPUT_CHARS,
+        SettingsConfig,
+    };
+
+    #[test]
+    fn legacy_settings_without_automatic_title_decode_as_default_local_policy() {
+        let decoded =
+            SettingsConfig::decode(b"{\"format\":1,\"revision\":1}\n").expect("legacy settings");
+        assert_eq!(decoded.automatic_title, None);
+    }
+
+    #[test]
+    fn automatic_title_validation_enforces_mode_and_bounds() {
+        let local_ok = SettingsConfig {
+            revision: 1,
+            automatic_title: Some(AutomaticTitleSettings {
+                mode: AutomaticTitleMode::Local,
+                provider: None,
+                model: None,
+                max_input_chars: None,
+            }),
+            ..SettingsConfig::default()
+        };
+        assert!(local_ok.canonical_bytes().is_ok());
+
+        let local_with_provider = SettingsConfig {
+            revision: 1,
+            automatic_title: Some(AutomaticTitleSettings {
+                mode: AutomaticTitleMode::Local,
+                provider: Some("openai".into()),
+                model: None,
+                max_input_chars: None,
+            }),
+            ..SettingsConfig::default()
+        };
+        assert!(local_with_provider.canonical_bytes().is_err());
+
+        let model_ok = SettingsConfig {
+            revision: 1,
+            automatic_title: Some(AutomaticTitleSettings {
+                mode: AutomaticTitleMode::Model,
+                provider: Some("openai".into()),
+                model: Some("gpt-4.1".into()),
+                max_input_chars: Some(256),
+            }),
+            ..SettingsConfig::default()
+        };
+        assert!(model_ok.canonical_bytes().is_ok());
+
+        for bad in [
+            AutomaticTitleSettings {
+                mode: AutomaticTitleMode::Model,
+                provider: None,
+                model: Some("gpt-4.1".into()),
+                max_input_chars: None,
+            },
+            AutomaticTitleSettings {
+                mode: AutomaticTitleMode::Model,
+                provider: Some("openai".into()),
+                model: Some(String::new()),
+                max_input_chars: None,
+            },
+            AutomaticTitleSettings {
+                mode: AutomaticTitleMode::Model,
+                provider: Some("openai".into()),
+                model: Some("gpt-4.1".into()),
+                max_input_chars: Some(0),
+            },
+            AutomaticTitleSettings {
+                mode: AutomaticTitleMode::Model,
+                provider: Some("openai".into()),
+                model: Some("gpt-4.1".into()),
+                max_input_chars: Some(MAX_AUTOMATIC_TITLE_MAX_INPUT_CHARS + 1),
+            },
+        ] {
+            let invalid = SettingsConfig {
+                revision: 1,
+                automatic_title: Some(bad),
+                ..SettingsConfig::default()
+            };
+            assert!(invalid.canonical_bytes().is_err());
+        }
     }
 }
