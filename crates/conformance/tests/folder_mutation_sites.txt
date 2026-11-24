@@ -5,6 +5,7 @@ crates/endpoint/src/idempotency.rs|publish_prepared|create_dir_all|1|rpc
 crates/endpoint/src/idempotency.rs|publish_prepared|rename|1|rpc
 crates/endpoint/src/idempotency.rs|repair_all|remove_file|1|rpc
 crates/endpoint/src/idempotency.rs|repair_all|rename|1|rpc
+crates/endpoint/src/journal.rs|replace_verified|rename|1|journal
 crates/endpoint/src/journal.rs|retire_legacy_journal|remove_file|1|journal
 crates/endpoint/src/journal.rs|retire_outdated_journal|remove_file|2|journal
 crates/endpoint/src/session_operations.rs|open_sessions|create_dir_all|1|layout

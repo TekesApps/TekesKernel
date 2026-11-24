@@ -14,7 +14,9 @@ pub use config::{
     MAX_AUTOMATIC_TITLE_MAX_INPUT_CHARS, Model, Provider, ProvidersConfig, ResolvedExecution,
     RevisionVector, SessionSettings, SettingsConfig, WebSearch,
 };
-pub use execution::ExecutionConfig;
+pub use execution::{ExecutionConfig, NormalizedExecution};
+#[doc(hidden)]
+pub use execution::{execution_metrics, reset_execution_metrics};
 pub use instruction::{
     EffectiveInstructions, EffectivePolicy, InstructionKind, InstructionOrigin, InstructionPolicy,
     InstructionResolver, InstructionSettings, InstructionSnapshot, InstructionSource,

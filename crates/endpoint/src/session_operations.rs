@@ -583,17 +583,20 @@ impl SessionOperations {
                 existing_cwd: None,
             });
         }
-        let execution = self
+        let normalized = self
             .config
-            .normalize_execution(execution)
+            .normalize_execution_checked(execution)
             .map_err(|error| SessionOperationError::InvalidExecution(error.to_string()))?;
+        let execution = normalized.as_execution();
         // The launch snapshot is addressed by this Session alone.
         let address = session_id.clone();
         let execution_digest = hex_digest(
-            &serde_json_canonicalizer::to_vec(&execution)
+            &serde_json_canonicalizer::to_vec(execution)
                 .map_err(|e| SessionOperationError::Canonical(e.to_string()))?,
         );
-        let config = self.config.resolve_execution(&address, &execution, None)?;
+        let config = self
+            .config
+            .resolve_normalized_execution(&address, &normalized, None)?;
         let instruction = profile::InstructionResolver::new_scoped(
             request.user_agent_dir,
             self.storage_root
@@ -658,7 +661,7 @@ impl SessionOperations {
                 kind: "session-create".to_owned(),
                 session_id: session_id.clone(),
                 execution_digest,
-                cwd: execution.cwd,
+                cwd: execution.cwd.clone(),
                 config_asset,
                 instruction_asset,
                 identity_profile: preset.is_none().then(|| {

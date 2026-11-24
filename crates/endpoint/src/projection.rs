@@ -65,12 +65,15 @@ pub struct Projector {
     tool_result_steps: BTreeMap<u64, (u64, u64)>,
     seen_steers: HashSet<u64>,
     terminal_attempts: HashSet<String>,
+    turn_attempt_counts: HashMap<u64, u64>,
     /// Durable reasoning text per open attempt, folded into that attempt's
     /// `assistant/message` as leading `reasoning` blocks (spec: the message
     /// preserves reasoning; no separate thinking event kind is invented).
     reasoning: HashMap<String, Vec<String>>,
     expected_kernel_slots: HashSet<(u64, String)>,
     processed_through: Option<u64>,
+    projected_events: u64,
+    attempt_step_checks: u64,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -95,7 +98,37 @@ impl Projector {
         self.processed_through
     }
 
+    #[doc(hidden)]
+    #[must_use]
+    pub const fn telemetry_counts(&self) -> (u64, u64) {
+        (self.projected_events, self.attempt_step_checks)
+    }
+
     pub fn reconcile(
+        &mut self,
+        events: &[Event],
+        journal: &EndpointJournal,
+    ) -> Result<Vec<SessionEvent>, ProjectionError> {
+        let appended = self.reconcile_range(events, journal)?;
+        self.validate_existing_kernel_slots(journal)?;
+        Ok(appended)
+    }
+
+    /// Reconciles only `&events[start_index..]` onto an already-consistent projector whose
+    /// journal tail was verified unchanged since the prior reconcile.
+    pub fn reconcile_incremental(
+        &mut self,
+        events: &[Event],
+        start_index: usize,
+        journal: &EndpointJournal,
+    ) -> Result<Vec<SessionEvent>, ProjectionError> {
+        let Some(tail) = events.get(start_index..) else {
+            return Err(ProjectionError::InvalidField("start_index"));
+        };
+        self.reconcile_range(tail, journal)
+    }
+
+    fn reconcile_range(
         &mut self,
         events: &[Event],
         journal: &EndpointJournal,
@@ -127,7 +160,6 @@ impl Projector {
                     .map_or(event.seq(), |seq| seq.max(event.seq())),
             );
         }
-        self.validate_existing_kernel_slots(journal)?;
         Ok(appended)
     }
 
@@ -138,21 +170,40 @@ impl Projector {
         folder: &std::path::Path,
     ) -> Result<Vec<crate::JournalRecord>, ProjectionError> {
         let mut projector = Self::default();
+        projector.project_records_inner(events, folder)
+    }
+
+    /// Projects a complete validated non-historical semantic line into verified
+    /// journal rows while updating this projector's state.
+    pub fn project_verified_records(
+        &mut self,
+        events: &[Event],
+        folder: &std::path::Path,
+    ) -> Result<Vec<crate::JournalRecord>, ProjectionError> {
+        if let Some(event) = events.iter().find(|event| event.is_historical_only()) {
+            return Err(ProjectionError::HistoricalOnlyEvent(event.seq()));
+        }
+        self.project_records_inner(events, folder)
+    }
+
+    fn project_records_inner(
+        &mut self,
+        events: &[Event],
+        folder: &std::path::Path,
+    ) -> Result<Vec<crate::JournalRecord>, ProjectionError> {
         let mut journal = SnapshotJournal {
             folder: folder.to_path_buf(),
             rows: vec![],
         };
         for event in events {
-            let projected = projector.project(event, &journal)?;
+            let projected = self.project(event, &journal)?;
             let mut rows = Vec::new();
             for (kernel_seqs, slot, mut wire) in projected {
                 apply_surface_supersedes(event, &journal, &mut wire)?;
                 let anchor = *kernel_seqs
                     .last()
                     .ok_or(ProjectionError::InvalidField("kernel_seqs"))?;
-                projector
-                    .expected_kernel_slots
-                    .insert((anchor, slot.clone()));
+                self.expected_kernel_slots.insert((anchor, slot.clone()));
                 wire.seq = (journal.rows.len() + rows.len()) as u64;
                 let row = crate::JournalRecord {
                     v: crate::journal::JOURNAL_RECORD_VERSION,
@@ -167,16 +218,16 @@ impl Projector {
             if matches!(event.kind(), EventKind::Output)
                 || matches!(event.kind(), EventKind::Error) && event.has_field("attempt")
             {
-                projector.terminal_attempts.insert(
+                self.terminal_attempts.insert(
                     event
                         .string_field("attempt")
                         .ok_or(ProjectionError::MissingField("attempt"))?
                         .to_owned(),
                 );
             }
-            projector.processed_through = Some(event.seq());
+            self.processed_through = Some(event.seq());
         }
-        projector.validate_existing_kernel_slots(&journal)?;
+        self.validate_existing_kernel_slots(&journal)?;
         Ok(journal.rows)
     }
 
@@ -259,6 +310,7 @@ impl Projector {
         event: &Event,
         journal: &dyn ProjectionRead,
     ) -> Result<Vec<Projected>, ProjectionError> {
+        self.projected_events += 1;
         let value = event_value(event)?;
         let time = timestamp_millis(
             value
@@ -332,11 +384,10 @@ impl Projector {
                         )?,
                     ));
                 }
-                let step = self
-                    .attempts
-                    .values()
-                    .filter(|info| info.turn == turn)
-                    .count() as u64;
+                self.attempt_step_checks += 1;
+                let step_entry = self.turn_attempt_counts.entry(turn).or_insert(0);
+                let step = *step_entry;
+                *step_entry += 1;
                 let info = AttemptInfo {
                     turn,
                     step,
@@ -1863,5 +1914,102 @@ mod tests {
             data["message"],
             "The local runtime connection was lost before the provider response finished; the provider request outcome is unknown."
         );
+    }
+
+    #[test]
+    fn incremental_reconcile_matches_full_reconcile_and_uses_constant_attempt_step_checks() {
+        use std::fs;
+
+        let make_event = |value: Value| -> Event {
+            Event::decode(&serde_json::to_vec(&value).expect("json")).expect("event")
+        };
+        let events = vec![
+            make_event(json!({
+                "v":1,"seq":1,"ts":"2026-10-28T00:00:00.000Z","format":1,"kind":"genesis",
+                "min_reader":schema::EXECUTION_READER,"min_writer":1,
+                "origin_key":"c1","origin_tuple":{"principal":"p","client":"c","target":"s","op":"create","key":"c1"},
+                "resume":"never","config":{"digest":"test"},"thread":"018f0000-0000-7000-8000-000000000163",
+                "execution":{"cwd":"/tmp"},"cwd":"/tmp"
+            })),
+            make_event(json!({
+                "v":1,"seq":2,"ts":"2026-10-28T00:00:01.000Z","kind":"input",
+                "content":[{"type":"text","text":"turn1"}],"origin_key":"k1",
+                "origin_tuple":{"principal":"p","client":"c","target":"s","op":"session.prompt","key":"k1"}
+            })),
+            make_event(json!({
+                "v":1,"seq":3,"ts":"2026-10-28T00:00:01.000Z","kind":"turn_open",
+                "turn":1,"trigger":{"inputs":[2]}
+            })),
+            make_event(json!({
+                "v":1,"seq":4,"ts":"2026-10-28T00:00:01.000Z","kind":"epoch",
+                "id":"e1","adapter":"fake","model":"m","reason":"initial","renderer":1,
+                "system":{"asset":"sha256-aa","digest":"d"},"tools":{"asset":"sha256-td","digest":"td"}
+            })),
+            make_event(json!({
+                "v":1,"seq":5,"ts":"2026-10-28T00:00:01.000Z","kind":"attempt",
+                "turn":1,"attempt":"a1","epoch":"e1",
+                "request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":64},
+                "wire_digest":"wd","admits":[{"from":2,"to":2}]
+            })),
+            make_event(json!({
+                "v":1,"seq":6,"ts":"2026-10-28T00:00:01.000Z","kind":"reasoning",
+                "turn":1,"attempt":"a1","content":"thinking..."
+            })),
+            make_event(json!({
+                "v":1,"seq":7,"ts":"2026-10-28T00:00:02.000Z","kind":"tool_call",
+                "turn":1,"attempt":"a1","call":"call-1","name":"read","args":{"path":"x"},"source":"provider"
+            })),
+            make_event(json!({
+                "v":1,"seq":8,"ts":"2026-10-28T00:00:02.000Z","kind":"tool_result",
+                "turn":1,"call":"call-1","outcome":"ok","content":[{"type":"text","text":"done"}]
+            })),
+            make_event(json!({
+                "v":1,"seq":9,"ts":"2026-10-28T00:00:02.000Z","kind":"attempt",
+                "turn":1,"attempt":"a2","epoch":"e1",
+                "request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":64},
+                "wire_digest":"wd2","admits":[]
+            })),
+            make_event(json!({
+                "v":1,"seq":10,"ts":"2026-10-28T00:00:03.000Z","kind":"output",
+                "turn":1,"attempt":"a2","content":[{"type":"text","text":"final"}],"final_answer":true,
+                "usage":{"availability":"reported","input_tokens":"1","output_tokens":"1"},
+                "sealed":{"version":1,"adapter":"fake","fragments":"[]"}
+            })),
+            make_event(json!({
+                "v":1,"seq":11,"ts":"2026-10-28T00:00:03.000Z","kind":"settle",
+                "turn":1,"outcome":"completed","promoted_output_seq":10
+            })),
+            make_event(json!({
+                "v":1,"seq":12,"ts":"2026-10-28T00:00:03.000Z","kind":"meta",
+                "title":"Title One",
+                "origin_key":"m1","origin_tuple":{"principal":"p","client":"c","target":"s","op":"rename","key":"m1"}
+            })),
+        ];
+
+        let full_dir = tempfile::tempdir().expect("full");
+        let full_journal = EndpointJournal::open(full_dir.path()).expect("full journal");
+        let mut full = Projector::default();
+        full.reconcile(&events, &full_journal)
+            .expect("full reconcile");
+
+        let inc_dir = tempfile::tempdir().expect("inc");
+        let inc_journal = EndpointJournal::open(inc_dir.path()).expect("inc journal");
+        let mut inc = Projector::default();
+        let mut count = 0_usize;
+        for split in [3_usize, 6, 9, 12] {
+            inc.reconcile_incremental(&events[..split], count, &inc_journal)
+                .expect("inc reconcile");
+            count = split;
+        }
+        inc.validate_existing_kernel_slots(&inc_journal)
+            .expect("validate slots");
+
+        assert_eq!(
+            fs::read(inc_dir.path().join("endpoint.jsonl")).unwrap(),
+            fs::read(full_dir.path().join("endpoint.jsonl")).unwrap(),
+            "incremental and full reconcile must emit byte-identical endpoint journals"
+        );
+        assert_eq!(inc.telemetry_counts(), full.telemetry_counts());
+        assert_eq!(inc.telemetry_counts(), (events.len() as u64, 2));
     }
 }

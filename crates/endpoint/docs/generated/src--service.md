@@ -336,7 +336,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `card_updated_ms` | `projection         .events         .last` | [173](../../src/service.rs#L173) | receiver-type-required |
 | `card_updated_ms` | `event.string_field` | [176](../../src/service.rs#L176) | receiver-type-required |
 | `card_updated_ms` | `timestamp_millis(value).map_err` | [178](../../src/service.rs#L178) | receiver-type-required |
-| `card_updated_ms` | `timestamp_millis` | [178](../../src/service.rs#L178) | [endpoint::projection::timestamp_millis](../../src/projection.rs#L1055) |
+| `card_updated_ms` | `timestamp_millis` | [178](../../src/service.rs#L178) | [endpoint::projection::timestamp_millis](../../src/projection.rs#L1106) |
 | `last_record_updated_ms` | `fs::File::open(path).ok` | [190](../../src/service.rs#L190) | receiver-type-required |
 | `last_record_updated_ms` | `fs::File::open` | [190](../../src/service.rs#L190) | external-constructor-callback-or-unresolved |
 | `last_record_updated_ms` | `file.metadata().ok()?.len` | [191](../../src/service.rs#L191) | receiver-type-required |
@@ -360,7 +360,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `last_record_updated_ms` | `serde_json::from_slice(&bytes[line_start..end]).ok` | [203](../../src/service.rs#L203) | receiver-type-required |
 | `last_record_updated_ms` | `serde_json::from_slice` | [203](../../src/service.rs#L203) | external-constructor-callback-or-unresolved |
 | `last_record_updated_ms` | `timestamp_millis(record.get("ts")?.as_str()?).ok` | [204](../../src/service.rs#L204) | receiver-type-required |
-| `last_record_updated_ms` | `timestamp_millis` | [204](../../src/service.rs#L204) | [endpoint::projection::timestamp_millis](../../src/projection.rs#L1055) |
+| `last_record_updated_ms` | `timestamp_millis` | [204](../../src/service.rs#L204) | [endpoint::projection::timestamp_millis](../../src/projection.rs#L1106) |
 | `last_record_updated_ms` | `record.get("ts")?.as_str` | [204](../../src/service.rs#L204) | receiver-type-required |
 | `last_record_updated_ms` | `record.get` | [204](../../src/service.rs#L204) | receiver-type-required |
 | `last_record_updated_ms` | `Some` | [205](../../src/service.rs#L205) | external-constructor-callback-or-unresolved |
@@ -677,7 +677,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `reconciled_journal` | `NativeEndpointError::Store` | [973](../../src/service.rs#L973) | external-constructor-callback-or-unresolved |
 | `reconciled_journal` | `store::StoreError::Corruption` | [973](../../src/service.rs#L973) | external-constructor-callback-or-unresolved |
 | `reconciled_journal` | `"thread ledger has no valid genesis prefix".to_owned` | [974](../../src/service.rs#L974) | receiver-type-required |
-| `reconciled_journal` | `EndpointJournal::open` | [977](../../src/service.rs#L977) | [endpoint::journal::EndpointJournal::open](../../src/journal.rs#L165) |
+| `reconciled_journal` | `EndpointJournal::open` | [977](../../src/service.rs#L977) | [endpoint::journal::EndpointJournal::open](../../src/journal.rs#L225) |
 | `reconciled_journal` | `Projector::default().reconcile` | [978](../../src/service.rs#L978) | receiver-type-required |
 | `reconciled_journal` | `Projector::default` | [978](../../src/service.rs#L978) | external-constructor-callback-or-unresolved |
 | `reconciled_journal` | `Ok` | [979](../../src/service.rs#L979) | external-constructor-callback-or-unresolved |

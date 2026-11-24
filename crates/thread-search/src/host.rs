@@ -30,59 +30,19 @@ impl ThreadSearchAuthority {
         let _search = NamedLock::exclusive(self.store.root().join(".thread-search.lock"))?;
         let _rewrite = NamedLock::shared(self.store.root().join(".rewrite.lock"))?;
         let _membership = NamedLock::shared(self.store.root().join(".thread-catalog.lock"))?;
-        let sources = scan_sources(self.store.root())?;
+        let sources = self.scan_sources_cached()?;
         let mut items = Vec::new();
         for source in sources {
             let mut snippet = source
+                .entry
                 .title
                 .as_deref()
                 .and_then(|text| matching_snippet(text, &query));
             if snippet.is_none() {
-                let bytes = fs::read(source.folder.join("main.jsonl"))?;
-                let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
-                    .projection
-                    .ok_or_else(|| {
-                        SearchError::SourceCorrupt("Conversation has no valid prefix".into())
-                    })?;
-                // Appends may continue during a search. Use the catalog's captured sequence.
-                let events: Vec<_> = projection
-                    .events
-                    .into_iter()
-                    .filter(|event| event.seq() <= source.as_of_seq)
-                    .collect();
-                let superseded = superseded_sequences(&events)?;
-                for event in events.iter().rev() {
-                    if superseded.contains(&event.seq())
-                        || !matches!(event.kind(), EventKind::Input | EventKind::Output)
-                    {
-                        continue;
-                    }
-                    let raw: serde_json::Value = serde_json::from_slice(
-                        &event
-                            .raw()
-                            .canonical_bytes()
-                            .map_err(|error| SearchError::SourceCorrupt(error.to_string()))?,
-                    )
-                    .map_err(|error| SearchError::SourceCorrupt(error.to_string()))?;
-                    let Some(blocks) = raw.get("content").and_then(serde_json::Value::as_array)
-                    else {
-                        continue;
-                    };
-                    for block in blocks {
-                        if block.get("type").and_then(serde_json::Value::as_str) != Some("text") {
-                            continue;
-                        }
-                        if let Some(text) = block.get("text").and_then(serde_json::Value::as_str) {
-                            snippet = matching_snippet(text, &query);
-                            if snippet.is_some() {
-                                break;
-                            }
-                        }
-                    }
-                    if snippet.is_some() {
-                        break;
-                    }
-                }
+                snippet = source
+                    .visible_texts_rev
+                    .iter()
+                    .find_map(|text| matching_snippet(text, &query));
             }
             if let Some(snippet) = snippet {
                 if items.len() == MAX_PAGE_SIZE {
@@ -92,7 +52,7 @@ impl ThreadSearchAuthority {
                     });
                 }
                 items.push(SessionSearchHit {
-                    session_id: source.session_id,
+                    session_id: source.entry.session_id,
                     snippet,
                 });
             }

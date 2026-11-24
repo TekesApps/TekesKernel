@@ -75,14 +75,18 @@ impl FileSubscription {
             self.ready = true;
             return Ok(vec![json!({"kind":"ready"})]);
         }
-        let mut state = self
-            .registry
-            .0
-            .lock()
-            .map_err(|_| "Observation lock poisoned")?;
-        let (_, observations) = state.feeds.get_mut(&self.id).ok_or("Subscription closed")?;
-        let frames = observations.poll().map_err(|error| error.code.to_owned())?;
-        if let Some(check) = &self.authority_check {
+        let frames = {
+            let mut state = self
+                .registry
+                .0
+                .lock()
+                .map_err(|_| "Observation lock poisoned")?;
+            let (_, observations) = state.feeds.get_mut(&self.id).ok_or("Subscription closed")?;
+            observations.poll().map_err(|error| error.code.to_owned())?
+        };
+        if !frames.is_empty()
+            && let Some(check) = &self.authority_check
+        {
             check()?;
         }
         Ok(frames)
@@ -133,6 +137,64 @@ mod tests {
         assert_eq!(feed.poll().unwrap(), vec![json!({"kind":"ready"})]);
         allowed.store(false, Ordering::SeqCst);
         assert_eq!(feed.poll().unwrap_err(), "revoked");
+    }
+
+    #[test]
+    fn post_observation_authority_check_runs_when_frames_emit_not_when_idle() {
+        use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+        let allow = Arc::new(AtomicBool::new(true));
+        let checks = Arc::new(AtomicUsize::new(0));
+        let registry = SessionFileObservations::default();
+        let session = "018f0000-0000-7000-8000-000000000099";
+        let root = tempfile::tempdir().unwrap();
+        std::fs::write(root.path().join("f.txt"), "before").unwrap();
+
+        let allow_c = Arc::clone(&allow);
+        let checks_c = Arc::clone(&checks);
+        let mut feed = registry
+            .open(session)
+            .unwrap()
+            .with_authority_check(move || {
+                checks_c.fetch_add(1, Ordering::SeqCst);
+                if allow_c.load(Ordering::SeqCst) {
+                    Ok(())
+                } else {
+                    Err("revoked-after-emit".into())
+                }
+            });
+        // Ready frame still validates pre-check only (1 call).
+        assert_eq!(feed.poll().unwrap(), vec![json!({"kind":"ready"})]);
+        assert_eq!(checks.load(Ordering::SeqCst), 1);
+
+        registry.register(session, root.path(), "f.txt").unwrap();
+        // Idle poll: frames empty -> only pre-check runs (1 call).
+        assert!(feed.poll().unwrap().is_empty());
+        assert_eq!(checks.load(Ordering::SeqCst), 2);
+
+        // Emit a change frame, and simulate revocation racing during poll (on the post-check).
+        std::fs::write(root.path().join("f.txt"), "after").unwrap();
+        let allow_race = Arc::new(AtomicBool::new(true));
+        let checks_race = Arc::new(AtomicUsize::new(0));
+        let ar = Arc::clone(&allow_race);
+        let cr = Arc::clone(&checks_race);
+        let mut race_feed = registry
+            .open(session)
+            .unwrap()
+            .with_authority_check(move || {
+                let n = cr.fetch_add(1, Ordering::SeqCst);
+                if n >= 2 && !ar.load(Ordering::SeqCst) {
+                    return Err("revoked-mid-poll".into());
+                }
+                Ok(())
+            });
+        assert_eq!(race_feed.poll().unwrap(), vec![json!({"kind":"ready"})]);
+        registry.register(session, root.path(), "f.txt").unwrap();
+        std::fs::write(root.path().join("f.txt"), "v1").unwrap();
+        // Flip allow_race = false? Wait: pre-check is n==1 (Ok), then post-check only runs if frames non-empty (n==2).
+        allow_race.store(false, Ordering::SeqCst);
+        std::fs::write(root.path().join("f.txt"), "v2").unwrap();
+        assert_eq!(race_feed.poll().unwrap_err(), "revoked-mid-poll");
+        assert_eq!(checks_race.load(Ordering::SeqCst), 3);
     }
     #[test]
     fn feeds_are_independent_session_scoped_and_released_on_drop() {

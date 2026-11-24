@@ -242,3 +242,254 @@ async fn old_creation_inputs_are_rejected_without_creating_sessions() {
             .is_none()
     );
 }
+
+#[tokio::test]
+async fn bench_165_create_and_preset_multi_root() {
+    let f = fixture();
+    let workspace = tempfile::tempdir().unwrap();
+    let cwd = workspace.path().join("cwd");
+    let writable_in_cwd = cwd.join("writable-a");
+    let read1 = workspace.path().join("read-1");
+    let writable_in_read1 = read1.join("writable-b");
+    let read2 = workspace.path().join("read-2");
+    let read3 = workspace.path().join("read-3");
+    let read4 = workspace.path().join("read-4");
+    let tc1 = workspace.path().join("toolchain-1");
+    let tc2 = workspace.path().join("toolchain-2");
+    for dir in [
+        &cwd,
+        &writable_in_cwd,
+        &read1,
+        &writable_in_read1,
+        &read2,
+        &read3,
+        &read4,
+        &tc1,
+        &tc2,
+    ] {
+        std::fs::create_dir_all(dir).unwrap();
+    }
+    let exec = json!({
+        "cwd": cwd,
+        "read_roots": [read1, read2, read3, read4],
+        "writable_roots": [writable_in_cwd, writable_in_read1],
+        "toolchain_roots": [tc1, tc2],
+        "allowed_tools": ["read", "edit"],
+    });
+
+    profile::reset_execution_metrics();
+    tekes_supervisor::endpoint_host::reset_endpoint_execution_parses();
+    let create_payload = json!({"execution": exec.clone()});
+    f.host
+        .validate_request(&request(
+            "bench-create",
+            "session.create",
+            create_payload.clone(),
+        ))
+        .unwrap();
+    let created = value(dispatch(&f, "bench-create", "session.create", create_payload).await);
+    assert!(created["sessionId"].as_str().is_some());
+    let (create_norm, create_canon) = profile::execution_metrics();
+    let create_parses = tekes_supervisor::endpoint_host::endpoint_execution_parses();
+    println!(
+        "bench_165 session.create (9 paths): normalize_calls={create_norm}, canonicalize_calls={create_canon}, execution_parses={create_parses}"
+    );
+
+    profile::reset_execution_metrics();
+    tekes_supervisor::client_extensions::reset_preset_execution_parses();
+    let resolve_payload = json!({
+        "execution": exec,
+        "preset": {"tools": ["read"]}
+    });
+    f.host
+        .validate_request(&request(
+            "bench-resolve",
+            "session.presets.resolve",
+            resolve_payload.clone(),
+        ))
+        .unwrap();
+    let resolved = value(
+        dispatch(
+            &f,
+            "bench-resolve",
+            "session.presets.resolve",
+            resolve_payload,
+        )
+        .await,
+    );
+    assert_eq!(resolved["tools"], json!(["read"]));
+    let (resolve_norm, resolve_canon) = profile::execution_metrics();
+    let resolve_parses = tekes_supervisor::client_extensions::preset_execution_parses();
+    println!(
+        "bench_165 session.presets.resolve (9 paths): normalize_calls={resolve_norm}, canonicalize_calls={resolve_canon}, preset_execution_parses={resolve_parses}"
+    );
+}
+
+#[tokio::test]
+async fn single_pass_execution_preserves_canonicalization_validation_idempotency_and_reopen_checks()
+{
+    let f = fixture();
+    let workspace = tempfile::tempdir().unwrap();
+    let real_cwd = workspace.path().join("real-cwd");
+    let real_read = workspace.path().join("real-read");
+    let real_writable = real_read.join("sub-write");
+    let real_tc = workspace.path().join("real-tc");
+    for d in [&real_cwd, &real_read, &real_writable, &real_tc] {
+        std::fs::create_dir_all(d).unwrap();
+    }
+    let link_cwd = workspace.path().join("link-cwd");
+    let link_read = workspace.path().join("link-read");
+    #[cfg(unix)]
+    {
+        std::os::unix::fs::symlink(&real_cwd, &link_cwd).unwrap();
+        std::os::unix::fs::symlink(&real_read, &link_read).unwrap();
+    }
+    let canon_cwd = real_cwd.canonicalize().unwrap();
+    let canon_read = real_read.canonicalize().unwrap();
+    let canon_writable = real_writable.canonicalize().unwrap();
+    let canon_tc = real_tc.canonicalize().unwrap();
+
+    // 4 paths supplied through symlinks.
+    let exec = json!({
+        "cwd": if cfg!(unix) { link_cwd.as_path() } else { real_cwd.as_path() },
+        "read_roots": [if cfg!(unix) { link_read.as_path() } else { real_read.as_path() }],
+        "writable_roots": [real_writable],
+        "toolchain_roots": [real_tc],
+        "allowed_tools": ["edit", "read", "read"],
+    });
+
+    profile::reset_execution_metrics();
+    tekes_supervisor::endpoint_host::reset_endpoint_execution_parses();
+    let create_payload = json!({"execution": exec.clone()});
+    f.host
+        .validate_request(&request(
+            "sp-create-1",
+            "session.create",
+            create_payload.clone(),
+        ))
+        .unwrap();
+    let created1 =
+        value(dispatch(&f, "sp-create-1", "session.create", create_payload.clone()).await);
+    assert_eq!(profile::execution_metrics(), (1, 4));
+    assert_eq!(
+        tekes_supervisor::endpoint_host::endpoint_execution_parses(),
+        1
+    );
+
+    // Exact rpcId idempotency returns same sessionId.
+    f.host
+        .validate_request(&request(
+            "sp-create-1",
+            "session.create",
+            create_payload.clone(),
+        ))
+        .unwrap();
+    let created2 = value(dispatch(&f, "sp-create-1", "session.create", create_payload).await);
+    assert_eq!(created1["sessionId"], created2["sessionId"]);
+
+    let sid = created1["sessionId"].as_str().unwrap();
+    let ledger = f.root.path().join("threads").join(sid).join("main.jsonl");
+    let genesis_line = std::fs::read_to_string(&ledger)
+        .unwrap()
+        .lines()
+        .next()
+        .unwrap()
+        .to_owned();
+    let genesis: Value = serde_json::from_str(&genesis_line).unwrap();
+    assert_eq!(
+        genesis["execution"]["cwd"],
+        canon_cwd.to_string_lossy().as_ref()
+    );
+    assert_eq!(
+        genesis["execution"]["read_roots"],
+        json!([canon_read.to_string_lossy()])
+    );
+    assert_eq!(
+        genesis["execution"]["writable_roots"],
+        json!([canon_writable.to_string_lossy()])
+    );
+    assert_eq!(
+        genesis["execution"]["toolchain_roots"],
+        json!([canon_tc.to_string_lossy()])
+    );
+    assert_eq!(
+        genesis["execution"]["allowed_tools"],
+        json!(["edit", "read"])
+    );
+
+    // Preset resolve runs single parse/normalize/canonicalize pass.
+    profile::reset_execution_metrics();
+    tekes_supervisor::client_extensions::reset_preset_execution_parses();
+    let resolve_payload = json!({"execution": exec, "preset": {"tools": ["read"]}});
+    f.host
+        .validate_request(&request(
+            "sp-res-1",
+            "session.presets.resolve",
+            resolve_payload.clone(),
+        ))
+        .unwrap();
+    let resolved =
+        value(dispatch(&f, "sp-res-1", "session.presets.resolve", resolve_payload).await);
+    assert_eq!(resolved["tools"], json!(["read"]));
+    assert_eq!(profile::execution_metrics(), (1, 4));
+    assert_eq!(
+        tekes_supervisor::client_extensions::preset_execution_parses(),
+        1
+    );
+
+    // Protected storage root, nonexistent root, and writable outside read roots fail with exact codes.
+    let outside = tempfile::tempdir().unwrap();
+    for (idx, bad_exec) in [
+        json!({"cwd": f.root.path()}),
+        json!({"cwd": workspace.path().join("does-not-exist")}),
+        json!({"cwd": canon_cwd, "writable_roots": [outside.path()]}),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let p = json!({"execution": bad_exec.clone()});
+        f.host
+            .validate_request(&request(
+                &format!("bad-c-{idx}"),
+                "session.create",
+                p.clone(),
+            ))
+            .unwrap();
+        let resp = dispatch(&f, &format!("bad-c-{idx}"), "session.create", p).await;
+        assert!(!resp.result.ok);
+        assert_eq!(resp.result.error.unwrap().code, "bad-request");
+
+        let rp = json!({"execution": bad_exec, "preset": {}});
+        f.host
+            .validate_request(&request(
+                &format!("bad-r-{idx}"),
+                "session.presets.resolve",
+                rp.clone(),
+            ))
+            .unwrap();
+        let rresp = dispatch(&f, &format!("bad-r-{idx}"), "session.presets.resolve", rp).await;
+        assert!(!rresp.result.ok);
+        assert_eq!(rresp.result.error.unwrap().code, "bad-request");
+    }
+
+    // Reopen check (`resolve_execution`) STILL re-verifies canonicality on disk!
+    #[cfg(unix)]
+    {
+        let scope = profile::SessionScope::locate(f.root.path(), sid).unwrap();
+        let repo = profile::ConfigRepository::open(f.root.path()).unwrap();
+        assert!(
+            repo.resolve_execution(sid, scope.execution(), Some(scope.session_folder()))
+                .is_ok()
+        );
+
+        let moved_target = workspace.path().join("moved-cwd");
+        std::fs::create_dir_all(&moved_target).unwrap();
+        std::fs::remove_dir_all(&canon_cwd).unwrap();
+        std::os::unix::fs::symlink(&moved_target, &canon_cwd).unwrap();
+        assert!(
+            repo.resolve_execution(sid, scope.execution(), Some(scope.session_folder()))
+                .is_err(),
+            "reopen resolve_execution must fail when a recorded canonical root becomes a symlink"
+        );
+    }
+}

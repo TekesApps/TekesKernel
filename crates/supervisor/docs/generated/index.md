@@ -55,21 +55,21 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/bounded_child_history.rs](../../src/bounded_child_history.rs) | 12 | 264 | [Symbols and calls](src--bounded_child_history.md) |
 | [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 18 | 341 | [Symbols and calls](src--builtin.md) |
 | [crates/supervisor/src/catalog.rs](../../src/catalog.rs) | 25 | 168 | [Symbols and calls](src--catalog.md) |
-| [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 84 | 903 | [Symbols and calls](src--client_extensions.md) |
+| [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 92 | 953 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 348 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
 | [crates/supervisor/src/dynamic_bindings.rs](../../src/dynamic_bindings.rs) | 8 | 47 | [Symbols and calls](src--dynamic_bindings.md) |
 | [crates/supervisor/src/endpoint_carrier/legacy_history.rs](../../src/endpoint_carrier/legacy_history.rs) | 13 | 184 | [Symbols and calls](src--endpoint_carrier--legacy_history.md) |
-| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 176 | 1648 | [Symbols and calls](src--endpoint_carrier.md) |
-| [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 163 | 1168 | [Symbols and calls](src--endpoint_host.md) |
+| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 177 | 1655 | [Symbols and calls](src--endpoint_carrier.md) |
+| [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 174 | 1227 | [Symbols and calls](src--endpoint_host.md) |
 | [crates/supervisor/src/file_leases.rs](../../src/file_leases.rs) | 20 | 156 | [Symbols and calls](src--file_leases.md) |
-| [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 12 | 79 | [Symbols and calls](src--file_observation.md) |
+| [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 13 | 134 | [Symbols and calls](src--file_observation.md) |
 | [crates/supervisor/src/host_runtime.rs](../../src/host_runtime.rs) | 42 | 282 | [Symbols and calls](src--host_runtime.md) |
 | [crates/supervisor/src/lib.rs](../../src/lib.rs) | 27 | 184 | [Symbols and calls](src--lib.md) |
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 173 | [Symbols and calls](src--mcp_continuation.md) |
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 50 | 519 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 381 | 7249 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 401 | 7872 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 18 | 1840 | [Symbols and calls](src--process_live_tests.md) |
 | [crates/supervisor/src/process_tool_visibility_tests.rs](../../src/process_tool_visibility_tests.rs) | 13 | 231 | [Symbols and calls](src--process_tool_visibility_tests.md) |
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 836 | [Symbols and calls](src--production_tool_control.md) |
@@ -146,7 +146,7 @@ flowchart LR
   m18 -->|"1"| m5
   m18 -->|"2"| m9
   m18 -->|"5"| m11
-  m18 -->|"160"| m13
+  m18 -->|"163"| m13
   m18 -->|"1"| m14
   m18 -->|"1"| m17
   m18 -->|"6"| m19

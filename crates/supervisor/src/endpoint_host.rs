@@ -4,7 +4,7 @@
 //! only V3 unary routes whose author/read paths are real. Baseline, journal,
 //! control, and actionable reads are carried exclusively by `remote.mux`.
 
-use std::collections::{BTreeSet, HashMap};
+use std::collections::{BTreeSet, HashMap, VecDeque};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -24,6 +24,25 @@ use schema::OriginTuple;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use thiserror::Error;
+
+std::thread_local! {
+    static ENDPOINT_EXECUTION_PARSES: std::cell::Cell<u64> = const { std::cell::Cell::new(0) };
+}
+
+fn note_endpoint_execution_parse() {
+    ENDPOINT_EXECUTION_PARSES.with(|c| c.set(c.get() + 1));
+}
+
+#[doc(hidden)]
+pub fn reset_endpoint_execution_parses() {
+    ENDPOINT_EXECUTION_PARSES.with(|c| c.set(0));
+}
+
+#[doc(hidden)]
+#[must_use]
+pub fn endpoint_execution_parses() -> u64 {
+    ENDPOINT_EXECUTION_PARSES.with(std::cell::Cell::get)
+}
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum EndpointRouteClass {
@@ -520,6 +539,72 @@ pub struct ProductionEndpointHost {
     delivery_authority: Option<Arc<dyn SessionDeliveryAuthority>>,
     queue_authority: Option<Arc<dyn QueueTransactionAuthority>>,
     input_admission: Arc<SessionInputAdmissionAuthority>,
+    validated_create_execution: Mutex<VecDeque<(String, Vec<u8>, profile::ExecutionConfig)>>,
+    validated_extension_requests: Mutex<VecDeque<(String, String, Vec<u8>)>>,
+}
+
+const VALIDATED_REQUEST_CACHE_CAP: usize = 64;
+
+fn cache_validated_create_execution(
+    cache: &Mutex<VecDeque<(String, Vec<u8>, profile::ExecutionConfig)>>,
+    rpc_id: &str,
+    canonical_payload: Vec<u8>,
+    execution: profile::ExecutionConfig,
+) {
+    let mut guard = cache
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    if guard.len() >= VALIDATED_REQUEST_CACHE_CAP {
+        guard.pop_front();
+    }
+    guard.push_back((rpc_id.to_owned(), canonical_payload, execution));
+}
+
+fn take_validated_create_execution(
+    cache: &Mutex<VecDeque<(String, Vec<u8>, profile::ExecutionConfig)>>,
+    rpc_id: &str,
+    canonical_payload: &[u8],
+) -> Option<profile::ExecutionConfig> {
+    let mut guard = cache
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let idx = guard
+        .iter()
+        .position(|(id, bytes, _)| id == rpc_id && bytes.as_slice() == canonical_payload)?;
+    guard.remove(idx).map(|(_, _, exec)| exec)
+}
+
+fn cache_validated_extension_request(
+    cache: &Mutex<VecDeque<(String, String, Vec<u8>)>>,
+    operation: &str,
+    rpc_id: &str,
+    canonical_payload: Vec<u8>,
+) {
+    let mut guard = cache
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    if guard.len() >= VALIDATED_REQUEST_CACHE_CAP {
+        guard.pop_front();
+    }
+    guard.push_back((operation.to_owned(), rpc_id.to_owned(), canonical_payload));
+}
+
+fn take_validated_extension_request(
+    cache: &Mutex<VecDeque<(String, String, Vec<u8>)>>,
+    operation: &str,
+    rpc_id: &str,
+    canonical_payload: &[u8],
+) -> bool {
+    let mut guard = cache
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let Some(idx) = guard.iter().position(|(op, id, bytes)| {
+        op == operation && id == rpc_id && bytes.as_slice() == canonical_payload
+    }) else {
+        return false;
+    };
+    guard.remove(idx);
+    true
 }
 
 impl ProductionEndpointHost {
@@ -744,6 +829,8 @@ impl ProductionEndpointHost {
             input_admission: input_admission.unwrap_or_else(|| {
                 Arc::new(SessionInputAdmissionAuthority::new(root.to_path_buf()))
             }),
+            validated_create_execution: Mutex::new(VecDeque::new()),
+            validated_extension_requests: Mutex::new(VecDeque::new()),
         })
     }
 
@@ -837,15 +924,25 @@ impl ProductionEndpointHost {
         if frozen {
             validate_extension_payload(operation, payload)?;
         } else {
-            routes
-                .validate_extension_payload(operation, payload)
-                .map_err(|error| {
-                    if routes.extension_failure_is_exact(operation, &error) {
-                        map_production_route(error)
-                    } else {
-                        internal_failure()
-                    }
-                })?;
+            let already_validated = request.payload.canonical_bytes().ok().is_some_and(|bytes| {
+                take_validated_extension_request(
+                    &self.validated_extension_requests,
+                    operation,
+                    &request.rpc_id,
+                    &bytes,
+                )
+            });
+            if !already_validated {
+                routes
+                    .validate_extension_payload(operation, payload)
+                    .map_err(|error| {
+                        if routes.extension_failure_is_exact(operation, &error) {
+                            map_production_route(error)
+                        } else {
+                            internal_failure()
+                        }
+                    })?;
+            }
         }
         routes
             .execute(request, payload, &self.principal)
@@ -923,10 +1020,24 @@ impl ProductionEndpointHost {
                 json!({"operation":"session.create.agentPreset"}),
             ));
         }
-        let execution: profile::ExecutionConfig =
-            serde_json::from_value(payload["execution"].clone())
-                .map_err(|_| invalid("execution must contain cwd and valid execution settings"))?;
-        execution.validate().map_err(invalid)?;
+        let cached_execution = request.payload.canonical_bytes().ok().and_then(|bytes| {
+            take_validated_create_execution(
+                &self.validated_create_execution,
+                &request.rpc_id,
+                &bytes,
+            )
+        });
+        let execution = if let Some(execution) = cached_execution {
+            execution
+        } else {
+            note_endpoint_execution_parse();
+            let execution: profile::ExecutionConfig =
+                serde_json::from_value(payload["execution"].clone()).map_err(|_| {
+                    invalid("execution must contain cwd and valid execution settings")
+                })?;
+            execution.validate().map_err(invalid)?;
+            execution
+        };
         let session_id = optional_string(payload, "sessionId")?;
         let identity_profile = optional_string(payload, "identityProfile")?
             .map(|value| {
@@ -1591,14 +1702,23 @@ impl EndpointHost for ProductionEndpointHost {
     }
 
     fn validate_request(&self, request: &ClientRequest) -> Result<(), HostFailure> {
-        let payload: Value = serde_json::from_slice(
-            &request
-                .payload
-                .canonical_bytes()
-                .map_err(|_| HostFailure::InvalidRequest)?,
-        )
-        .map_err(|_| HostFailure::InvalidRequest)?;
-        if TEKES_UNARY_ROUTES
+        let canonical = request
+            .payload
+            .canonical_bytes()
+            .map_err(|_| HostFailure::InvalidRequest)?;
+        let payload: Value =
+            serde_json::from_slice(&canonical).map_err(|_| HostFailure::InvalidRequest)?;
+        if request.method == "session.create" {
+            let execution = validate_production_create_payload(&payload)
+                .map_err(|_| HostFailure::InvalidRequest)?;
+            cache_validated_create_execution(
+                &self.validated_create_execution,
+                &request.rpc_id,
+                canonical,
+                execution,
+            );
+            Ok(())
+        } else if TEKES_UNARY_ROUTES
             .iter()
             .any(|route| route.name == request.method)
         {
@@ -1610,7 +1730,14 @@ impl EndpointHost for ProductionEndpointHost {
                 .filter(|routes| routes.capabilities().contains(&request.method))
                 .ok_or(HostFailure::InvalidRequest)?
                 .validate_extension_payload(&request.method, &payload)
-                .map_err(|_| HostFailure::InvalidRequest)
+                .map_err(|_| HostFailure::InvalidRequest)?;
+            cache_validated_extension_request(
+                &self.validated_extension_requests,
+                &request.method,
+                &request.rpc_id,
+                canonical,
+            );
+            Ok(())
         }
     }
 
@@ -2596,7 +2723,10 @@ const fn attachment_reason(reason: AttachmentErrorReason) -> &'static str {
     }
 }
 
-fn validate_extension_payload(operation: &str, payload: &Value) -> Result<(), EndpointRpcFailure> {
+fn validate_extension_payload_fields(
+    operation: &str,
+    payload: &Value,
+) -> Result<(), EndpointRpcFailure> {
     let (allowed, required): (&[&str], &[&str]) = match operation {
         "models.list" => (&[], &[]),
         "session.archive" | "session.unarchive" | "session.cancel" | "session.models" => {
@@ -2643,13 +2773,33 @@ fn validate_extension_payload(operation: &str, payload: &Value) -> Result<(), En
         }
     };
     require_object_fields(payload, allowed, required)?;
-    if operation == "session.create" {
-        let execution: schema::ExecutionConfig =
-            serde_json::from_value(payload["execution"].clone())
-                .map_err(|_| invalid("invalid execution"))?;
-        execution.validate().map_err(invalid)?;
-    }
     Ok(())
+}
+
+fn validate_extension_payload(operation: &str, payload: &Value) -> Result<(), EndpointRpcFailure> {
+    validate_extension_payload_fields(operation, payload)?;
+    if operation == "session.create" {
+        parse_and_validate_create_execution(payload).map(|_| ())
+    } else {
+        Ok(())
+    }
+}
+
+fn validate_production_create_payload(
+    payload: &Value,
+) -> Result<profile::ExecutionConfig, EndpointRpcFailure> {
+    validate_extension_payload_fields("session.create", payload)?;
+    parse_and_validate_create_execution(payload)
+}
+
+fn parse_and_validate_create_execution(
+    payload: &Value,
+) -> Result<profile::ExecutionConfig, EndpointRpcFailure> {
+    note_endpoint_execution_parse();
+    let execution: profile::ExecutionConfig = serde_json::from_value(payload["execution"].clone())
+        .map_err(|_| invalid("invalid execution"))?;
+    execution.validate().map_err(invalid)?;
+    Ok(execution)
 }
 
 fn validate_production_payload(operation: &str, payload: &Value) -> Result<(), EndpointRpcFailure> {

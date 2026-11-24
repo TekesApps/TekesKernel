@@ -219,21 +219,21 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `decode` | `parse_canonical` | [44](../../src/instruction.rs#L44) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `decode` | `parse_canonical` | [44](../../src/instruction.rs#L44) | [profile::parse_canonical](../../src/lib.rs#L73) |
 | `decode` | `validate_settings` | [45](../../src/instruction.rs#L45) | [profile::instruction::validate_settings](../../src/instruction.rs#L819) |
 | `decode` | `Path::new` | [45](../../src/instruction.rs#L45) | external-constructor-callback-or-unresolved |
 | `decode` | `Ok` | [46](../../src/instruction.rs#L46) | external-constructor-callback-or-unresolved |
 | `canonical_bytes` | `validate_settings` | [50](../../src/instruction.rs#L50) | [profile::instruction::validate_settings](../../src/instruction.rs#L819) |
 | `canonical_bytes` | `Path::new` | [50](../../src/instruction.rs#L50) | external-constructor-callback-or-unresolved |
-| `canonical_bytes` | `canonical_line` | [51](../../src/instruction.rs#L51) | [profile::canonical_line](../../src/lib.rs#L140) |
+| `canonical_bytes` | `canonical_line` | [51](../../src/instruction.rs#L51) | [profile::canonical_line](../../src/lib.rs#L142) |
 | `admit_source` | `Err` | [106](../../src/instruction.rs#L106) | external-constructor-callback-or-unresolved |
 | `admit_source` | `std::io::Error::other` | [106](../../src/instruction.rs#L106) | external-constructor-callback-or-unresolved |
 | `admit_source` | `Ok` | [110](../../src/instruction.rs#L110) | external-constructor-callback-or-unresolved |
 | `source_authorized` | `self.admit_source(source).is_ok` | [115](../../src/instruction.rs#L115) | receiver-type-required |
 | `source_authorized` | `self.admit_source` | [115](../../src/instruction.rs#L115) | [profile::instruction::InstructionSnapshot::admit_source](../../src/instruction.rs#L102) |
 | `digest` | `Ok` | [130](../../src/instruction.rs#L130) | external-constructor-callback-or-unresolved |
-| `digest` | `digest` | [130](../../src/instruction.rs#L130) | [profile::digest](../../src/lib.rs#L154) |
-| `digest` | `canonical_line` | [130](../../src/instruction.rs#L130) | [profile::canonical_line](../../src/lib.rs#L140) |
+| `digest` | `digest` | [130](../../src/instruction.rs#L130) | [profile::digest](../../src/lib.rs#L156) |
+| `digest` | `canonical_line` | [130](../../src/instruction.rs#L130) | [profile::canonical_line](../../src/lib.rs#L142) |
 | `resolve_and_publish_for_scope` | `scope.config` | [155](../../src/instruction.rs#L155) | receiver-type-required |
 | `resolve_and_publish_for_scope` | `Some` | [156](../../src/instruction.rs#L156) | external-constructor-callback-or-unresolved |
 | `resolve_and_publish_for_scope` | `user_agent_dir.as_ref().to_string_lossy().into_owned` | [156](../../src/instruction.rs#L156) | receiver-type-required |
@@ -247,11 +247,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve_and_publish_for_scope` | `instruction.publish` | [163](../../src/instruction.rs#L163) | receiver-type-required |
 | `resolve_and_publish_for_scope` | `Ok` | [164](../../src/instruction.rs#L164) | external-constructor-callback-or-unresolved |
 | `canonical_bytes` | `validate_snapshot` | [178](../../src/instruction.rs#L178) | [profile::instruction::validate_snapshot](../../src/instruction.rs#L865) |
-| `canonical_bytes` | `canonical_line` | [179](../../src/instruction.rs#L179) | [profile::canonical_line](../../src/lib.rs#L140) |
+| `canonical_bytes` | `canonical_line` | [179](../../src/instruction.rs#L179) | [profile::canonical_line](../../src/lib.rs#L142) |
 | `digest` | `Ok` | [183](../../src/instruction.rs#L183) | external-constructor-callback-or-unresolved |
-| `digest` | `digest` | [183](../../src/instruction.rs#L183) | [profile::digest](../../src/lib.rs#L154) |
+| `digest` | `digest` | [183](../../src/instruction.rs#L183) | [profile::digest](../../src/lib.rs#L156) |
 | `digest` | `self.canonical_bytes` | [183](../../src/instruction.rs#L183) | [profile::instruction::InstructionSnapshot::canonical_bytes](../../src/instruction.rs#L177) |
-| `decode` | `parse_canonical` | [187](../../src/instruction.rs#L187) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `decode` | `parse_canonical` | [187](../../src/instruction.rs#L187) | [profile::parse_canonical](../../src/lib.rs#L73) |
 | `decode` | `validate_snapshot` | [188](../../src/instruction.rs#L188) | [profile::instruction::validate_snapshot](../../src/instruction.rs#L865) |
 | `decode` | `Ok` | [189](../../src/instruction.rs#L189) | external-constructor-callback-or-unresolved |
 | `publish` | `self.canonical_bytes` | [193](../../src/instruction.rs#L193) | [profile::instruction::InstructionSnapshot::canonical_bytes](../../src/instruction.rs#L177) |
@@ -386,12 +386,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `maybe_source` | `"instruction content is not UTF-8".to_owned` | [591](../../src/instruction.rs#L591) | receiver-type-required |
 | `maybe_source` | `content.contains` | [593](../../src/instruction.rs#L593) | receiver-type-required |
 | `maybe_source` | `"instruction content contains NUL".to_owned` | [596](../../src/instruction.rs#L596) | receiver-type-required |
-| `maybe_source` | `parse_canonical` | [600](../../src/instruction.rs#L600) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `maybe_source` | `parse_canonical` | [600](../../src/instruction.rs#L600) | [profile::parse_canonical](../../src/lib.rs#L73) |
 | `maybe_source` | `validate_settings` | [601](../../src/instruction.rs#L601) | [profile::instruction::validate_settings](../../src/instruction.rs#L819) |
 | `maybe_source` | `normalize_logical` | [603](../../src/instruction.rs#L603) | [profile::instruction::normalize_logical](../../src/instruction.rs#L694) |
 | `maybe_source` | `sources.push` | [604](../../src/instruction.rs#L604) | receiver-type-required |
 | `maybe_source` | `origin.clone` | [605](../../src/instruction.rs#L605) | receiver-type-required |
-| `maybe_source` | `digest` | [609](../../src/instruction.rs#L609) | [profile::digest](../../src/lib.rs#L154) |
+| `maybe_source` | `digest` | [609](../../src/instruction.rs#L609) | [profile::digest](../../src/lib.rs#L156) |
 | `read_stable_file` | `OpenOptions::new()         .read(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [615](../../src/instruction.rs#L615) | receiver-type-required |
 | `read_stable_file` | `OpenOptions::new()         .read(true)         .custom_flags` | [615](../../src/instruction.rs#L615) | receiver-type-required |
 | `read_stable_file` | `OpenOptions::new()         .read` | [615](../../src/instruction.rs#L615) | receiver-type-required |
@@ -469,7 +469,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `derive_effective` | `resource_key` | [730](../../src/instruction.rs#L730), [735](../../src/instruction.rs#L735), [740](../../src/instruction.rs#L740) | [profile::instruction::resource_key](../../src/instruction.rs#L755) |
 | `derive_effective` | `effective                     .commands                     .insert` | [733](../../src/instruction.rs#L733) | receiver-type-required |
 | `derive_effective` | `effective                     .hooks                     .insert` | [738](../../src/instruction.rs#L738) | receiver-type-required |
-| `derive_effective` | `parse_canonical` | [744](../../src/instruction.rs#L744) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `derive_effective` | `parse_canonical` | [744](../../src/instruction.rs#L744) | [profile::parse_canonical](../../src/lib.rs#L73) |
 | `derive_effective` | `PathBuf::from` | [744](../../src/instruction.rs#L744) | external-constructor-callback-or-unresolved |
 | `derive_effective` | `source.content.as_bytes` | [744](../../src/instruction.rs#L744) | receiver-type-required |
 | `derive_effective` | `policies.push` | [746](../../src/instruction.rs#L746) | receiver-type-required |
@@ -547,7 +547,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_snapshot` | `source                 .content_sha256                 .bytes` | [900](../../src/instruction.rs#L900) | receiver-type-required |
 | `validate_snapshot` | `byte.is_ascii_hexdigit` | [903](../../src/instruction.rs#L903) | receiver-type-required |
 | `validate_snapshot` | `byte.is_ascii_uppercase` | [903](../../src/instruction.rs#L903) | receiver-type-required |
-| `validate_snapshot` | `digest` | [910](../../src/instruction.rs#L910) | [profile::digest](../../src/lib.rs#L154) |
+| `validate_snapshot` | `digest` | [910](../../src/instruction.rs#L910) | [profile::digest](../../src/lib.rs#L156) |
 | `validate_snapshot` | `source.content.as_bytes` | [910](../../src/instruction.rs#L910), [945](../../src/instruction.rs#L945), [950](../../src/instruction.rs#L950) | receiver-type-required |
 | `validate_snapshot` | `source.content_sha256.clone` | [913](../../src/instruction.rs#L913) | receiver-type-required |
 | `validate_snapshot` | `normalize_logical` | [917](../../src/instruction.rs#L917) | [profile::instruction::normalize_logical](../../src/instruction.rs#L694) |
@@ -558,7 +558,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_snapshot` | `previous_key             .as_ref` | [933](../../src/instruction.rs#L933) | receiver-type-required |
 | `validate_snapshot` | `"sources are not in the deterministic discovery order".to_owned` | [939](../../src/instruction.rs#L939) | receiver-type-required |
 | `validate_snapshot` | `Some` | [942](../../src/instruction.rs#L942) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `parse_canonical` | [945](../../src/instruction.rs#L945) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `validate_snapshot` | `parse_canonical` | [945](../../src/instruction.rs#L945) | [profile::parse_canonical](../../src/lib.rs#L73) |
 | `validate_snapshot` | `validate_settings` | [946](../../src/instruction.rs#L946) | [profile::instruction::validate_settings](../../src/instruction.rs#L819) |
 | `validate_snapshot` | `resource_key` | [949](../../src/instruction.rs#L949) | [profile::instruction::resource_key](../../src/instruction.rs#L755) |
 | `validate_snapshot` | `tools::validate_instruction_hook(source.content.as_bytes(), &logical).map_err` | [950](../../src/instruction.rs#L950) | receiver-type-required |

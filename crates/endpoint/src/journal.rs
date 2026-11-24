@@ -1,10 +1,11 @@
 use std::collections::{HashMap, HashSet};
 use std::fs::{self, OpenOptions};
-use std::io::Write;
+use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use store::{DirectoryLock, FullSync, NamedLock};
 use thiserror::Error;
 
@@ -127,6 +128,8 @@ pub struct JournalTail {
     pub rows: u64,
     pub last_seq: Option<u64>,
     pub last_kernel_seq: u64,
+    /// SHA-256 of the exact first `len` bytes of `endpoint.jsonl`.
+    pub sha256: [u8; 32],
 }
 
 pub struct EndpointJournal {
@@ -138,12 +141,18 @@ pub struct EndpointJournal {
 
 struct JournalCache {
     file_len: u64,
+    hasher: Sha256,
+    sha256: [u8; 32],
     records: Vec<JournalRecord>,
     identities: HashMap<String, usize>,
 }
 
 impl JournalCache {
-    fn new(file_len: u64, records: Vec<JournalRecord>) -> Result<Self, JournalError> {
+    fn new(
+        file_len: u64,
+        hasher: Sha256,
+        records: Vec<JournalRecord>,
+    ) -> Result<Self, JournalError> {
         let mut identities = HashMap::with_capacity(records.len());
         for (index, record) in records.iter().enumerate() {
             let identity = identity(record)?;
@@ -153,12 +162,63 @@ impl JournalCache {
                 ));
             }
         }
+        let sha256 = hasher.clone().finalize().into();
         Ok(Self {
             file_len,
+            hasher,
+            sha256,
             records,
             identities,
         })
     }
+}
+
+struct JournalStreamHash {
+    file_len: u64,
+    prefix_hash: Option<[u8; 32]>,
+    full_hash: [u8; 32],
+}
+
+fn hash_file_stream(
+    path: &Path,
+    prefix_len: Option<u64>,
+) -> Result<JournalStreamHash, JournalError> {
+    let mut file = fs::File::open(path)?;
+    let mut hasher = Sha256::new();
+    let mut prefix_hash =
+        prefix_len.and_then(|limit| (limit == 0).then(|| Sha256::digest([]).into()));
+    let mut total = 0_u64;
+    let mut buffer = [0_u8; 16 * 1024];
+    loop {
+        let read = file.read(&mut buffer)?;
+        if read == 0 {
+            break;
+        }
+        let chunk = &buffer[..read];
+        if let Some(limit) = prefix_len
+            && prefix_hash.is_none()
+            && total < limit
+        {
+            let remaining = usize::try_from(limit - total).unwrap_or(usize::MAX);
+            if remaining <= read {
+                hasher.update(&chunk[..remaining]);
+                prefix_hash = Some(hasher.clone().finalize().into());
+                if remaining < read {
+                    hasher.update(&chunk[remaining..]);
+                }
+            } else {
+                hasher.update(chunk);
+            }
+        } else {
+            hasher.update(chunk);
+        }
+        total = total.saturating_add(read as u64);
+    }
+    Ok(JournalStreamHash {
+        file_len: total,
+        prefix_hash,
+        full_hash: hasher.finalize().into(),
+    })
 }
 
 impl EndpointJournal {
@@ -261,6 +321,7 @@ impl EndpointJournal {
             last_kernel_seq: last
                 .and_then(|record| record.kernel_seqs.last().copied())
                 .unwrap_or(0),
+            sha256: snapshot.sha256,
         })
     }
 
@@ -416,8 +477,45 @@ impl EndpointJournal {
             file.write_all(&bytes)?;
             FullSync::full_sync(&file)?;
             cache.file_len = cache.file_len.saturating_add(bytes.len() as u64);
+            cache.hasher.update(&bytes);
+            cache.sha256 = cache.hasher.clone().finalize().into();
         }
         Ok(results)
+    }
+
+    /// Atomically replaces `endpoint.jsonl` with a complete set of records
+    /// freshly projected from a verified semantic ledger.
+    pub fn replace_verified(&self, records: Vec<JournalRecord>) -> Result<(), JournalError> {
+        let _lock = NamedLock::exclusive(&self.lock_path)?;
+        let mut bytes = Vec::new();
+        for (index, record) in records.iter().enumerate() {
+            record.validate(index as u64)?;
+            let mut line = record.canonical_bytes()?;
+            line.push(b'\n');
+            bytes.extend_from_slice(&line);
+        }
+        let mut hasher = Sha256::new();
+        hasher.update(&bytes);
+        let new_cache = JournalCache::new(bytes.len() as u64, hasher, records)?;
+        let temp = self
+            .thread_folder()
+            .join(format!("endpoint.rebuild.{}.tmp", std::process::id()));
+        {
+            let mut file = OpenOptions::new()
+                .write(true)
+                .create(true)
+                .truncate(true)
+                .open(&temp)?;
+            file.write_all(&bytes)?;
+            FullSync::full_sync(&file)?;
+        }
+        fs::rename(&temp, &self.path)?;
+        fs::File::open(self.thread_folder())?.sync_all()?;
+        *self
+            .cache
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(new_cache);
+        Ok(())
     }
 
     fn repair_tail(&self) -> Result<(), JournalError> {
@@ -431,7 +529,9 @@ impl EndpointJournal {
         }
         // The pass above already validated every record under the exclusive lock; keep its
         // result instead of discarding it and parsing the same bytes again on first use.
-        let cache = JournalCache::new(valid_len as u64, records)?;
+        let mut hasher = Sha256::new();
+        hasher.update(&bytes[..valid_len]);
+        let cache = JournalCache::new(valid_len as u64, hasher, records)?;
         *self
             .cache
             .lock()
@@ -440,19 +540,30 @@ impl EndpointJournal {
     }
 
     fn refresh_cache_unlocked(&self, cache: &mut Option<JournalCache>) -> Result<(), JournalError> {
-        let file_len = fs::metadata(&self.path)?.len();
-        if cache
-            .as_ref()
-            .is_some_and(|cached| cached.file_len == file_len)
-        {
-            return Ok(());
+        if let Some(cached) = cache.as_ref() {
+            let stream = hash_file_stream(&self.path, Some(cached.file_len))?;
+            if stream.file_len == cached.file_len {
+                if stream.full_hash == cached.sha256 {
+                    return Ok(());
+                }
+                return Err(JournalError::Corruption(
+                    "endpoint journal prefix checksum mismatch".to_owned(),
+                ));
+            }
+            if stream.file_len > cached.file_len && stream.prefix_hash != Some(cached.sha256) {
+                return Err(JournalError::Corruption(
+                    "endpoint journal prefix checksum mismatch".to_owned(),
+                ));
+            }
         }
         let bytes = fs::read(&self.path)?;
         let (records, valid_len) = parse_records(&bytes, false)?;
         if valid_len != bytes.len() {
             return Err(JournalError::Corruption("partial journal tail".to_owned()));
         }
-        *cache = Some(JournalCache::new(file_len, records)?);
+        let mut hasher = Sha256::new();
+        hasher.update(&bytes);
+        *cache = Some(JournalCache::new(bytes.len() as u64, hasher, records)?);
         Ok(())
     }
 }
@@ -696,5 +807,43 @@ mod repair_cache_tests {
             assert_eq!(tail.last_kernel_seq, index + 1);
             assert_eq!(tail.len, std::fs::metadata(&path).unwrap().len());
         }
+    }
+
+    #[test]
+    fn same_length_in_place_mutation_is_detected_by_prefix_checksum() {
+        let folder = tempfile::tempdir().unwrap();
+        let journal = EndpointJournal::open(folder.path()).unwrap();
+        for index in 0..3_u64 {
+            journal
+                .append_kernel(
+                    vec![index + 1],
+                    format!("slot-{index}"),
+                    SessionEvent {
+                        event_type: "turn/start".to_owned(),
+                        seq: 0,
+                        time: 1.0,
+                        data: schema::IJsonValue::parse_str(r#"{"turn":0}"#).unwrap(),
+                        ignorable: None,
+                        source_event_seqs: None,
+                        surface_op: None,
+                    },
+                )
+                .unwrap();
+        }
+        let path = folder.path().join(JOURNAL_FILE);
+        let original = std::fs::read(&path).unwrap();
+        let mut mutated = original.clone();
+        let pos = mutated
+            .windows(b"slot-1".len())
+            .position(|window| window == b"slot-1")
+            .expect("slot-1 present");
+        mutated[pos..pos + 6].copy_from_slice(b"slot-9");
+        assert_eq!(mutated.len(), original.len());
+        std::fs::write(&path, &mutated).unwrap();
+
+        let err = journal
+            .tail_summary()
+            .expect_err("in-place mutation must fail checksum check");
+        assert!(matches!(err, JournalError::Corruption(_)));
     }
 }

@@ -423,7 +423,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `live_kernel_turn` | `events[0].raw` | [369](../../src/live_tests.rs#L369) | receiver-type-required |
 | `live_kernel_turn` | `repeated.get` | [377](../../src/live_tests.rs#L377) | receiver-type-required |
 | `live_kernel_turn` | `endpoint::EndpointJournal::open(&runtime_folder).unwrap` | [384](../../src/live_tests.rs#L384), [409](../../src/live_tests.rs#L409) | receiver-type-required |
-| `live_kernel_turn` | `endpoint::EndpointJournal::open` | [384](../../src/live_tests.rs#L384), [409](../../src/live_tests.rs#L409) | [endpoint::journal::EndpointJournal::open](../../../endpoint/src/journal.rs#L165) |
+| `live_kernel_turn` | `endpoint::EndpointJournal::open` | [384](../../src/live_tests.rs#L384), [409](../../src/live_tests.rs#L409) | [endpoint::journal::EndpointJournal::open](../../../endpoint/src/journal.rs#L225) |
 | `live_kernel_turn` | `endpoint::Projector::default` | [385](../../src/live_tests.rs#L385), [410](../../src/live_tests.rs#L410) | external-constructor-callback-or-unresolved |
 | `live_kernel_turn` | `Vec::new` | [386](../../src/live_tests.rs#L386) | external-constructor-callback-or-unresolved |
 | `live_kernel_turn` | `projector.reconcile(std::slice::from_ref(event), &journal).unwrap` | [388](../../src/live_tests.rs#L388) | receiver-type-required |

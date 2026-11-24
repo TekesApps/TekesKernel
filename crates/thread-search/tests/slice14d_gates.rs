@@ -606,3 +606,202 @@ fn global_title_search_is_explicit_and_cursor_filters_cannot_be_widened() {
     assert_eq!(filtered.results.len(), 1);
     assert_eq!(filtered.results[0].session_id, D);
 }
+
+#[test]
+fn bench_164_search_work_counts() {
+    for count in [20_usize, 60_usize] {
+        let root = tempfile::tempdir().expect("root");
+        fs::create_dir_all(root.path().join("threads")).unwrap();
+        fs::create_dir_all(root.path().join("archive")).unwrap();
+        let store = ThreadStore::open(root.path()).unwrap();
+        let make_ev =
+            |v: serde_json::Value| Event::decode(&serde_json::to_vec(&v).unwrap()).unwrap();
+        for idx in 0..count {
+            let sid = format!("018f0000-0000-7000-8000-{idx:012x}");
+            let folder = root.path().join("threads").join(&sid);
+            fs::create_dir_all(folder.join("assets")).unwrap();
+            let genesis = make_ev(json!({
+                "v":1,"seq":1,"ts":"2026-08-28T00:00:00.000Z","format":1,"kind":"genesis",
+                "min_reader":1,"min_writer":1,"origin_key":"c1",
+                "origin_tuple":{"principal":"p","client":"c","target":sid,"op":"create","key":"c1"},
+                "resume":"never","config":{"digest":"test"},"thread":sid,"workspace":"ws"
+            }));
+            fs::write(
+                folder.join("main.jsonl"),
+                String::from_utf8(genesis.canonical_bytes().unwrap()).unwrap() + "\n",
+            )
+            .unwrap();
+            let mut ledger =
+                LockedLedger::open(folder.join("main.jsonl"), schema::READER_VERSION).unwrap();
+            let mut seq = 2_u64;
+            for msg_idx in 0..10_u64 {
+                ledger.append_contract(make_ev(json!({
+                    "v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","kind":"input",
+                    "content":[{"type":"text","text":if idx == count - 1 && msg_idx == 9 { "TARGET_BODY_NEEDLE" } else { "ordinary body text" }}],
+                    "origin_key":format!("k-{msg_idx}"),
+                    "origin_tuple":{"principal":"p","client":"c","target":sid,"op":"session.prompt","key":format!("k-{msg_idx}")}
+                })), BarrierContext::default()).unwrap();
+                seq += 1;
+            }
+            ledger.append_contract(make_ev(json!({
+                "v":1,"seq":seq,"ts":"2026-08-28T00:00:02.000Z","kind":"meta",
+                "title":format!("Session Title {idx}"),
+                "origin_key":"m1","origin_tuple":{"principal":"p","client":"c","target":sid,"op":"rename","key":"m1"}
+            })), BarrierContext::default()).unwrap();
+            drop(ledger);
+            if idx % 3 == 0 {
+                store.archive(&sid).unwrap();
+            }
+        }
+        let authority = ThreadSearchAuthority::open(root.path()).unwrap();
+        // 1. Cold missing index search (builds .thread-search.json)
+        authority.reset_metrics();
+        let p1 = authority
+            .search(&request("", "session title", 10, ArchiveVisibility::All))
+            .unwrap();
+        assert_eq!(p1.index_use.missing, count);
+        let m_cold = authority.metrics();
+        // 2. Warm hit thread.search
+        authority.reset_metrics();
+        let t0 = Instant::now();
+        let p2 = authority
+            .search(&request("", "session title", 10, ArchiveVisibility::All))
+            .unwrap();
+        let dt_warm_title = t0.elapsed().as_micros();
+        assert_eq!(p2.index_use.hits, count);
+        let m_warm = authority.metrics();
+        // 3. session.search warm cache hit (body fallback, 0 extra reads/decodes)
+        authority.reset_metrics();
+        let t1 = Instant::now();
+        let sres = authority.search_sessions("TARGET_BODY_NEEDLE").unwrap();
+        let dt_body = t1.elapsed().as_micros();
+        assert_eq!(sres.items.len(), 1);
+        let m_body = authority.metrics();
+        // 4. session.search cold single-pass (fresh authority: 1 read/decode per session, 0 fallbacks)
+        let cold_auth = ThreadSearchAuthority::open(root.path()).unwrap();
+        cold_auth.reset_metrics();
+        let t2 = Instant::now();
+        let sres_cold = cold_auth.search_sessions("TARGET_BODY_NEEDLE").unwrap();
+        let dt_cold_body = t2.elapsed().as_micros();
+        assert_eq!(sres_cold.items.len(), 1);
+        let m_cold_body = cold_auth.metrics();
+        eprintln!(
+            "METRIC #164 sessions={count} cold(reads={},decoded={},repairs={}) warm_hit(reads={},decoded={},us={dt_warm_title}) cold_body(reads={},decoded={},fallbacks={},us={dt_cold_body}) warm_body(reads={},decoded={},fallbacks={},us={dt_body})",
+            m_cold.0,
+            m_cold.1,
+            m_cold.3,
+            m_warm.0,
+            m_warm.1,
+            m_cold_body.0,
+            m_cold_body.1,
+            m_cold_body.2,
+            m_body.0,
+            m_body.1,
+            m_body.2
+        );
+    }
+}
+
+#[test]
+fn scan_cache_verifies_live_bytes_fails_closed_on_corruption_and_preserves_index_repairs() {
+    let root = tempfile::tempdir().expect("root");
+    fs::create_dir_all(root.path().join("threads")).unwrap();
+    fs::create_dir_all(root.path().join("archive")).unwrap();
+    let _store = ThreadStore::open(root.path()).unwrap();
+    let make_ev = |v: serde_json::Value| Event::decode(&serde_json::to_vec(&v).unwrap()).unwrap();
+
+    let sid = A;
+    let folder = root.path().join("threads").join(sid);
+    fs::create_dir_all(folder.join("assets")).unwrap();
+    let genesis = make_ev(json!({
+        "v":1,"seq":1,"ts":"2026-08-28T00:00:00.000Z","format":1,"kind":"genesis",
+        "min_reader":1,"min_writer":1,"origin_key":"c1",
+        "origin_tuple":{"principal":"p","client":"c","target":sid,"op":"create","key":"c1"},
+        "resume":"never","config":{"digest":"test"},"thread":sid,"workspace":"ws"
+    }));
+    let ledger_path = folder.join("main.jsonl");
+    fs::write(
+        &ledger_path,
+        String::from_utf8(genesis.canonical_bytes().unwrap()).unwrap() + "\n",
+    )
+    .unwrap();
+    let mut ledger = LockedLedger::open(&ledger_path, schema::READER_VERSION).unwrap();
+    ledger.append_contract(make_ev(json!({
+        "v":1,"seq":2,"ts":"2026-08-28T00:00:01.000Z","kind":"input",
+        "content":[{"type":"text","text":"initial body token"}],
+        "origin_key":"k1","origin_tuple":{"principal":"p","client":"c","target":sid,"op":"session.prompt","key":"k1"}
+    })), BarrierContext::default()).unwrap();
+    ledger.append_contract(make_ev(json!({
+        "v":1,"seq":3,"ts":"2026-08-28T00:00:01.000Z","kind":"meta",
+        "title":"Alpha Session",
+        "origin_key":"m1","origin_tuple":{"principal":"p","client":"c","target":sid,"op":"rename","key":"m1"}
+    })), BarrierContext::default()).unwrap();
+    drop(ledger);
+
+    let authority = ThreadSearchAuthority::open(root.path()).unwrap();
+    let p1 = authority
+        .search(&request("", "alpha", 10, ArchiveVisibility::All))
+        .unwrap();
+    assert_eq!(p1.results.len(), 1);
+    assert_eq!(p1.index_use.missing, 1);
+
+    // Warm hit: 0 decoded events.
+    authority.reset_metrics();
+    let p2 = authority
+        .search(&request("", "alpha", 10, ArchiveVisibility::All))
+        .unwrap();
+    assert_eq!(p2.index_use.hits, 1);
+    assert_eq!(authority.metrics().1, 0);
+
+    // Delete .thread-search.json while ledger stays unchanged: scan_cache hits (0 decodes),
+    // but index repair still detects missing .thread-search.json and rebuilds it.
+    fs::remove_file(folder.join(".thread-search.json")).unwrap();
+    authority.reset_metrics();
+    let p3 = authority
+        .search(&request("", "alpha", 10, ArchiveVisibility::All))
+        .unwrap();
+    assert_eq!(p3.index_use.missing, 1);
+    assert_eq!(authority.metrics().1, 0);
+    assert_eq!(authority.metrics().3, 1);
+    assert!(folder.join(".thread-search.json").is_file());
+
+    // Appending to main.jsonl invalidates SHA-256 cache -> re-decodes and finds new body token.
+    let mut ledger = LockedLedger::open(&ledger_path, schema::READER_VERSION).unwrap();
+    ledger.append_contract(make_ev(json!({
+        "v":1,"seq":4,"ts":"2026-08-28T00:00:02.000Z","kind":"input",
+        "content":[{"type":"text","text":"freshly appended phrase"}],
+        "origin_key":"k2","origin_tuple":{"principal":"p","client":"c","target":sid,"op":"session.prompt","key":"k2"}
+    })), BarrierContext::default()).unwrap();
+    drop(ledger);
+
+    authority.reset_metrics();
+    let body_hits = authority
+        .search_sessions("freshly appended phrase")
+        .unwrap();
+    assert_eq!(body_hits.items.len(), 1);
+    assert_eq!(body_hits.items[0].session_id, sid);
+    assert_eq!(authority.metrics().1, 4);
+
+    // Repeat warm session.search: 0 events decoded, 0 fallback reads.
+    authority.reset_metrics();
+    let body_warm = authority
+        .search_sessions("freshly appended phrase")
+        .unwrap();
+    assert_eq!(body_warm.items.len(), 1);
+    assert_eq!(authority.metrics(), (1, 0, 0, 0));
+
+    // Corrupting a complete line invalidates SHA-256 and fails closed (never serves stale scan_cache).
+    let mut f = fs::OpenOptions::new()
+        .append(true)
+        .open(&ledger_path)
+        .unwrap();
+    writeln!(f, "{{\"broken\":true}}").unwrap();
+    let after_corrupt_title = authority
+        .search(&request("", "alpha", 10, ArchiveVisibility::All))
+        .unwrap();
+    assert!(after_corrupt_title.results.is_empty());
+    let after_corrupt_body = authority
+        .search_sessions("freshly appended phrase")
+        .unwrap();
+    assert!(after_corrupt_body.items.is_empty());
+}
