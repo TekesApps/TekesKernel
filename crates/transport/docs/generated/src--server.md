@@ -643,7 +643,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `unary_inner` | `validate_rpc_id` | [741](../../src/server.rs#L741) | [endpoint::rpc::validate_rpc_id](../../../endpoint/src/rpc.rs#L186) |
 | `unary_inner` | `shared.draining.load` | [754](../../src/server.rs#L754) | receiver-type-required |
 | `unary_inner` | `shared.host.classify_method` | [755](../../src/server.rs#L755) | receiver-type-required |
-| `unary_inner` | `DurableHandoffSignal::new` | [760](../../src/server.rs#L760) | [endpoint::host::DurableHandoffSignal::new](../../../endpoint/src/host.rs#L202) |
+| `unary_inner` | `DurableHandoffSignal::new` | [760](../../src/server.rs#L760) | [endpoint::host::DurableHandoffSignal::new](../../../endpoint/src/host.rs#L215) |
 | `unary_inner` | `call_context` | [761](../../src/server.rs#L761) | [transport::server::call_context](../../src/server.rs#L1187) |
 | `unary_inner` | `handoff.clone` | [761](../../src/server.rs#L761) | receiver-type-required |
 | `unary_inner` | `timeout` | [762](../../src/server.rs#L762) | external-constructor-callback-or-unresolved |
@@ -734,7 +734,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `json_content_type` | `mime.trim().eq_ignore_ascii_case` | [1183](../../src/server.rs#L1183) | receiver-type-required |
 | `json_content_type` | `mime.trim` | [1183](../../src/server.rs#L1183) | receiver-type-required |
 | `call_context` | `Instant::now` | [1189](../../src/server.rs#L1189) | external-constructor-callback-or-unresolved |
-| `call_context` | `DrainSignal::new` | [1190](../../src/server.rs#L1190) | [endpoint::host::DrainSignal::new](../../../endpoint/src/host.rs#L175) |
+| `call_context` | `DrainSignal::new` | [1190](../../src/server.rs#L1190) | [endpoint::host::DrainSignal::new](../../../endpoint/src/host.rs#L188) |
 | `call_context` | `Arc::clone` | [1190](../../src/server.rs#L1190) | external-constructor-callback-or-unresolved |
 | `json_response` | `serde_json_canonicalizer::to_vec` | [1196](../../src/server.rs#L1196) | external-constructor-callback-or-unresolved |
 | `json_response` | `Response::builder()             .status(StatusCode::OK)             .header(CONTENT_TYPE, "application/json")             .header("content-length", bytes.len().to_string())             .body(Body::from(bytes))             .expect` | [1197](../../src/server.rs#L1197) | receiver-type-required |

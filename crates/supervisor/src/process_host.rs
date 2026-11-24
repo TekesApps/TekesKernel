@@ -496,7 +496,7 @@ struct WorkerHandle {
     /// Held for the complete process lifetime so a workspace relocation can
     /// acquire the matching exclusive lock without a check-then-spawn race.
     _session_scope_quiescence: store::NamedLock,
-    stdin: Mutex<ChildStdin>,
+    stdin: Mutex<Option<ChildStdin>>,
     child: Mutex<Child>,
     state: Mutex<WorkerState>,
     stderr_tail: Arc<Mutex<Vec<u8>>>,
@@ -1968,7 +1968,35 @@ impl ProductionProcessHost {
             .values()
             .cloned()
             .collect::<Vec<_>>();
-        for worker in workers {
+        for worker in &workers {
+            worker.tool_cancellation.cancel();
+            if let Some(authority) = worker.dynamic_authority.as_ref() {
+                authority.cancel_inflight();
+            }
+            worker.close_stdin();
+        }
+        self.admission_changed.notify_all();
+        let deadline = Instant::now() + Duration::from_secs(5);
+        let mut pending = workers;
+        while !pending.is_empty() && Instant::now() < deadline {
+            pending.retain(|worker| {
+                let mut child = worker
+                    .child
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner);
+                match child.try_wait() {
+                    Ok(Some(_)) | Err(_) => {
+                        worker.alive.store(false, Ordering::Release);
+                        false
+                    }
+                    Ok(None) => true,
+                }
+            });
+            if !pending.is_empty() {
+                std::thread::sleep(Duration::from_millis(10));
+            }
+        }
+        for worker in pending {
             let mut child = worker
                 .child
                 .lock()
@@ -2272,7 +2300,7 @@ impl ProductionProcessHost {
             );
         let handle = Arc::new(WorkerHandle {
             _session_scope_quiescence: session_scope_quiescence,
-            stdin: Mutex::new(stdin),
+            stdin: Mutex::new(Some(stdin)),
             child: Mutex::new(child),
             state: Mutex::new(WorkerState::default()),
             stderr_tail,
@@ -2738,7 +2766,16 @@ impl ProductionProcessHost {
         live + starting < self.max_workers.load(Ordering::Acquire)
     }
 
+    #[cfg(test)]
     fn request_provider_lease(&self, lease: AdmissionLease) -> bool {
+        self.request_provider_lease_with_liveness(lease, || true)
+    }
+
+    fn request_provider_lease_with_liveness(
+        &self,
+        lease: AdmissionLease,
+        is_alive: impl Fn() -> bool,
+    ) -> bool {
         let attempt = lease.attempt.clone();
         let mut waiters = self
             .admission_waiters
@@ -2748,7 +2785,7 @@ impl ProductionProcessHost {
             waiters.push_back(attempt.clone());
         }
         loop {
-            if self.draining.load(Ordering::Acquire) {
+            if self.draining.load(Ordering::Acquire) || !is_alive() {
                 waiters.retain(|waiting| waiting != &attempt);
                 self.admission_changed.notify_all();
                 return false;
@@ -2774,6 +2811,65 @@ impl ProductionProcessHost {
                 .admission_changed
                 .wait(waiters)
                 .unwrap_or_else(std::sync::PoisonError::into_inner);
+        }
+    }
+
+    fn request_provider_lease_for_worker(&self, handle: &Arc<WorkerHandle>, lease: AdmissionLease) {
+        let attempt = lease.attempt.clone();
+        let worker_active =
+            || handle.alive.load(Ordering::Acquire) && !handle.tool_cancellation.is_cancelled();
+        let granted = self.request_provider_lease_with_liveness(lease, worker_active);
+        if !granted {
+            if worker_active() {
+                let _ = handle.write(
+                    &encode_line(
+                        "lease",
+                        &Lease {
+                            attempt,
+                            granted: false,
+                        },
+                    )
+                    .unwrap_or_default(),
+                );
+            }
+            return;
+        }
+        {
+            let mut state = handle
+                .state
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            if !worker_active() {
+                drop(state);
+                self.admission
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                    .settle(&attempt);
+                self.admission_changed.notify_all();
+                return;
+            }
+            state.held_attempts.insert(attempt.clone());
+        }
+        let line = encode_line(
+            "lease",
+            &Lease {
+                attempt: attempt.clone(),
+                granted: true,
+            },
+        )
+        .unwrap_or_default();
+        if handle.write(&line).is_err() {
+            handle
+                .state
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .held_attempts
+                .remove(&attempt);
+            self.admission
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .settle(&attempt);
+            self.admission_changed.notify_all();
         }
     }
 
@@ -4400,30 +4496,49 @@ const fn child_dependency_admitted(ordinary_capacity: bool, parent_is_live_waite
 
 impl WorkerHandle {
     fn write(&self, bytes: &[u8]) -> Result<(), DaemonError> {
-        let mut stdin = self
+        let mut guard = self
             .stdin
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let Some(stdin) = guard.as_mut() else {
+            return Err(DaemonError::io(std::io::Error::new(
+                std::io::ErrorKind::BrokenPipe,
+                "worker stdin closed",
+            )));
+        };
         stdin.write_all(bytes).map_err(DaemonError::io)?;
         stdin.flush().map_err(DaemonError::io)
     }
 
-    fn receipt(&self, delivery: &str) -> Result<Receipt, ProductionRouteFailure> {
+    fn close_stdin(&self) {
+        drop(
+            self.stdin
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .take(),
+        );
+    }
+
+    fn wait_for_delivery<T>(
+        &self,
+        mut take: impl FnMut(&mut WorkerState) -> Option<T>,
+        on_timeout: impl FnOnce() -> ProductionRouteFailure,
+    ) -> Result<T, ProductionRouteFailure> {
         let deadline = Instant::now() + DELIVERY_TIMEOUT;
         let mut state = self
             .state
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         loop {
-            if let Some(receipt) = state.receipts.remove(delivery) {
-                return Ok(receipt);
+            if let Some(value) = take(&mut state) {
+                return Ok(value);
             }
             if let Some(failure) = state.failure.as_ref() {
                 return Err(internal(failure));
             }
             let now = Instant::now();
             if now >= deadline {
-                return Err(internal("worker receipt timed out"));
+                return Err(on_timeout());
             }
             let (next, _) = self
                 .changed
@@ -4433,32 +4548,35 @@ impl WorkerHandle {
         }
     }
 
-    fn queue_result(
+    fn receipt(&self, delivery: &str) -> Result<Receipt, ProductionRouteFailure> {
+        self.wait_for_delivery(
+            |state| state.receipts.remove(delivery),
+            || internal("worker receipt timed out"),
+        )
+    }
+
+    fn receipt_confirmed(
         &self,
         delivery: &str,
+        operation: &str,
+        rpc_id: &str,
+    ) -> Result<Receipt, ProductionRouteFailure> {
+        self.wait_for_delivery(
+            |state| state.receipts.remove(delivery),
+            || accepted_but_not_confirmed_error(operation, rpc_id),
+        )
+    }
+
+    fn queue_result_confirmed(
+        &self,
+        delivery: &str,
+        operation: &str,
+        rpc_id: &str,
     ) -> Result<QueueTransactionResult, ProductionRouteFailure> {
-        let deadline = Instant::now() + DELIVERY_TIMEOUT;
-        let mut state = self
-            .state
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
-        loop {
-            if let Some(result) = state.queue_results.remove(delivery) {
-                return Ok(result);
-            }
-            if let Some(failure) = state.failure.as_ref() {
-                return Err(internal(failure));
-            }
-            let now = Instant::now();
-            if now >= deadline {
-                return Err(internal("worker queue transaction timed out"));
-            }
-            let (next, _) = self
-                .changed
-                .wait_timeout(state, deadline - now)
-                .unwrap_or_else(std::sync::PoisonError::into_inner);
-            state = next;
-        }
+        self.wait_for_delivery(
+            |state| state.queue_results.remove(delivery),
+            || accepted_but_not_confirmed_error(operation, rpc_id),
+        )
     }
 }
 
@@ -4503,30 +4621,34 @@ fn worker_reader(
                 handle.changed.notify_all();
             }
             Ok(WorkerMessage::LeaseRequest(request)) => {
-                let granted = owner.upgrade().is_some_and(|owner| {
-                    owner.request_provider_lease(AdmissionLease {
-                        attempt: request.attempt.clone(),
+                if let Some(owner) = owner.upgrade() {
+                    let waiter_handle = Arc::clone(&handle);
+                    let lease = AdmissionLease {
+                        attempt: request.attempt,
                         class: request.class,
-                    })
-                });
-                if granted {
-                    handle
-                        .state
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .held_attempts
-                        .insert(request.attempt.clone());
+                    };
+                    if let Err(error) = std::thread::Builder::new()
+                        .name("provider-lease-waiter".into())
+                        .spawn(move || {
+                            owner.request_provider_lease_for_worker(&waiter_handle, lease)
+                        })
+                    {
+                        fail_worker(&handle, format!("spawn provider lease waiter: {error}"));
+                        reader_failed = true;
+                        break;
+                    }
+                } else {
+                    let _ = handle.write(
+                        &encode_line(
+                            "lease",
+                            &Lease {
+                                attempt: request.attempt,
+                                granted: false,
+                            },
+                        )
+                        .unwrap_or_default(),
+                    );
                 }
-                let _ = handle.write(
-                    &encode_line(
-                        "lease",
-                        &Lease {
-                            attempt: request.attempt,
-                            granted,
-                        },
-                    )
-                    .unwrap_or_default(),
-                );
             }
             Ok(WorkerMessage::AttemptSettled(settled)) => {
                 if let Some(owner) = owner.upgrade() {
@@ -4630,6 +4752,9 @@ fn worker_reader(
     }
     handle.alive.store(false, Ordering::Release);
     fail_worker(&handle, "worker exited".to_owned());
+    if let Some(owner) = owner.upgrade() {
+        owner.admission_changed.notify_all();
+    }
     if reader_failed {
         terminate_worker(&handle);
     }
@@ -4722,14 +4847,23 @@ fn terminate_worker(handle: &WorkerHandle) {
     if let Some(authority) = handle.dynamic_authority.as_ref() {
         authority.cancel_inflight();
     }
+    handle.close_stdin();
     let mut child = handle
         .child
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let graceful_deadline = Instant::now() + Duration::from_millis(1_500);
+    while Instant::now() < graceful_deadline {
+        match child.try_wait() {
+            Ok(Some(_)) => return,
+            Ok(None) => std::thread::sleep(Duration::from_millis(10)),
+            Err(_) => return,
+        }
+    }
     let pid = child.id() as libc::pid_t;
     // SAFETY: pid came from this live child; SIGTERM carries no pointers.
     let _ = unsafe { libc::kill(pid, libc::SIGTERM) };
-    let deadline = Instant::now() + Duration::from_secs(1);
+    let deadline = Instant::now() + Duration::from_millis(500);
     loop {
         match child.try_wait() {
             Ok(Some(_)) => return,
@@ -4738,6 +4872,7 @@ fn terminate_worker(handle: &WorkerHandle) {
             }
             _ => {
                 let _ = child.kill();
+                let _ = child.wait();
                 return;
             }
         }
@@ -4824,36 +4959,35 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
         self.reset_restart_backoff(session_id);
         if let Some(worker) = self.live_worker(session_id) {
             let delivery = origin.key.clone();
+            let line = encode_line(
+                "input",
+                &Input {
+                    delivery: delivery.clone(),
+                    origin: origin.clone(),
+                    content: prompt.blocks.clone(),
+                    submission: Some(
+                        self.endpoint
+                            .submission_snapshot(session_id)
+                            .map_err(internal)?,
+                    ),
+                    steer: Some(steer),
+                    assets: (!prompt.attachments.is_empty()).then(|| {
+                        prompt
+                            .attachments
+                            .iter()
+                            .map(|attachment| worker_control::AssetRef {
+                                asset: attachment.attachment_id.clone(),
+                                mime: attachment.media_type.as_str().to_owned(),
+                            })
+                            .collect()
+                    }),
+                },
+            )
+            .map_err(internal)?;
             let delivered = worker
-                .write(
-                    &encode_line(
-                        "input",
-                        &Input {
-                            delivery: delivery.clone(),
-                            origin: origin.clone(),
-                            content: prompt.blocks.clone(),
-                            submission: Some(
-                                self.endpoint
-                                    .submission_snapshot(session_id)
-                                    .map_err(internal)?,
-                            ),
-                            steer: Some(steer),
-                            assets: (!prompt.attachments.is_empty()).then(|| {
-                                prompt
-                                    .attachments
-                                    .iter()
-                                    .map(|attachment| worker_control::AssetRef {
-                                        asset: attachment.attachment_id.clone(),
-                                        mime: attachment.media_type.as_str().to_owned(),
-                                    })
-                                    .collect()
-                            }),
-                        },
-                    )
-                    .map_err(internal)?,
-                )
+                .write(&line)
                 .map_err(internal)
-                .and_then(|()| worker.receipt(&delivery));
+                .and_then(|()| worker.receipt_confirmed(&delivery, "session.prompt", &origin.key));
             if let Ok(receipt) = delivered {
                 self.publish_queue_snapshot(session_id);
                 self.spawn_automatic_title_seed_and_refinement(
@@ -4926,6 +5060,7 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
         let started = Instant::now();
         if let Some(worker) = self.live_worker(session_id) {
             worker.tool_cancellation.cancel();
+            self.admission_changed.notify_all();
             if let Some(authority) = worker.dynamic_authority.as_ref() {
                 authority.cancel_inflight();
             }
@@ -4945,7 +5080,7 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
                 .map_err(|error| ("stop-write", internal(error)))
                 .and_then(|()| {
                     worker
-                        .receipt(&delivery)
+                        .receipt_confirmed(&delivery, "session.cancel", &origin.key)
                         .map_err(|error| ("receipt", error))
                 });
             match delivered {
@@ -5010,25 +5145,30 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
         self.reset_restart_backoff(session_id);
         if let Some(worker) = self.live_worker(session_id) {
             let delivery = origin.key.clone();
-            worker
-                .write(
-                    &encode_line(
-                        "meta",
-                        &Meta {
-                            delivery: delivery.clone(),
-                            origin: origin.clone(),
-                            title: Some(title.to_owned()),
-                            labels: None,
-                        },
-                    )
-                    .map_err(internal)?,
-                )
-                .map_err(internal)?;
-            let receipt = worker.receipt(&delivery)?;
-            return Ok(MutationReceipt {
-                seq: receipt.seq,
-                deduplicated: receipt.deduplicated,
-            });
+            let line = encode_line(
+                "meta",
+                &Meta {
+                    delivery: delivery.clone(),
+                    origin: origin.clone(),
+                    title: Some(title.to_owned()),
+                    labels: None,
+                },
+            )
+            .map_err(internal)?;
+            let delivered = worker
+                .write(&line)
+                .map_err(internal)
+                .and_then(|()| worker.receipt_confirmed(&delivery, "session.rename", &origin.key));
+            if let Ok(receipt) = delivered {
+                return Ok(MutationReceipt {
+                    seq: receipt.seq,
+                    deduplicated: receipt.deduplicated,
+                });
+            }
+            if !child_exited_within(&worker.child, Duration::from_secs(1)) {
+                return Err(delivered.unwrap_err());
+            }
+            worker.alive.store(false, Ordering::Release);
         }
         self.endpoint
             .rename_session_for_endpoint(session_id, timestamp, origin, title)
@@ -5075,6 +5215,19 @@ impl LiveRespondAuthority for ProductionProcessHost {
 /// Names the cancel stage and the time spent in it on a failure that the
 /// endpoint folds into `internal`, so `endpoint-route-error-folded` shows where
 /// a stop failed. Typed (exact) failures keep their payload.
+fn accepted_but_not_confirmed_error(operation: &str, rpc_id: &str) -> ProductionRouteFailure {
+    let details = serde_json::to_vec(&serde_json::json!({
+        "rpcId": rpc_id,
+        "operation": operation,
+    }))
+    .expect("accepted-but-not-confirmed details serialize");
+    ProductionRouteFailure::new(
+        "accepted-but-not-confirmed",
+        "Mutation was accepted but its receipt was not confirmed",
+        IJsonValue::parse(&details).expect("accepted-but-not-confirmed details are I-JSON"),
+    )
+}
+
 fn cancel_stage_failure(
     stage: &str,
     started: Instant,
@@ -5655,7 +5808,14 @@ impl QueueTransactionAuthority for ProductionProcessHost {
         } else {
             worker.write(&bytes).map_err(internal)
         };
-        match delivered.and_then(|()| worker.queue_result(&transaction.delivery)) {
+        let result = delivered.and_then(|()| {
+            worker.queue_result_confirmed(
+                &transaction.delivery,
+                "session.updateQueue",
+                &transaction.rpc_id,
+            )
+        });
+        match result {
             Ok(result) => Ok(result),
             Err(error) => {
                 // A closed pipe or lost result alone does not relinquish the
@@ -5680,7 +5840,11 @@ impl QueueTransactionAuthority for ProductionProcessHost {
                 if !recovery.startup_preloaded {
                     recovery_worker.write(&bytes).map_err(internal)?;
                 }
-                recovery_worker.queue_result(&transaction.delivery)
+                recovery_worker.queue_result_confirmed(
+                    &transaction.delivery,
+                    "session.updateQueue",
+                    &transaction.rpc_id,
+                )
             }
         }
     }
@@ -8777,7 +8941,11 @@ mod tests {
             .expect("ordinary ensure starts worker");
         assert_eq!(
             worker
-                .queue_result(&transaction.delivery)
+                .queue_result_confirmed(
+                    &transaction.delivery,
+                    "session.updateQueue",
+                    &transaction.rpc_id
+                )
                 .expect("preloaded queue result"),
             result,
         );
@@ -9105,7 +9273,11 @@ mod tests {
         let pending_worker = host.wait_for_worker(target).expect("pending worker starts");
         assert_eq!(
             pending_worker
-                .queue_result(&transaction.delivery)
+                .queue_result_confirmed(
+                    &transaction.delivery,
+                    "session.updateQueue",
+                    &transaction.rpc_id
+                )
                 .expect("preloaded queue result"),
             result,
         );
@@ -12374,5 +12546,230 @@ mod tests {
                 .expect("draining lease result")
         );
         join.join().expect("draining lease thread");
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn second_prompt_receipts_while_another_worker_waits_for_saturated_provider_lease() {
+        let root = tempfile::tempdir().expect("process host root");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
+        fs::create_dir_all(&workspace).expect("workspace");
+        fs::create_dir_all(root.path().join("config")).expect("config");
+        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
+        write_test_execution_config(
+            root.path(),
+            json!({
+                "format":1,"revision":1,"id":"ws","name":"ws",
+                "cwd":[workspace.to_string_lossy()],
+                "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}
+            }),
+        );
+        write_canonical_test_json(
+            &root.path().join("config/settings.json"),
+            json!({"format":1,"revision":1,"limits":{"max_workers":2,"max_provider_leases":1}}),
+        );
+        let session_b = "018f0000-0000-7000-8000-000000000202";
+        let folder_b = root.path().join("threads").join(session_b);
+        fs::create_dir_all(folder_b.join("assets")).expect("thread folder b");
+        let ledger_b = folder_b.join("main.jsonl");
+        write_test_genesis(&ledger_b, session_b);
+        append_test_input(&ledger_b, session_b);
+
+        let lease_witness = workspace.join("lease-granted.txt");
+        let input_event = serde_json_canonicalizer::to_string(&json!({
+            "v": 1,
+            "seq": 3,
+            "ts": "2026-08-28T00:00:02.000Z",
+            "kind": "input",
+            "content": [{"type": "text", "text": "B2 during lease wait"}],
+            "origin_key": "rpc-b2",
+            "origin_tuple": {
+                "principal": "test",
+                "client": "test",
+                "target": session_b,
+                "op": "session.prompt",
+                "key": "rpc-b2"
+            }
+        }))
+        .expect("canonical input event");
+        let bin = root.path().join("fake-worker");
+        fs::write(
+            &bin,
+            format!(
+                "#!/bin/sh\nprintf '%s\\n' '{{\"hello\":{{\"max\":2,\"min\":2,\"proto\":\"tekes-worker\"}}}}'\nIFS= read -r selected\nprintf '%s\\n' '{{\"lease_request\":{{\"attempt\":\"attempt-b1\",\"class\":\"provider\"}}}}'\nwhile IFS= read -r line; do\n  case \"$line\" in\n    *'\"input\"'*)\n      printf '%s\\n' '{input_event}' >> \"$1\"\n      sync\n      printf '%s\\n' '{{\"receipt\":{{\"deduplicated\":false,\"delivery\":\"rpc-b2\",\"seq\":3}}}}'\n      ;;\n    *'\"lease\"'*'\"granted\":true'*)\n      printf 'GRANTED\\n' > '{witness}'\n      ;;\n  esac\ndone\n",
+                witness = lease_witness.display(),
+            ),
+        )
+        .expect("fake worker");
+        fs::set_permissions(&bin, fs::Permissions::from_mode(0o700)).expect("worker mode");
+        let helper = root.path().join("tekes-helper");
+        fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
+        fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).expect("helper mode");
+
+        let host = ProductionProcessHost::open(
+            root.path(),
+            &bin,
+            "test",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+        host.max_workers.store(2, Ordering::Release);
+        host.max_provider_leases.store(1, Ordering::Release);
+        assert!(
+            host.admission
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .request(AdmissionLease {
+                    attempt: "attempt-a".to_owned(),
+                    class: "provider".to_owned(),
+                }),
+            "Session A holds the sole provider lease"
+        );
+
+        host.schedule_worker_at(session_b, session_b, ledger_b.clone())
+            .expect("schedule B")
+            .expect("worker B starts");
+        let waiter_deadline = Instant::now() + Duration::from_secs(3);
+        while !host
+            .admission_waiters
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .contains(&"attempt-b1".to_owned())
+        {
+            assert!(
+                Instant::now() < waiter_deadline,
+                "worker B never queued attempt-b1 on saturated lease"
+            );
+            std::thread::sleep(Duration::from_millis(5));
+        }
+
+        let origin = OriginTuple {
+            principal: "test".to_owned(),
+            client: "test".to_owned(),
+            target: session_b.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-b2".to_owned(),
+        };
+        let prompt = MaterializedPrompt {
+            blocks: vec![Block::Text {
+                text: "B2 during lease wait".to_owned(),
+            }],
+            attachments: Vec::new(),
+            files: Vec::new(),
+        };
+        let receipt_started = Instant::now();
+        let receipt = host
+            .prompt(
+                session_b,
+                "2026-08-28T00:00:02.000Z",
+                &origin,
+                &prompt,
+                false,
+            )
+            .expect("B2 must receipt promptly while attempt-a holds lease");
+        assert_eq!(receipt.seq, 3);
+        assert!(!receipt.deduplicated);
+        assert!(
+            receipt_started.elapsed() < Duration::from_secs(5),
+            "receipt waited instead of completing concurrently with lease wait"
+        );
+        assert!(!lease_witness.exists(), "lease must still be held by A");
+
+        host.admission
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .settle("attempt-a");
+        host.admission_changed.notify_all();
+        let granted_deadline = Instant::now() + Duration::from_secs(3);
+        while !lease_witness.is_file() {
+            assert!(
+                Instant::now() < granted_deadline,
+                "attempt-b1 was never granted after attempt-a settled"
+            );
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        host.shutdown();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn shutdown_closes_worker_stdin_for_graceful_teardown_and_stops_descendants() {
+        let root = tempfile::tempdir().expect("process host root");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
+        fs::create_dir_all(&workspace).expect("workspace");
+        fs::create_dir_all(root.path().join("config")).expect("config");
+        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
+        write_test_execution_config(
+            root.path(),
+            json!({
+                "format":1,"revision":1,"id":"ws","name":"ws",
+                "cwd":[workspace.to_string_lossy()],
+                "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}
+            }),
+        );
+        let session = "018f0000-0000-7000-8000-000000000203";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        let ledger = folder.join("main.jsonl");
+        write_test_genesis(&ledger, session);
+
+        let started = workspace.join("worker-started.txt");
+        let clean_teardown = workspace.join("clean-teardown.txt");
+        let late_marker = workspace.join("late-child-write.txt");
+        let bin = root.path().join("fake-worker");
+        fs::write(
+            &bin,
+            format!(
+                "#!/bin/sh\nprintf '%s\\n' '{{\"hello\":{{\"max\":2,\"min\":2,\"proto\":\"tekes-worker\"}}}}'\nIFS= read -r selected\n(sleep 2 && printf LATE > '{late}') &\nCHILD=$!\nprintf '%s\\n%s\\n' \"$$\" \"$CHILD\" > '{started}.tmp'\nmv '{started}.tmp' '{started}'\nwhile IFS= read -r line; do :; done\nkill -TERM \"$CHILD\" 2>/dev/null || true\nwait \"$CHILD\" 2>/dev/null || true\nprintf 'EOF_CLEAN\\n' > '{clean}'\nexit 0\n",
+                late = late_marker.display(),
+                started = started.display(),
+                clean = clean_teardown.display(),
+            ),
+        )
+        .expect("fake worker");
+        fs::set_permissions(&bin, fs::Permissions::from_mode(0o700)).expect("worker mode");
+        let helper = root.path().join("tekes-helper");
+        fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
+        fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).expect("helper mode");
+
+        let host = ProductionProcessHost::open(
+            root.path(),
+            &bin,
+            "test",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+        host.schedule_worker_at(session, session, ledger)
+            .expect("schedule worker")
+            .expect("worker starts");
+
+        let deadline = Instant::now() + Duration::from_secs(3);
+        while !started.is_file() {
+            assert!(Instant::now() < deadline, "worker never started child");
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        host.shutdown();
+
+        assert!(
+            clean_teardown.is_file(),
+            "shutdown must close stdin cleanly so the worker can tear down before SIGKILL"
+        );
+        let pids: Vec<libc::pid_t> = fs::read_to_string(&started)
+            .expect("started pids")
+            .lines()
+            .map(|line| line.trim().parse::<libc::pid_t>().expect("pid"))
+            .collect();
+        for pid in pids {
+            // SAFETY: signal 0 only probes numeric pid and retains no pointers.
+            assert_eq!(unsafe { libc::kill(pid, 0) }, -1);
+            assert_eq!(
+                std::io::Error::last_os_error().raw_os_error(),
+                Some(libc::ESRCH)
+            );
+        }
+        std::thread::sleep(Duration::from_millis(2_300));
+        assert!(!late_marker.exists(), "child wrote past worker shutdown");
     }
 }

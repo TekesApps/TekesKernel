@@ -52,6 +52,13 @@ impl RuntimeCancellation {
             .push_back(line);
     }
 
+    pub(crate) fn take_deferred(&self) -> Option<String> {
+        self.deferred
+            .lock()
+            .expect("control defer lock")
+            .pop_front()
+    }
+
     pub(crate) fn park_delivery(&self, line: String) {
         self.parked_deliveries
             .lock()

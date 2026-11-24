@@ -9,7 +9,9 @@ use schema::IJsonValue;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use crate::idempotency::{RpcBegin, RpcDurableIdentity, RpcRegistry, RpcRegistryError};
+use crate::idempotency::{
+    RpcBegin, RpcClaim, RpcDurableIdentity, RpcRegistry, RpcRegistryError, is_legacy_internal_error,
+};
 use crate::mux::{
     MuxHostDescription, SessionJournalPage, SessionMuxClientFrame, SessionStreamTarget,
     SessionSyncFrame,
@@ -59,6 +61,17 @@ pub trait EndpointHost: Send + Sync {
     /// namespace is touched. Non-v2 test hosts retain a permissive default.
     fn validate_request(&self, _request: &ClientRequest) -> Result<(), HostFailure> {
         Ok(())
+    }
+
+    /// Read-only reconciliation hook for legacy `Prepared -> Complete(internal)`
+    /// `session.prompt` records. Must inspect persisted ledger evidence without
+    /// authoring, enqueueing, publishing assets, or invoking providers.
+    fn reconcile_legacy_internal_prompt(
+        &self,
+        _claim: &RpcClaim,
+        _request: &ClientRequest,
+    ) -> Option<u64> {
+        None
     }
 
     fn call(&self, request: EndpointHostCall) -> EndpointHostFuture<'_>;
@@ -537,6 +550,16 @@ impl EndpointDispatcher {
             let RpcBegin::Completed(result) = begin else {
                 unreachable!();
             };
+            let result = if request.method == "session.prompt" && is_legacy_internal_error(&result)
+            {
+                self.registry
+                    .reconcile_legacy_internal_complete(&request, |claim| {
+                        host.reconcile_legacy_internal_prompt(claim, &request)
+                    })?
+                    .unwrap_or(result)
+            } else {
+                result
+            };
             handoff.mark_durable();
             return Ok(response(rpc_id, result));
         };
@@ -580,6 +603,16 @@ impl EndpointDispatcher {
                 return Err(EndpointDispatchError::MissingHandoffProof);
             }
             None => {}
+        }
+        let non_terminal_uncertain = !result.ok
+            && result.error.as_ref().is_some_and(|error| {
+                matches!(
+                    error.code.as_str(),
+                    "accepted-but-not-confirmed" | "internal" | "archived"
+                )
+            });
+        if non_terminal_uncertain && !handoff.is_durable() {
+            return Ok(response(rpc_id, result));
         }
         let completed = self.registry.complete(&claim, &result)?;
         handoff.mark_durable();

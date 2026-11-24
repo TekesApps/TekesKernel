@@ -1393,6 +1393,153 @@ impl ProductionEndpointHost {
         }
         Ok(())
     }
+
+    fn reconcile_legacy_internal_prompt_inner(
+        &self,
+        claim: &endpoint::RpcClaim,
+        request: &ClientRequest,
+    ) -> Option<u64> {
+        if request.method != "session.prompt"
+            || claim.method() != "session.prompt"
+            || claim.rpc_id() != request.rpc_id
+        {
+            return None;
+        }
+        let payload: Value =
+            serde_json::from_slice(&request.payload.canonical_bytes().ok()?).ok()?;
+        require_object_fields(
+            &payload,
+            &["sessionId", "mode", "content", "clientTimeZone"],
+            &["sessionId", "mode", "content"],
+        )
+        .ok()?;
+        let session_id = required_string(&payload, "sessionId").ok()?;
+        if claim.target_session() != Some(session_id)
+            || endpoint::validate_session_id(session_id).is_err()
+        {
+            return None;
+        }
+        let steer = match required_string(&payload, "mode").ok()? {
+            "queue" => false,
+            "steer" => true,
+            _ => return None,
+        };
+        if let Some(time_zone) = optional_string(&payload, "clientTimeZone").ok()? {
+            validate_time_zone(time_zone).ok()?;
+        }
+        let parts: Vec<PromptPart> =
+            serde_json::from_value(payload.get("content")?.clone()).ok()?;
+        if parts.is_empty() {
+            return None;
+        }
+        let active = self.storage_root.join("threads").join(session_id);
+        let archived = self.storage_root.join("archive").join(session_id);
+        let folder = if active.is_dir() {
+            active
+        } else if archived.is_dir() {
+            archived
+        } else {
+            return None;
+        };
+        let _lifecycle = store::DirectoryLock::shared(&folder).ok()?;
+        let main_path = folder.join("main.jsonl");
+        let expected_blocks = self
+            .attachments
+            .expected_prompt_blocks_read_only(&folder, &parts)
+            .ok()?;
+        let expected_origin = endpoint_origin(
+            &self.principal,
+            session_id,
+            "session.prompt",
+            &request.rpc_id,
+        );
+        verify_and_sync_legacy_input(
+            &main_path,
+            &expected_origin,
+            &request.rpc_id,
+            steer,
+            &expected_blocks,
+            Arc::new(store::SystemSync),
+        )
+    }
+}
+
+fn find_unique_matching_legacy_input(
+    projection: &schema::LedgerProjection,
+    expected_origin: &OriginTuple,
+    rpc_id: &str,
+    steer: bool,
+    expected_blocks: &[schema::Block],
+) -> Option<u64> {
+    let mut matches = projection.events.iter().filter(|event| {
+        if *event.kind() != schema::EventKind::Input
+            || event.origin_key() != Some(rpc_id)
+            || event.origin_tuple().ok().flatten().as_ref() != Some(expected_origin)
+        {
+            return false;
+        }
+        let Ok(event_value) = serde_json::to_value(event.raw()) else {
+            return false;
+        };
+        event_value
+            .get("steer")
+            .and_then(Value::as_bool)
+            .unwrap_or(false)
+            == steer
+            && event_value
+                .get("content")
+                .and_then(|value| serde_json::from_value::<Vec<schema::Block>>(value.clone()).ok())
+                .as_deref()
+                == Some(expected_blocks)
+    });
+    let matched = matches.next()?;
+    if matches.next().is_some() {
+        return None;
+    }
+    Some(matched.seq())
+}
+
+fn verify_and_sync_legacy_input(
+    main_path: &Path,
+    expected_origin: &OriginTuple,
+    rpc_id: &str,
+    steer: bool,
+    expected_blocks: &[schema::Block],
+    sync: Arc<dyn store::SyncPolicy>,
+) -> Option<u64> {
+    use std::io::Read;
+    use std::os::unix::fs::OpenOptionsExt;
+
+    if !std::fs::symlink_metadata(main_path)
+        .ok()?
+        .file_type()
+        .is_file()
+    {
+        return None;
+    }
+    // Keep reconciliation strictly read-only on main.jsonl so legacy receipt
+    // inspection never truncates or mutates an un-synced torn tail, even on an
+    // idle ledger. Normal store recovery continues to use LockedLedger.
+    let mut file = std::fs::OpenOptions::new()
+        .read(true)
+        .custom_flags(libc::O_CLOEXEC | libc::O_NOFOLLOW)
+        .open(main_path)
+        .ok()?;
+    if !file.metadata().ok()?.is_file() {
+        return None;
+    }
+    let mut bytes = Vec::new();
+    file.read_to_end(&mut bytes).ok()?;
+    let scan = store::scan_valid_prefix(&bytes, schema::READER_VERSION);
+    let seq = find_unique_matching_legacy_input(
+        scan.projection.as_ref()?,
+        expected_origin,
+        rpc_id,
+        steer,
+        expected_blocks,
+    )?;
+    sync.full_sync(&file).ok()?;
+    Some(seq)
 }
 
 impl EndpointHost for ProductionEndpointHost {
@@ -1465,6 +1612,14 @@ impl EndpointHost for ProductionEndpointHost {
                 .validate_extension_payload(&request.method, &payload)
                 .map_err(|_| HostFailure::InvalidRequest)
         }
+    }
+
+    fn reconcile_legacy_internal_prompt(
+        &self,
+        claim: &endpoint::RpcClaim,
+        request: &ClientRequest,
+    ) -> Option<u64> {
+        self.reconcile_legacy_internal_prompt_inner(claim, request)
     }
 
     fn call(&self, request: EndpointHostCall) -> EndpointHostFuture<'_> {
@@ -2679,4 +2834,267 @@ pub enum EndpointAssemblyError {
     Management(#[from] endpoint::SessionOperationError),
     #[error("endpoint route extension advertised a non-V3 registration")]
     UnknownRoute,
+}
+
+#[cfg(test)]
+mod legacy_reconcile_sync_tests {
+    use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+
+    use super::*;
+
+    struct ToggleSync {
+        fail: AtomicBool,
+        calls: AtomicUsize,
+    }
+
+    impl ToggleSync {
+        fn new(fail: bool) -> Self {
+            Self {
+                fail: AtomicBool::new(fail),
+                calls: AtomicUsize::new(0),
+            }
+        }
+    }
+
+    impl store::SyncPolicy for ToggleSync {
+        fn full_sync(&self, file: &std::fs::File) -> std::io::Result<()> {
+            self.calls.fetch_add(1, Ordering::SeqCst);
+            if self.fail.load(Ordering::Acquire) {
+                return Err(std::io::Error::from_raw_os_error(libc::EIO));
+            }
+            store::FullSync::full_sync(file)
+        }
+    }
+
+    fn write_test_ledger(main_path: &Path, session: &str, origin: &OriginTuple, text: &str) {
+        let genesis = serde_json::json!({
+            "v": 1,
+            "seq": 1,
+            "ts": "2026-11-26T00:00:00.000Z",
+            "kind": "genesis",
+            "thread": session,
+            "cwd": "/tmp",
+            "execution": {"cwd": "/tmp", "network": false, "allowed_tools": []},
+            "format": 1,
+            "min_reader": schema::EXECUTION_READER,
+            "min_writer": 1,
+            "resume": "never",
+            "config": {"digest": "cfg"},
+            "origin_key": "create",
+            "origin_tuple": {
+                "principal": origin.principal,
+                "client": origin.client,
+                "target": session,
+                "op": "session.create",
+                "key": "create"
+            }
+        });
+        let input = serde_json::json!({
+            "v": 1,
+            "seq": 2,
+            "ts": "2026-11-26T00:00:01.000Z",
+            "kind": "input",
+            "content": [{"type": "text", "text": text}],
+            "origin_key": origin.key,
+            "origin_tuple": origin
+        });
+        let g = schema::Event::decode(&serde_json::to_vec(&genesis).unwrap())
+            .unwrap()
+            .canonical_bytes()
+            .unwrap();
+        let i = schema::Event::decode(&serde_json::to_vec(&input).unwrap())
+            .unwrap()
+            .canonical_bytes()
+            .unwrap();
+        let mut bytes = g;
+        bytes.push(b'\n');
+        bytes.extend_from_slice(&i);
+        bytes.push(b'\n');
+        std::fs::write(main_path, bytes).unwrap();
+    }
+
+    #[test]
+    fn legacy_reconcile_requires_sync_barrier_and_recovers_after_eio_clears() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-000000000173";
+        let folder = root.path().join("threads").join(session);
+        std::fs::create_dir_all(&folder).expect("folder");
+        let main_path = folder.join("main.jsonl");
+        let origin = OriginTuple {
+            principal: "uid:501".to_owned(),
+            client: endpoint::ORIGIN_CLIENT.to_owned(),
+            target: session.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-sync-barrier".to_owned(),
+        };
+        write_test_ledger(&main_path, session, &origin, "SYNC_BARRIER_TEXT");
+        let initial_bytes = std::fs::read(&main_path).expect("read initial");
+        let blocks = vec![schema::Block::Text {
+            text: "SYNC_BARRIER_TEXT".to_owned(),
+        }];
+
+        let sync = Arc::new(ToggleSync::new(true));
+        // EIO on unlocked ledger must return None and leave main.jsonl untouched.
+        assert_eq!(
+            verify_and_sync_legacy_input(
+                &main_path,
+                &origin,
+                "rpc-sync-barrier",
+                false,
+                &blocks,
+                Arc::clone(&sync) as Arc<dyn store::SyncPolicy>,
+            ),
+            None
+        );
+        assert_eq!(sync.calls.load(Ordering::SeqCst), 1);
+        assert_eq!(std::fs::read(&main_path).unwrap(), initial_bytes);
+
+        // Clearing EIO lets sync_prefix() succeed and returns seq 2.
+        sync.fail.store(false, Ordering::Release);
+        assert_eq!(
+            verify_and_sync_legacy_input(
+                &main_path,
+                &origin,
+                "rpc-sync-barrier",
+                false,
+                &blocks,
+                Arc::clone(&sync) as Arc<dyn store::SyncPolicy>,
+            ),
+            Some(2)
+        );
+        assert_eq!(sync.calls.load(Ordering::SeqCst), 2);
+        assert_eq!(std::fs::read(&main_path).unwrap(), initial_bytes);
+
+        // While a live holder keeps main.jsonl's exclusive lock (StoreError::Busy),
+        // reconciliation still fails closed on EIO and succeeds once sync succeeds.
+        let _holder =
+            store::LockedLedger::open(&main_path, schema::READER_VERSION).expect("hold line lock");
+        sync.fail.store(true, Ordering::Release);
+        assert_eq!(
+            verify_and_sync_legacy_input(
+                &main_path,
+                &origin,
+                "rpc-sync-barrier",
+                false,
+                &blocks,
+                Arc::clone(&sync) as Arc<dyn store::SyncPolicy>,
+            ),
+            None
+        );
+        assert_eq!(sync.calls.load(Ordering::SeqCst), 3);
+
+        sync.fail.store(false, Ordering::Release);
+        assert_eq!(
+            verify_and_sync_legacy_input(
+                &main_path,
+                &origin,
+                "rpc-sync-barrier",
+                false,
+                &blocks,
+                Arc::clone(&sync) as Arc<dyn store::SyncPolicy>,
+            ),
+            Some(2)
+        );
+        assert_eq!(sync.calls.load(Ordering::SeqCst), 4);
+    }
+
+    #[test]
+    fn verify_and_sync_legacy_input_preserves_torn_tail_across_all_outcomes() {
+        use sha2::{Digest, Sha256};
+
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-000000000174";
+        let folder = root.path().join("threads").join(session);
+        std::fs::create_dir_all(&folder).expect("folder");
+        let main_path = folder.join("main.jsonl");
+        let origin = OriginTuple {
+            principal: "uid:501".to_owned(),
+            client: endpoint::ORIGIN_CLIENT.to_owned(),
+            target: session.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-readonly-tail".to_owned(),
+        };
+        write_test_ledger(&main_path, session, &origin, "READONLY_TAIL_TEXT");
+        let valid_len = std::fs::metadata(&main_path).expect("valid meta").len();
+
+        let torn_tail = br#"{"kind":"unfinished"#;
+        assert_eq!(torn_tail.len(), 19);
+        {
+            use std::io::Write;
+            let mut file = std::fs::OpenOptions::new()
+                .append(true)
+                .open(&main_path)
+                .expect("append torn tail");
+            file.write_all(torn_tail).expect("write torn tail");
+            file.sync_all().expect("sync torn tail");
+        }
+        let initial_bytes = std::fs::read(&main_path).expect("read with torn tail");
+        let initial_sha = Sha256::digest(&initial_bytes);
+        let blocks = vec![schema::Block::Text {
+            text: "READONLY_TAIL_TEXT".to_owned(),
+        }];
+
+        // Case 1: Match found + sync succeeds -> returns seq 2 without truncating torn tail.
+        let sync = Arc::new(ToggleSync::new(false));
+        assert_eq!(
+            verify_and_sync_legacy_input(
+                &main_path,
+                &origin,
+                "rpc-readonly-tail",
+                false,
+                &blocks,
+                Arc::clone(&sync) as Arc<dyn store::SyncPolicy>,
+            ),
+            Some(2)
+        );
+        assert_eq!(sync.calls.load(Ordering::SeqCst), 1);
+        assert_eq!(std::fs::read(&main_path).unwrap(), initial_bytes);
+        assert_eq!(
+            Sha256::digest(std::fs::read(&main_path).unwrap()),
+            initial_sha
+        );
+
+        // Case 2: No match found -> returns None without truncating torn tail.
+        assert_eq!(
+            verify_and_sync_legacy_input(
+                &main_path,
+                &origin,
+                "rpc-no-match",
+                false,
+                &blocks,
+                Arc::clone(&sync) as Arc<dyn store::SyncPolicy>,
+            ),
+            None
+        );
+        assert_eq!(std::fs::read(&main_path).unwrap(), initial_bytes);
+        assert_eq!(
+            Sha256::digest(std::fs::read(&main_path).unwrap()),
+            initial_sha
+        );
+
+        // Case 3: Match found + sync fails with EIO -> returns None without truncating torn tail.
+        sync.fail.store(true, Ordering::Release);
+        assert_eq!(
+            verify_and_sync_legacy_input(
+                &main_path,
+                &origin,
+                "rpc-readonly-tail",
+                false,
+                &blocks,
+                Arc::clone(&sync) as Arc<dyn store::SyncPolicy>,
+            ),
+            None
+        );
+        assert_eq!(sync.calls.load(Ordering::SeqCst), 2);
+        assert_eq!(std::fs::read(&main_path).unwrap(), initial_bytes);
+        assert_eq!(
+            Sha256::digest(std::fs::read(&main_path).unwrap()),
+            initial_sha
+        );
+
+        // Normal store recovery path still truncates the torn tail as designed.
+        let _ledger =
+            store::LockedLedger::open(&main_path, schema::READER_VERSION).expect("normal open");
+        assert_eq!(std::fs::metadata(&main_path).unwrap().len(), valid_len);
+    }
 }

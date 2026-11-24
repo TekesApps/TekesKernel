@@ -11,6 +11,7 @@ use std::os::unix::fs::PermissionsExt as _;
 use std::os::unix::process::CommandExt as _;
 use std::path::{Component, Path, PathBuf};
 use std::process::{Command, Stdio};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -36,7 +37,10 @@ const HARD_BYTES: usize = 16 * 1024 * 1024;
 const HARD_READ_BYTES: usize = 32 * 1024 * 1024;
 const HARD_TIMEOUT_MS: u64 = crate::runtime_backends::HARD_HELPER_TIMEOUT_MS;
 const TERM_GRACE_MS: u64 = 250;
+const HELPER_CLIENT_TERM_GRACE_MS: u64 = 1_200;
 const HELPER_PROCESS_TIMEOUT_MS: u64 = HARD_TIMEOUT_MS + 1_000;
+static HELPER_TERMINATE: AtomicBool = AtomicBool::new(false);
+static HELPER_WATCH_STDOUT: AtomicBool = AtomicBool::new(false);
 // One valid exec result may contain two 16 MiB binary streams encoded as
 // base64 plus its JSON envelope.
 const HELPER_PROTOCOL_STDOUT_BYTES: usize = 48 * 1024 * 1024;
@@ -630,17 +634,70 @@ impl HelperServer {
             .stderr
             .take()
             .ok_or_else(|| HelperError::new(HelperErrorClass::Io, "child stderr missing"))?;
-        let stdout_thread = thread::spawn(move || read_capped(stdout, stdout_cap));
-        let stderr_thread = thread::spawn(move || read_capped(stderr, stderr_cap));
+        let stdout_done = std::sync::Arc::new(AtomicBool::new(false));
+        let stderr_done = std::sync::Arc::new(AtomicBool::new(false));
+        let stdout_flag = std::sync::Arc::clone(&stdout_done);
+        let stderr_flag = std::sync::Arc::clone(&stderr_done);
+        let stdout_thread = thread::spawn(move || {
+            let result = read_capped(stdout, stdout_cap);
+            stdout_flag.store(true, Ordering::Release);
+            result
+        });
+        let stderr_thread = thread::spawn(move || {
+            let result = read_capped(stderr, stderr_cap);
+            stderr_flag.store(true, Ordering::Release);
+            result
+        });
+        let child_group = -(child.id() as libc::pid_t);
         let deadline = request
             .timeout_ms
             .map(|timeout| Instant::now() + Duration::from_millis(timeout));
+        let mut exit_status = None;
         let status = loop {
-            if let Some(status) = child.try_wait().map_err(HelperError::io)? {
+            if HELPER_TERMINATE.load(Ordering::Acquire)
+                || (HELPER_WATCH_STDOUT.load(Ordering::Acquire) && parent_pipe_closed())
+            {
+                terminate_process_group_with_state(
+                    child_group,
+                    &mut child,
+                    exit_status.is_some(),
+                    Duration::from_millis(150),
+                );
+                let _ = stdout_thread.join();
+                let _ = stderr_thread.join();
+                return Err(HelperError::new(HelperErrorClass::Io, "exec cancelled"));
+            }
+            if exit_status.is_none()
+                && let Some(status) = child.try_wait().map_err(HelperError::io)?
+            {
+                exit_status = Some(status);
+            }
+            if let Some(status) = exit_status
+                && stdout_done.load(Ordering::Acquire)
+                && stderr_done.load(Ordering::Acquire)
+            {
+                if HELPER_TERMINATE.load(Ordering::Acquire)
+                    || (HELPER_WATCH_STDOUT.load(Ordering::Acquire) && parent_pipe_closed())
+                {
+                    terminate_process_group_with_state(
+                        child_group,
+                        &mut child,
+                        true,
+                        Duration::from_millis(150),
+                    );
+                    let _ = stdout_thread.join();
+                    let _ = stderr_thread.join();
+                    return Err(HelperError::new(HelperErrorClass::Io, "exec cancelled"));
+                }
                 break status;
             }
             if deadline.is_some_and(|deadline| Instant::now() >= deadline) {
-                terminate_then_kill(&mut child);
+                terminate_process_group_with_state(
+                    child_group,
+                    &mut child,
+                    exit_status.is_some(),
+                    Duration::from_millis(TERM_GRACE_MS),
+                );
                 let _ = stdout_thread.join();
                 let _ = stderr_thread.join();
                 return Err(HelperError::new(
@@ -852,27 +909,43 @@ impl HelperClient {
             .stderr(Stdio::piped())
             .spawn()
             .map_err(HelperError::io)?;
-        let mut stdin = child
-            .stdin
-            .take()
-            .ok_or_else(|| HelperError::new(HelperErrorClass::Protocol, "helper stdin missing"))?;
-        if let Err(error) = stdin.write_all(&hello_line) {
-            terminate_then_kill(&mut child);
+        let mut stdin =
+            Some(child.stdin.take().ok_or_else(|| {
+                HelperError::new(HelperErrorClass::Protocol, "helper stdin missing")
+            })?);
+        if let Err(error) = stdin
+            .as_mut()
+            .expect("stdin present")
+            .write_all(&hello_line)
+        {
+            drop(stdin.take());
+            terminate_process_group(&mut child, Duration::from_millis(TERM_GRACE_MS));
             return Err(HelperError::io(error).into());
         }
-        if let Err(error) = stdin.write_all(&request_line) {
-            terminate_then_kill(&mut child);
+        if let Err(error) = stdin
+            .as_mut()
+            .expect("stdin present")
+            .write_all(&request_line)
+        {
+            drop(stdin.take());
+            terminate_process_group(&mut child, Duration::from_millis(TERM_GRACE_MS));
             return Err(HelperError::io(error).into());
         }
-        drop(stdin);
+        if let Err(error) = stdin.as_mut().expect("stdin present").flush() {
+            drop(stdin.take());
+            terminate_process_group(&mut child, Duration::from_millis(TERM_GRACE_MS));
+            return Err(HelperError::io(error).into());
+        }
         let Some(stdout) = child.stdout.take() else {
-            terminate_then_kill(&mut child);
+            drop(stdin.take());
+            terminate_process_group(&mut child, Duration::from_millis(TERM_GRACE_MS));
             return Err(
                 HelperError::new(HelperErrorClass::Protocol, "helper stdout missing").into(),
             );
         };
         let Some(stderr) = child.stderr.take() else {
-            terminate_then_kill(&mut child);
+            drop(stdin.take());
+            terminate_process_group(&mut child, Duration::from_millis(TERM_GRACE_MS));
             return Err(
                 HelperError::new(HelperErrorClass::Protocol, "helper stderr missing").into(),
             );
@@ -884,13 +957,21 @@ impl HelperClient {
         let deadline = timeout.map(|timeout| Instant::now() + timeout);
         let status = loop {
             if cancelled() {
-                terminate_then_kill(&mut child);
+                drop(stdin.take());
+                terminate_process_group(
+                    &mut child,
+                    Duration::from_millis(HELPER_CLIENT_TERM_GRACE_MS),
+                );
                 let _ = stdout_thread.join();
                 let _ = stderr_thread.join();
                 return Err(HelperClientError::Cancelled);
             }
             if deadline.is_some_and(|deadline| Instant::now() >= deadline) {
-                terminate_then_kill(&mut child);
+                drop(stdin.take());
+                terminate_process_group(
+                    &mut child,
+                    Duration::from_millis(HELPER_CLIENT_TERM_GRACE_MS),
+                );
                 let _ = stdout_thread.join();
                 let _ = stderr_thread.join();
                 return Err(HelperError::new(
@@ -900,10 +981,14 @@ impl HelperClient {
                 .into());
             }
             match child.try_wait() {
-                Ok(Some(status)) => break status,
+                Ok(Some(status)) => {
+                    drop(stdin.take());
+                    break status;
+                }
                 Ok(None) => {}
                 Err(error) => {
-                    terminate_then_kill(&mut child);
+                    drop(stdin.take());
+                    terminate_process_group(&mut child, Duration::from_millis(TERM_GRACE_MS));
                     let _ = stdout_thread.join();
                     let _ = stderr_thread.join();
                     return Err(HelperError::io(error).into());
@@ -966,6 +1051,9 @@ impl HelperClient {
 }
 
 pub fn serve_stdio(server: &HelperServer) -> Result<(), HelperError> {
+    HELPER_TERMINATE.store(false, Ordering::Release);
+    HELPER_WATCH_STDOUT.store(true, Ordering::Release);
+    install_termination_signals()?;
     let mut input = std::io::stdin().lock();
     let mut output = std::io::stdout().lock();
     let hello_line = read_line_limited(&mut input, 64 * 1024)?;
@@ -1462,15 +1550,70 @@ fn read_capped(mut reader: impl Read, cap: usize) -> std::io::Result<(Vec<u8>, b
     Ok((output, truncated))
 }
 
-fn terminate_then_kill(child: &mut std::process::Child) {
-    let group = -(child.id() as i32);
+extern "C" fn helper_signal_handler(_signal: libc::c_int) {
+    HELPER_TERMINATE.store(true, Ordering::SeqCst);
+}
+
+fn install_termination_signals() -> Result<(), HelperError> {
+    // SAFETY: zero initialization is valid for sigaction and sigemptyset initializes its mask
+    // before installation; the handler only stores to a lock-free atomic flag.
+    unsafe {
+        let mut action = std::mem::zeroed::<libc::sigaction>();
+        action.sa_sigaction = helper_signal_handler as *const () as usize;
+        action.sa_flags = 0;
+        libc::sigemptyset(&mut action.sa_mask);
+        for signal in [libc::SIGTERM, libc::SIGINT, libc::SIGHUP] {
+            if libc::sigaction(signal, &action, std::ptr::null_mut()) != 0 {
+                return Err(HelperError::io(std::io::Error::last_os_error()));
+            }
+        }
+    }
+    Ok(())
+}
+
+fn parent_pipe_closed() -> bool {
+    let mut descriptor = libc::pollfd {
+        fd: libc::STDOUT_FILENO,
+        events: libc::POLLOUT,
+        revents: 0,
+    };
+    // SAFETY: descriptor points to one initialized pollfd struct for stdout.
+    let polled = unsafe { libc::poll(&mut descriptor, 1, 0) };
+    if polled < 0 {
+        return std::io::Error::last_os_error().kind() != std::io::ErrorKind::Interrupted;
+    }
+    descriptor.revents & (libc::POLLERR | libc::POLLHUP | libc::POLLNVAL) != 0
+}
+
+fn group_alive(group: libc::pid_t) -> bool {
+    // SAFETY: group is a negated child pid; signal 0 probes existence only.
+    if unsafe { libc::kill(group, 0) } == 0 {
+        return true;
+    }
+    std::io::Error::last_os_error().raw_os_error() != Some(libc::ESRCH)
+}
+
+fn terminate_process_group(child: &mut std::process::Child, grace: Duration) {
+    let group = -(child.id() as libc::pid_t);
+    terminate_process_group_with_state(group, child, false, grace);
+}
+
+fn terminate_process_group_with_state(
+    group: libc::pid_t,
+    child: &mut std::process::Child,
+    mut reaped: bool,
+    grace: Duration,
+) {
     // SAFETY: the child created its own process group; kill does not retain pointers.
     unsafe {
         libc::kill(group, libc::SIGTERM);
     }
-    let deadline = Instant::now() + Duration::from_millis(TERM_GRACE_MS);
+    let deadline = Instant::now() + grace;
     while Instant::now() < deadline {
-        if child.try_wait().ok().flatten().is_some() {
+        if !reaped && child.try_wait().ok().flatten().is_some() {
+            reaped = true;
+        }
+        if reaped && !group_alive(group) {
             return;
         }
         thread::sleep(Duration::from_millis(5));
@@ -1479,7 +1622,13 @@ fn terminate_then_kill(child: &mut std::process::Child) {
     unsafe {
         libc::kill(group, libc::SIGKILL);
     }
-    let _ = child.wait();
+    if !reaped {
+        let _ = child.wait();
+    }
+    let kill_deadline = Instant::now() + Duration::from_millis(500);
+    while group_alive(group) && Instant::now() < kill_deadline {
+        thread::sleep(Duration::from_millis(5));
+    }
 }
 
 fn checked_cap(value: u64) -> Result<usize, HelperError> {

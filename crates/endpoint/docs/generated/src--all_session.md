@@ -198,12 +198,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recv` | `Poll::Ready` | [266](../../src/all_session.rs#L266), [274](../../src/all_session.rs#L274), [277](../../src/all_session.rs#L277), [288](../../src/all_session.rs#L288), [294](../../src/all_session.rs#L294), [316](../../src/all_session.rs#L316), [320](../../src/all_session.rs#L320), [327](../../src/all_session.rs#L327), [332](../../src/all_session.rs#L332) | external-constructor-callback-or-unresolved |
 | `recv` | `Some` | [266](../../src/all_session.rs#L266), [274](../../src/all_session.rs#L274), [277](../../src/all_session.rs#L277), [288](../../src/all_session.rs#L288), [301](../../src/all_session.rs#L301), [316](../../src/all_session.rs#L316), [320](../../src/all_session.rs#L320), [327](../../src/all_session.rs#L327), [339](../../src/all_session.rs#L339) | external-constructor-callback-or-unresolved |
 | `recv` | `Err` | [266](../../src/all_session.rs#L266), [277](../../src/all_session.rs#L277), [288](../../src/all_session.rs#L288), [320](../../src/all_session.rs#L320), [327](../../src/all_session.rs#L327) | external-constructor-callback-or-unresolved |
-| `recv` | `StreamFailure::internal` | [266](../../src/all_session.rs#L266), [288](../../src/all_session.rs#L288), [327](../../src/all_session.rs#L327) | [endpoint::host::StreamFailure::internal](../../src/host.rs#L304) |
+| `recv` | `StreamFailure::internal` | [266](../../src/all_session.rs#L266), [288](../../src/all_session.rs#L288), [327](../../src/all_session.rs#L327) | [endpoint::host::StreamFailure::internal](../../src/host.rs#L317) |
 | `recv` | `"all-session mux mutex was poisoned".to_owned` | [267](../../src/all_session.rs#L267) | receiver-type-required |
 | `recv` | `mux.retired.first` | [271](../../src/all_session.rs#L271) | receiver-type-required |
 | `recv` | `subscription.poll_with_context` | [272](../../src/all_session.rs#L272), [313](../../src/all_session.rs#L313) | receiver-type-required |
 | `recv` | `Ok` | [274](../../src/all_session.rs#L274), [316](../../src/all_session.rs#L316) | external-constructor-callback-or-unresolved |
-| `recv` | `StreamFailure::new` | [277](../../src/all_session.rs#L277), [320](../../src/all_session.rs#L320) | [endpoint::host::StreamFailure::new](../../src/host.rs#L296) |
+| `recv` | `StreamFailure::new` | [277](../../src/all_session.rs#L277), [320](../../src/all_session.rs#L320) | [endpoint::host::StreamFailure::new](../../src/host.rs#L309) |
 | `recv` | `mux.retired.remove` | [282](../../src/all_session.rs#L282) | receiver-type-required |
 | `recv` | `error.to_string` | [288](../../src/all_session.rs#L288), [327](../../src/all_session.rs#L327) | receiver-type-required |
 | `recv` | `mux.subscriptions.is_empty` | [292](../../src/all_session.rs#L292) | receiver-type-required |

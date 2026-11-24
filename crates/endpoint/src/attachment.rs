@@ -264,6 +264,67 @@ impl AttachmentAuthority {
         self.publish_validated(session_id, validated)
     }
 
+    /// Computes the canonical `Block` sequence for `parts` without creating
+    /// directories, writing assets, or mutating any session state.
+    pub fn expected_prompt_blocks_read_only(
+        &self,
+        folder: &Path,
+        parts: &[PromptPart],
+    ) -> Result<Vec<Block>, PromptMaterializeError> {
+        if parts.is_empty() {
+            return Err(PromptMaterializeError::EmptyContent);
+        }
+        let mut validated = Vec::with_capacity(parts.len());
+        for part in parts {
+            validated.push(validate_part(part)?);
+        }
+        let mut blocks = Vec::with_capacity(validated.len());
+        let mut read_only_assets: Option<AssetStore> = None;
+        for part in validated {
+            match part {
+                ValidatedPart::Text(text) => blocks.push(Block::Text { text }),
+                ValidatedPart::Image(image) => {
+                    let asset = format!("sha256-{:x}", Sha256::digest(&image.bytes));
+                    blocks.push(Block::Image {
+                        asset,
+                        mime: image.media_type.as_str().to_owned(),
+                        name: image.name,
+                    });
+                }
+                ValidatedPart::File(receipt_id) => {
+                    let receipt = load_receipt(folder, &receipt_id)?;
+                    let digest = receipt
+                        .attachment_id
+                        .strip_prefix("sha256:")
+                        .filter(|value| valid_lower_sha256(value))
+                        .ok_or(PromptMaterializeError::Attachment(
+                            AttachmentErrorReason::Corrupt,
+                        ))?;
+                    let asset = format!("sha256-{digest}");
+                    if read_only_assets.is_none() {
+                        read_only_assets = Some(AssetStore::open_read_only(folder.join("assets"))?);
+                    }
+                    let assets = read_only_assets.as_ref().expect("opened above");
+                    let stored = assets.verify_named(&asset).map_err(|_| {
+                        PromptMaterializeError::Attachment(AttachmentErrorReason::Corrupt)
+                    })?;
+                    if stored != receipt.bytes || receipt.bytes == 0 {
+                        return Err(PromptMaterializeError::Attachment(
+                            AttachmentErrorReason::Corrupt,
+                        ));
+                    }
+                    blocks.push(Block::File {
+                        asset,
+                        mime: receipt.media_type,
+                        name: receipt.name,
+                        bytes: receipt.bytes,
+                    });
+                }
+            }
+        }
+        Ok(blocks)
+    }
+
     fn publish_validated(
         &self,
         session_id: &str,

@@ -18,3 +18,4 @@
 (allow file-write* (subpath "/private/tmp/tekes/work"))
 (allow file-read* file-write* (subpath "/private/tmp/tekes/scratch"))
 (allow process-exec process-fork)
+(allow signal (target same-sandbox))

@@ -94,7 +94,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `push_item` | `state                 .bytes                 .checked_add(size)                 .is_none_or` | [68](../../src/stream_queue.rs#L68) | receiver-type-required |
 | `push_item` | `state                 .bytes                 .checked_add` | [68](../../src/stream_queue.rs#L68) | receiver-type-required |
 | `push_item` | `state                 .frames                 .push_back` | [76](../../src/stream_queue.rs#L76) | receiver-type-required |
-| `push_item` | `StreamFailure::new` | [78](../../src/stream_queue.rs#L78) | [endpoint::host::StreamFailure::new](../../src/host.rs#L296) |
+| `push_item` | `StreamFailure::new` | [78](../../src/stream_queue.rs#L78) | [endpoint::host::StreamFailure::new](../../src/host.rs#L309) |
 | `push_item` | `state.waker.take` | [80](../../src/stream_queue.rs#L80), [87](../../src/stream_queue.rs#L87) | receiver-type-required |
 | `push_item` | `waker.wake` | [81](../../src/stream_queue.rs#L81), [88](../../src/stream_queue.rs#L88) | receiver-type-required |
 | `push_item` | `state.frames.push_back` | [86](../../src/stream_queue.rs#L86) | receiver-type-required |
@@ -113,7 +113,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recv` | `Poll::Ready` | [121](../../src/stream_queue.rs#L121), [128](../../src/stream_queue.rs#L128), [131](../../src/stream_queue.rs#L131) | external-constructor-callback-or-unresolved |
 | `recv` | `Some` | [121](../../src/stream_queue.rs#L121), [128](../../src/stream_queue.rs#L128), [138](../../src/stream_queue.rs#L138) | external-constructor-callback-or-unresolved |
 | `recv` | `Err` | [121](../../src/stream_queue.rs#L121) | external-constructor-callback-or-unresolved |
-| `recv` | `StreamFailure::internal` | [121](../../src/stream_queue.rs#L121) | [endpoint::host::StreamFailure::internal](../../src/host.rs#L304) |
+| `recv` | `StreamFailure::internal` | [121](../../src/stream_queue.rs#L121) | [endpoint::host::StreamFailure::internal](../../src/host.rs#L317) |
 | `recv` | `"endpoint frame queue mutex was poisoned".to_owned` | [122](../../src/stream_queue.rs#L122) | receiver-type-required |
 | `recv` | `state.frames.pop_front` | [126](../../src/stream_queue.rs#L126) | receiver-type-required |
 | `recv` | `state                 .waker                 .as_ref()                 .is_none_or` | [133](../../src/stream_queue.rs#L133) | receiver-type-required |

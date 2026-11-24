@@ -425,6 +425,7 @@ pub fn compile_darwin_profile(policy: &SandboxPolicy) -> Result<Vec<u8>, Sandbox
     }
     if policy.allow_process {
         lines.push("(allow process-exec process-fork)".to_owned());
+        lines.push("(allow signal (target same-sandbox))".to_owned());
     }
     match policy.network {
         NetworkPolicy::Deny => {}

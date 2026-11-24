@@ -715,3 +715,222 @@ fn full_access_helper_and_job_use_host_permissions_without_sandbox_probe() {
         "job"
     );
 }
+
+#[test]
+fn helper_cancellation_kills_shell_and_descendants_without_late_writes() {
+    use tools::{ExecRequest, ExecutionAccess};
+    let root = tempfile::tempdir().unwrap();
+    let workspace = std::fs::canonicalize(root.path()).unwrap();
+    let policy = SandboxPolicy {
+        format: 1,
+        read_roots: vec![workspace.to_string_lossy().into_owned()],
+        write_roots: vec![workspace.to_string_lossy().into_owned()],
+        network: NetworkPolicy::Deny,
+        allow_process: true,
+        scratch: None,
+        protected_roots: Vec::new(),
+    };
+    let client = HelperClient::for_execution_access(
+        env!("CARGO_BIN_EXE_tekes-helper"),
+        vec![("workspace".to_owned(), workspace.clone())],
+        policy,
+        tools::ProbeStatus::Unavailable {
+            class: tools::ProbeFailure::Rejected,
+            detail: "full access uses host execution".to_owned(),
+        },
+        ExecutionAccess::FullAccess,
+    )
+    .unwrap();
+    let started = workspace.join("started.txt");
+    let started_tmp = workspace.join("started.tmp");
+    let marker = workspace.join("late_done.txt");
+    let command = format!(
+        "(sleep 2 && printf LATE > '{}') & CHILD=$!; printf '%s\\n%s\\n' \"$$\" \"$CHILD\" > '{}'; mv '{}' '{}'; wait",
+        marker.display(),
+        started_tmp.display(),
+        started_tmp.display(),
+        started.display(),
+    );
+    let cancelled = Arc::new(AtomicBool::new(false));
+    let trigger = Arc::clone(&cancelled);
+    let trigger_started = started.clone();
+    thread::spawn(move || {
+        for _ in 0..2_000 {
+            if trigger_started.is_file() {
+                break;
+            }
+            thread::sleep(Duration::from_millis(5));
+        }
+        trigger.store(true, Ordering::Release);
+    });
+    let result = client.execute_cancellable(
+        &HelperRequest {
+            id: "cancel-descendants".to_owned(),
+            operation: HelperOperation::Exec(ExecRequest {
+                argv: vec!["/bin/sh".into(), "-c".into(), command],
+                stdin: None,
+                cwd: None,
+                env: BTreeMap::new(),
+                stdout_bytes: 4096,
+                stderr_bytes: 4096,
+                timeout_ms: Some(15_000),
+            }),
+        },
+        Some(Duration::from_secs(15)),
+        || cancelled.load(Ordering::Acquire),
+    );
+    assert!(
+        matches!(result, Err(HelperClientError::Cancelled)),
+        "{result:?}"
+    );
+
+    let pid_lines = std::fs::read_to_string(&started).expect("started pids");
+    let pids: Vec<i32> = pid_lines
+        .lines()
+        .map(|line| line.trim().parse::<i32>().expect("numeric pid"))
+        .collect();
+    assert_eq!(pids.len(), 2, "expected shell and child PIDs: {pid_lines}");
+    for pid in pids {
+        // SAFETY: signal 0 only probes the numeric pid and retains no pointers.
+        let rc = unsafe { libc::kill(pid, 0) };
+        assert_eq!(rc, -1, "process {pid} survived helper cancellation");
+        assert_eq!(
+            std::io::Error::last_os_error().raw_os_error(),
+            Some(libc::ESRCH)
+        );
+    }
+
+    thread::sleep(Duration::from_millis(2_500));
+    assert!(
+        !marker.exists(),
+        "descendant subshell wrote delayed marker past cancellation"
+    );
+}
+
+#[test]
+fn sandboxed_helper_cancellation_kills_foreground_wait_and_early_exit_descendants() {
+    use tools::{ExecRequest, ExecutionAccess, SandboxBackend};
+    let root = tempfile::tempdir().unwrap();
+    let workspace = std::fs::canonicalize(root.path()).unwrap();
+    let policy = SandboxPolicy {
+        format: 1,
+        read_roots: vec![workspace.to_string_lossy().into_owned()],
+        write_roots: vec![workspace.to_string_lossy().into_owned()],
+        network: NetworkPolicy::Deny,
+        allow_process: true,
+        scratch: None,
+        protected_roots: Vec::new(),
+    };
+    #[cfg(target_os = "macos")]
+    let backend = SandboxBackend::DarwinSeatbeltV1;
+    #[cfg(not(target_os = "macos"))]
+    let backend = SandboxBackend::LinuxAutoV1;
+    let probe = tools::probe_backend(backend);
+    assert!(
+        matches!(probe, tools::ProbeStatus::Available { .. }),
+        "sandbox backend must be available: {probe:?}"
+    );
+    let client = HelperClient::for_execution_access(
+        env!("CARGO_BIN_EXE_tekes-helper"),
+        vec![("workspace".to_owned(), workspace.clone())],
+        policy,
+        probe,
+        ExecutionAccess::Sandboxed,
+    )
+    .unwrap();
+
+    for (mode, exit_early) in [("foreground_wait", false), ("foreground_early_exit", true)] {
+        let started = workspace.join(format!("started-{mode}.txt"));
+        let started_tmp = workspace.join(format!("started-{mode}.tmp"));
+        let marker = workspace.join(format!("late-{mode}.txt"));
+        let tail = if exit_early { "exit 0" } else { "wait" };
+        let command = format!(
+            "(sleep 2 && printf LATE > '{}') & CHILD=$!; printf '%s\\n%s\\n' \"$$\" \"$CHILD\" > '{}'; mv '{}' '{}'; {tail}",
+            marker.display(),
+            started_tmp.display(),
+            started_tmp.display(),
+            started.display(),
+        );
+        let cancelled = Arc::new(AtomicBool::new(false));
+        let trigger = Arc::clone(&cancelled);
+        let trigger_started = started.clone();
+        thread::spawn(move || {
+            for _ in 0..2_000 {
+                if trigger_started.is_file() {
+                    break;
+                }
+                thread::sleep(Duration::from_millis(5));
+            }
+            thread::sleep(Duration::from_millis(100));
+            trigger.store(true, Ordering::Release);
+        });
+        let result = client.execute_cancellable(
+            &HelperRequest {
+                id: format!("sandbox-cancel-{mode}"),
+                operation: HelperOperation::Exec(ExecRequest {
+                    argv: vec!["/bin/sh".into(), "-c".into(), command],
+                    stdin: None,
+                    cwd: None,
+                    env: BTreeMap::new(),
+                    stdout_bytes: 4096,
+                    stderr_bytes: 4096,
+                    timeout_ms: Some(15_000),
+                }),
+            },
+            Some(Duration::from_secs(15)),
+            || cancelled.load(Ordering::Acquire),
+        );
+        assert!(
+            matches!(result, Err(HelperClientError::Cancelled)),
+            "{mode}: {result:?}"
+        );
+        let pid_lines = std::fs::read_to_string(&started).expect("started pids");
+        let pids: Vec<i32> = pid_lines
+            .lines()
+            .map(|line| line.trim().parse::<i32>().expect("numeric pid"))
+            .collect();
+        assert_eq!(pids.len(), 2, "{mode}: {pid_lines}");
+        // Wait briefly for child PIDs in case shell exited early while descendant remained.
+        // Linux bwrap runs with `--unshare-pid`, so `$CHILD` is namespace-local and probing
+        // it directly with `libc::kill` from the host namespace would hit an unrelated host PID.
+        #[cfg(not(target_os = "linux"))]
+        {
+            let (_, child_pid) = (pids[0], pids[1]);
+            // SAFETY: signal 0 only probes the numeric pid and retains no pointers.
+            assert_eq!(
+                unsafe { libc::kill(child_pid, 0) },
+                -1,
+                "{mode} descendant {child_pid} survived"
+            );
+            assert_eq!(
+                std::io::Error::last_os_error().raw_os_error(),
+                Some(libc::ESRCH)
+            );
+        }
+        #[cfg(target_os = "linux")]
+        {
+            let needle = marker.to_string_lossy();
+            if let Ok(entries) = std::fs::read_dir("/proc") {
+                for entry in entries.flatten() {
+                    let name = entry.file_name();
+                    let name_text = name.to_string_lossy();
+                    if !name_text.chars().all(|c| c.is_ascii_digit()) {
+                        continue;
+                    }
+                    if let Ok(cmdline) = std::fs::read(entry.path().join("cmdline")) {
+                        let cmd = String::from_utf8_lossy(&cmdline);
+                        assert!(
+                            !cmd.contains(needle.as_ref()),
+                            "{mode} host-visible descendant survived: pid={name_text} cmd={cmd}"
+                        );
+                    }
+                }
+            }
+        }
+        thread::sleep(Duration::from_millis(2_500));
+        assert!(
+            !marker.exists(),
+            "{mode} descendant wrote delayed marker past cancellation"
+        );
+    }
+}
