@@ -6,6 +6,18 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.24 - 2026-11-27
+
+### Fixed
+
+- Submission receipts, cancellation teardown, and legacy ledger reconciliation (#169, resolving #166, #167, #173): ensure saturated-lease or dropped-receipt retries never contradict durable execution or poison archived sessions, tear down shell/helper/descendant process groups cleanly on `session.cancel` or bootstrap EOF with no late writes after stop or re-run on recover, reconcile legacy `session.prompt` `Complete(internal)` records strictly read-only on `main.jsonl` behind real sync barriers, and roll back / fail closed on unsynced receipt carriers until `full_sync` succeeds.
+- Runtime semantics, steering, V4 contract, and automatic titles (#170, resolving #147, #148, #160, #161, #168): preserve `supervisor_lost` attribution distinct from unknown upstream outcomes and provider rejections, reject invalid `steer` on idle/settled sessions and remove admitted steers from pending queues after delivery while preserving one journal message and post-settle model selection, align built-in bootstrap v1 and V4 HTTP/WebSocket capabilities and retired routes, and gate automatic title generation cleanly.
+- Endpoint durability barriers and dynamic MCP recovery (#172, resolving #158, #159): enforce deduplicated sync barriers across store/worker/supervisor paths and recover cleanly from dynamic MCP server crashes and catalog changes.
+
+### Changed
+
+- Supervisor and store overhead reductions (#171, resolving #162, #163, #164, #165): eliminate idle poll, projection, search, and validation overhead with catalog-backed listing and verified endpoint journal checksums.
+
 ## 0.9.23 - 2026-11-18
 
 ### Changed
