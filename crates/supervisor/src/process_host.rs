@@ -466,6 +466,12 @@ pub struct ProductionProcessHost {
     #[cfg(test)]
     card_builds: AtomicU64,
     #[cfg(test)]
+    last_publish_projected_events: AtomicU64,
+    #[cfg(test)]
+    last_publish_attempt_checks: AtomicU64,
+    #[cfg(test)]
+    file_authority_full_scans: Arc<AtomicU64>,
+    #[cfg(test)]
     verify_order: Mutex<Vec<String>>,
     #[cfg(test)]
     list_wait_override: Mutex<Option<Duration>>,
@@ -496,8 +502,183 @@ pub struct ProductionProcessHost {
 
 struct SessionProjectionCache {
     kernel_file_len: u64,
+    ledger_id: (u64, u64),
+    journal_id: (u64, u64),
+    journal_len: u64,
+    journal_rows: u64,
+    journal_sha256: [u8; 32],
+    projected_event_count: usize,
+    last_projected_seq: Option<u64>,
+    last_projected_bytes: Option<Vec<u8>>,
+    published_with_streams: bool,
+    clean_read: bool,
     projector: Projector,
     next_frames: HashMap<String, u64>,
+}
+
+impl SessionProjectionCache {
+    fn boundary(events: &[Event]) -> (Option<u64>, Option<Vec<u8>>) {
+        events.last().map_or((None, None), |event| {
+            (Some(event.seq()), event.canonical_bytes().ok())
+        })
+    }
+
+    fn matches_incremental(
+        &self,
+        events: &[Event],
+        ledger_id: (u64, u64),
+        journal_id: (u64, u64),
+        journal_tail: &endpoint::JournalTail,
+        has_streams: bool,
+        clean_read: bool,
+    ) -> bool {
+        if !clean_read
+            || !self.clean_read
+            || self.ledger_id != ledger_id
+            || self.journal_id != journal_id
+            || self.journal_len != journal_tail.len
+            || self.journal_rows != journal_tail.rows
+            || self.journal_sha256 != journal_tail.sha256
+            || (has_streams && !self.published_with_streams)
+            || events.len() < self.projected_event_count
+        {
+            return false;
+        }
+        if self.projected_event_count == 0 {
+            return true;
+        }
+        let boundary = &events[self.projected_event_count - 1];
+        Some(boundary.seq()) == self.last_projected_seq
+            && boundary.canonical_bytes().ok().as_ref() == self.last_projected_bytes.as_ref()
+    }
+}
+
+struct RebuiltProjection {
+    projector: Projector,
+    appended: Vec<endpoint::SessionEvent>,
+    before_counts: (u64, u64),
+    next_frames: HashMap<String, u64>,
+}
+
+struct CachedReconcileOutcome {
+    projector: Projector,
+    appended: Vec<endpoint::SessionEvent>,
+    preserved_next_frames: HashMap<String, u64>,
+    #[cfg(test)]
+    telemetry_delta: (u64, u64),
+}
+
+fn file_dev_ino(path: &Path) -> Result<(u64, u64), DaemonError> {
+    let meta = fs::metadata(path).map_err(DaemonError::io)?;
+    Ok((meta.dev(), meta.ino()))
+}
+
+type FileStatTuple = (u64, u64, u64, i64, i64, i64, i64);
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct FileAuthorityFingerprint {
+    active_dir: Option<FileStatTuple>,
+    archive_dir: Option<FileStatTuple>,
+    ledger: Option<FileStatTuple>,
+    providers: Option<FileStatTuple>,
+    settings: Option<FileStatTuple>,
+    session_settings: Option<FileStatTuple>,
+    canonical_roots: Vec<PathBuf>,
+}
+
+fn stat_stamp(path: &Path) -> Result<Option<FileStatTuple>, ()> {
+    match fs::symlink_metadata(path) {
+        Ok(m) => Ok(Some((
+            m.dev(),
+            m.ino(),
+            m.len(),
+            m.mtime(),
+            m.mtime_nsec(),
+            m.ctime(),
+            m.ctime_nsec(),
+        ))),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),
+        Err(_) => Err(()),
+    }
+}
+
+impl FileAuthorityFingerprint {
+    fn capture(root: &Path, session: &str, scope: &profile::SessionScope) -> Self {
+        let folder = scope.session_folder();
+        let exec = scope.execution();
+        let mut canonical_roots: Vec<PathBuf> = std::iter::once(&exec.cwd)
+            .chain(&exec.read_roots)
+            .chain(&exec.writable_roots)
+            .chain(&exec.toolchain_roots)
+            .map(PathBuf::from)
+            .collect();
+        canonical_roots.sort();
+        canonical_roots.dedup();
+        Self {
+            active_dir: stat_stamp(&root.join("threads").join(session))
+                .ok()
+                .flatten(),
+            archive_dir: stat_stamp(&root.join("archive").join(session))
+                .ok()
+                .flatten(),
+            ledger: stat_stamp(&folder.join("main.jsonl")).ok().flatten(),
+            providers: stat_stamp(&root.join("config/providers.json"))
+                .ok()
+                .flatten(),
+            settings: stat_stamp(&root.join("config/settings.json"))
+                .ok()
+                .flatten(),
+            session_settings: store::session_settings_path(folder)
+                .ok()
+                .and_then(|path| stat_stamp(&path).ok().flatten()),
+            canonical_roots,
+        }
+    }
+
+    fn matches_current(&self, root: &Path, session: &str) -> bool {
+        let Ok(active_dir) = stat_stamp(&root.join("threads").join(session)) else {
+            return false;
+        };
+        let Ok(archive_dir) = stat_stamp(&root.join("archive").join(session)) else {
+            return false;
+        };
+        if active_dir != self.active_dir || archive_dir != self.archive_dir {
+            return false;
+        }
+        let folder = if active_dir.is_some() {
+            root.join("threads").join(session)
+        } else if archive_dir.is_some() {
+            root.join("archive").join(session)
+        } else {
+            return false;
+        };
+        let Ok(ledger) = stat_stamp(&folder.join("main.jsonl")) else {
+            return false;
+        };
+        let Ok(providers) = stat_stamp(&root.join("config/providers.json")) else {
+            return false;
+        };
+        let Ok(settings) = stat_stamp(&root.join("config/settings.json")) else {
+            return false;
+        };
+        let Ok(session_settings_path) = store::session_settings_path(&folder) else {
+            return false;
+        };
+        let Ok(session_settings) = stat_stamp(&session_settings_path) else {
+            return false;
+        };
+        if ledger != self.ledger
+            || providers != self.providers
+            || settings != self.settings
+            || session_settings != self.session_settings
+        {
+            return false;
+        }
+        self.canonical_roots.iter().all(|root_path| {
+            fs::canonicalize(root_path).ok().as_deref() == Some(root_path.as_path())
+                && fs::metadata(root_path).is_ok_and(|meta| meta.is_dir())
+        })
+    }
 }
 
 struct WorkerHandle {
@@ -855,6 +1036,12 @@ impl ProductionProcessHost {
             #[cfg(test)]
             card_builds: AtomicU64::new(0),
             #[cfg(test)]
+            last_publish_projected_events: AtomicU64::new(0),
+            #[cfg(test)]
+            last_publish_attempt_checks: AtomicU64::new(0),
+            #[cfg(test)]
+            file_authority_full_scans: Arc::new(AtomicU64::new(0)),
+            #[cfg(test)]
             verify_order: Mutex::new(Vec::new()),
             #[cfg(test)]
             list_wait_override: Mutex::new(None),
@@ -942,21 +1129,42 @@ impl ProductionProcessHost {
         let root = self.root.clone();
         let session = session_id.to_owned();
         let repository = self.repository.clone();
-        let resolve = move || {
-            profile::SessionScope::locate(&root, &session)
-                .and_then(|scope| scope.config(&repository))
-                .map(|config| config.execution)
-                .map_err(|error| error.to_string())
-        };
-        let initial = resolve().map_err(DaemonError::invalid_config)?;
+        #[cfg(test)]
+        let full_scans = Arc::clone(&self.file_authority_full_scans);
+        let resolve =
+            move || -> Result<(profile::ResolvedExecution, FileAuthorityFingerprint), String> {
+                #[cfg(test)]
+                full_scans.fetch_add(1, Ordering::Relaxed);
+                let scope =
+                    profile::SessionScope::locate(&root, &session).map_err(|e| e.to_string())?;
+                let config = scope.config(&repository).map_err(|e| e.to_string())?;
+                let fingerprint = FileAuthorityFingerprint::capture(&root, &session, &scope);
+                Ok((config.execution, fingerprint))
+            };
+        let (initial, initial_fingerprint) = resolve().map_err(DaemonError::invalid_config)?;
+        let cached_fingerprint = Arc::new(Mutex::new(initial_fingerprint));
+        let check_root = self.root.clone();
+        let check_session = session_id.to_owned();
         let subscription = self
             .file_observations
             .open(session_id)
             .map_err(DaemonError::invalid_config)?;
         Ok(subscription.with_authority_check(move || {
-            if resolve()? != initial {
+            {
+                let guard = cached_fingerprint
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner);
+                if guard.matches_current(&check_root, &check_session) {
+                    return Ok(());
+                }
+            }
+            let (resolved_exec, fresh_fingerprint) = resolve()?;
+            if resolved_exec != initial {
                 return Err("Session workspace authority changed".into());
             }
+            *cached_fingerprint
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner) = fresh_fingerprint;
             Ok(())
         }))
     }
@@ -3650,12 +3858,28 @@ impl ProductionProcessHost {
             .projection_lock
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let ledger_id = file_dev_ino(&ledger_path)?;
         let journal = EndpointJournal::open(&folder)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-        let mut projector = Projector::default();
-        let appended = projector
-            .reconcile(&projection.events, &journal)
-            .map_err(|error| DaemonError::corrupt(error.to_string()))?;
+        let reconciled = self.reconcile_cached_projection(
+            session_id,
+            &projection.events,
+            kernel_file_len,
+            ledger_id,
+            &journal,
+            streams.is_some(),
+            clean_read,
+        )?;
+        #[cfg(test)]
+        {
+            self.last_publish_projected_events
+                .store(reconciled.telemetry_delta.0, Ordering::Relaxed);
+            self.last_publish_attempt_checks
+                .store(reconciled.telemetry_delta.1, Ordering::Relaxed);
+        }
+        let projector = reconciled.projector;
+        let appended = reconciled.appended;
+        let preserved_next_frames = reconciled.preserved_next_frames;
         // The ledger may grow while the journal is reconciled (a respond appends its
         // `approval_response` and reconciles the actionables itself, outside `projection_lock`).
         // The shared projection is only trusted while the file still has the length it was
@@ -3777,6 +4001,201 @@ impl ProductionProcessHost {
                 None => {}
             }
         }
+        self.store_projection_cache(
+            session_id,
+            projector,
+            preserved_next_frames,
+            kernel_file_len,
+            ledger_id,
+            &journal,
+            &projection.events,
+            streams.is_some(),
+            clean_read,
+        )?;
+        Ok(())
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn reconcile_cached_projection(
+        &self,
+        session_id: &str,
+        events: &[Event],
+        kernel_file_len: u64,
+        ledger_id: (u64, u64),
+        journal: &EndpointJournal,
+        has_streams: bool,
+        clean_read: bool,
+    ) -> Result<CachedReconcileOutcome, DaemonError> {
+        let pre_tail = journal
+            .tail_summary()
+            .map_err(|error| DaemonError::corrupt(error.to_string()))?;
+        let journal_id = file_dev_ino(journal.path())?;
+        let previous = {
+            let mut cache = self
+                .projection_cache
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            if cache
+                .get(session_id)
+                .is_some_and(|prev| prev.kernel_file_len > kernel_file_len)
+            {
+                None
+            } else {
+                cache.remove(session_id)
+            }
+        };
+        let (projector, appended, before_counts, preserved_next_frames) = match previous {
+            Some(mut cached)
+                if cached.matches_incremental(
+                    events,
+                    ledger_id,
+                    journal_id,
+                    &pre_tail,
+                    has_streams,
+                    clean_read,
+                ) =>
+            {
+                let before = cached.projector.telemetry_counts();
+                let start = cached.projected_event_count;
+                match cached
+                    .projector
+                    .reconcile_incremental(events, start, journal)
+                {
+                    Ok(appended) => (cached.projector, appended, before, cached.next_frames),
+                    Err(_) => {
+                        let rebuilt = Self::reconcile_full_or_rebuild_verified(
+                            session_id,
+                            events,
+                            journal,
+                            clean_read,
+                            cached.next_frames,
+                        )?;
+                        (
+                            rebuilt.projector,
+                            rebuilt.appended,
+                            rebuilt.before_counts,
+                            rebuilt.next_frames,
+                        )
+                    }
+                }
+            }
+            other => {
+                let rebuilt = Self::reconcile_full_or_rebuild_verified(
+                    session_id,
+                    events,
+                    journal,
+                    clean_read,
+                    other.map(|cache| cache.next_frames).unwrap_or_default(),
+                )?;
+                (
+                    rebuilt.projector,
+                    rebuilt.appended,
+                    rebuilt.before_counts,
+                    rebuilt.next_frames,
+                )
+            }
+        };
+        #[cfg(test)]
+        let telemetry_delta = {
+            let after = projector.telemetry_counts();
+            (
+                after.0.saturating_sub(before_counts.0),
+                after.1.saturating_sub(before_counts.1),
+            )
+        };
+        #[cfg(not(test))]
+        let _ = before_counts;
+        Ok(CachedReconcileOutcome {
+            projector,
+            appended,
+            preserved_next_frames,
+            #[cfg(test)]
+            telemetry_delta,
+        })
+    }
+
+    fn reconcile_full_or_rebuild_verified(
+        session_id: &str,
+        events: &[Event],
+        journal: &EndpointJournal,
+        clean_read: bool,
+        next_frames: HashMap<String, u64>,
+    ) -> Result<RebuiltProjection, DaemonError> {
+        let mut fresh = Projector::default();
+        match fresh.reconcile(events, journal) {
+            Ok(appended) => Ok(RebuiltProjection {
+                projector: fresh,
+                appended,
+                before_counts: (0, 0),
+                next_frames,
+            }),
+            Err(
+                ref error @ endpoint::ProjectionError::Journal(
+                    endpoint::JournalError::IdentityConflict(_)
+                    | endpoint::JournalError::Corruption(_),
+                ),
+            ) if clean_read => {
+                let existing_identities: HashSet<(u64, String)> = journal
+                    .records()
+                    .unwrap_or_default()
+                    .into_iter()
+                    .filter_map(|record| {
+                        record
+                            .kernel_seqs
+                            .last()
+                            .copied()
+                            .map(|anchor| (anchor, record.slot))
+                    })
+                    .collect();
+                let mut rebuilt = Projector::default();
+                let records = rebuilt
+                    .project_verified_records(events, journal.thread_folder())
+                    .map_err(|rebuild_error| DaemonError::corrupt(rebuild_error.to_string()))?;
+                let rebuilt_len = records.len();
+                let appended: Vec<endpoint::SessionEvent> = records
+                    .iter()
+                    .filter(|record| {
+                        record.kernel_seqs.last().copied().is_none_or(|anchor| {
+                            !existing_identities.contains(&(anchor, record.slot.clone()))
+                        })
+                    })
+                    .map(|record| record.event.clone())
+                    .collect();
+                journal
+                    .replace_verified(records)
+                    .map_err(|replace_error| DaemonError::corrupt(replace_error.to_string()))?;
+                eprintln!(
+                    "process-host-journal-corruption-rebuilt: session={session_id} reason={error} rows={rebuilt_len}"
+                );
+                Ok(RebuiltProjection {
+                    projector: rebuilt,
+                    appended,
+                    before_counts: (0, 0),
+                    next_frames,
+                })
+            }
+            Err(error) => Err(DaemonError::corrupt(error.to_string())),
+        }
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn store_projection_cache(
+        &self,
+        session_id: &str,
+        projector: Projector,
+        next_frames: HashMap<String, u64>,
+        kernel_file_len: u64,
+        ledger_id: (u64, u64),
+        journal: &EndpointJournal,
+        events: &[Event],
+        published_with_streams: bool,
+        clean_read: bool,
+    ) -> Result<(), DaemonError> {
+        let post_tail = journal
+            .tail_summary()
+            .map_err(|error| DaemonError::corrupt(error.to_string()))?;
+        let journal_id = file_dev_ino(journal.path())?;
+        let (last_projected_seq, last_projected_bytes) = SessionProjectionCache::boundary(events);
         let mut projection_cache = self
             .projection_cache
             .lock()
@@ -3787,17 +4206,31 @@ impl ProductionProcessHost {
                 projection_cache.insert(session_id.to_owned(), previous);
             }
             previous => {
+                let merged_next_frames = if next_frames.is_empty() {
+                    previous.map(|cache| cache.next_frames).unwrap_or_default()
+                } else {
+                    next_frames
+                };
                 projection_cache.insert(
                     session_id.to_owned(),
                     SessionProjectionCache {
                         kernel_file_len,
+                        ledger_id,
+                        journal_id,
+                        journal_len: post_tail.len,
+                        journal_rows: post_tail.rows,
+                        journal_sha256: post_tail.sha256,
+                        projected_event_count: events.len(),
+                        last_projected_seq,
+                        last_projected_bytes,
+                        published_with_streams,
+                        clean_read,
                         projector,
-                        next_frames: previous.map(|cache| cache.next_frames).unwrap_or_default(),
+                        next_frames: merged_next_frames,
                     },
                 );
             }
         }
-        drop(projection_cache);
         Ok(())
     }
 
@@ -3813,18 +4246,25 @@ impl ProductionProcessHost {
             .clone();
         let folder = self.root.join("threads").join(session_id);
         let ledger_path = folder.join("main.jsonl");
-        let kernel_file_len = fs::metadata(&ledger_path).map_err(DaemonError::io)?.len();
-        let mut projection_cache = self
-            .projection_cache
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
-        let cache_is_current = projection_cache.get(session_id).is_some_and(|cache| {
-            cache.kernel_file_len == kernel_file_len
-                && cache.next_frames.contains_key(&frame.attempt)
-        });
+        let ledger_meta = fs::metadata(&ledger_path).map_err(DaemonError::io)?;
+        let kernel_file_len = ledger_meta.len();
+        let ledger_id = (ledger_meta.dev(), ledger_meta.ino());
+        let cache_is_current = {
+            let projection_cache = self
+                .projection_cache
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            projection_cache.get(session_id).is_some_and(|cache| {
+                cache.kernel_file_len == kernel_file_len
+                    && cache.ledger_id == ledger_id
+                    && cache.next_frames.contains_key(&frame.attempt)
+            })
+        };
         if !cache_is_current {
             let bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
-            let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
+            let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
+            let clean_read = !scan.needs_repair();
+            let projection = scan
                 .projection
                 .ok_or_else(|| DaemonError::corrupt("active thread has no projection"))?;
             let journal = EndpointJournal::open(&folder)
@@ -3872,11 +4312,16 @@ impl ProductionProcessHost {
                 }
                 prefix
             };
-            let mut projector = Projector::default();
-            let projected = projector
-                .reconcile(prefix, &journal)
-                .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-            for event in projected {
+            let reconciled = self.reconcile_cached_projection(
+                session_id,
+                prefix,
+                kernel_file_len,
+                ledger_id,
+                &journal,
+                streams.is_some(),
+                clean_read,
+            )?;
+            for event in reconciled.appended {
                 if let Some(streams) = &streams {
                     streams
                         .publish_durable_session_event_from_journal(
@@ -3885,19 +4330,22 @@ impl ProductionProcessHost {
                         .map_err(DaemonError::from)?;
                 }
             }
-            let next_frames = projection_cache
-                .remove(session_id)
-                .map(|previous| previous.next_frames)
-                .unwrap_or_default();
-            projection_cache.insert(
-                session_id.to_owned(),
-                SessionProjectionCache {
-                    kernel_file_len,
-                    projector,
-                    next_frames,
-                },
-            );
+            self.store_projection_cache(
+                session_id,
+                reconciled.projector,
+                reconciled.preserved_next_frames,
+                kernel_file_len,
+                ledger_id,
+                &journal,
+                prefix,
+                streams.is_some(),
+                clean_read,
+            )?;
         }
+        let mut projection_cache = self
+            .projection_cache
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
         let cache = projection_cache
             .get_mut(session_id)
             .expect("current projection cache was installed");
@@ -4433,9 +4881,12 @@ fn frozen_tool_launch_policy(
         .execution_cwd()
         .map(str::to_owned)
         .ok_or_else(|| DaemonError::invalid_config("workspace has no execution cwd"))?;
+    let mut read_roots = config.execution.cwd.clone();
+    read_roots.sort();
+    read_roots.dedup();
     let sandbox = tools::SandboxPolicy {
         format: 1,
-        read_roots: config.execution.cwd.clone(),
+        read_roots,
         write_roots: Vec::new(),
         network: if effective.network {
             tools::NetworkPolicy::All
@@ -5838,11 +6289,157 @@ impl SupervisorSessionAuthority for ProductionProcessHost {
 
     fn reconcile_projection(&self, session_id: &str) -> Result<(), String> {
         if self.live_worker(session_id).is_some() {
+            // Serialize against `publish_appended_with`, which temporarily removes the cache
+            // entry under `projection_lock` while reconciling.
+            let _projection_guard = self
+                .projection_lock
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            let expected = self
+                .projection_cache
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .get(session_id)
+                .map(|cache| (cache.journal_id, cache.journal_len, cache.journal_sha256));
+            if let Some((expected_id, expected_len, expected_sha)) = expected {
+                let journal_path = self
+                    .root
+                    .join("threads")
+                    .join(session_id)
+                    .join("endpoint.jsonl");
+                let actual_id = file_dev_ino(&journal_path).map_err(|error| error.to_string())?;
+                let bytes = fs::read(&journal_path).map_err(|error| error.to_string())?;
+                let prefix_len = usize::try_from(expected_len).unwrap_or(usize::MAX);
+                let actual_sha: [u8; 32] = if bytes.len() >= prefix_len {
+                    Sha256::digest(&bytes[..prefix_len]).into()
+                } else {
+                    Sha256::digest(&bytes).into()
+                };
+                if actual_id != expected_id
+                    || bytes.len() < prefix_len
+                    || actual_sha != expected_sha
+                {
+                    return Err(
+                        "endpoint journal prefix checksum mismatch while worker owns line"
+                            .to_owned(),
+                    );
+                }
+            } else {
+                verify_existing_journal_matches_ledger(&self.root, session_id)?;
+            }
             return Ok(());
         }
         self.publish_appended(session_id)
             .map_err(|error| error.to_string())
     }
+
+    fn verify_journal_for_page(&self, session_id: &str) -> Result<(), String> {
+        let has_live_worker = self.live_worker(session_id).is_some();
+        let has_streams = self
+            .streams
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .is_some();
+        let thread_dir = self.root.join("threads").join(session_id);
+        let ledger_path = thread_dir.join("main.jsonl");
+        let journal_path = thread_dir.join("endpoint.jsonl");
+        let cached = self
+            .projection_cache
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(session_id)
+            .map(|cache| {
+                (
+                    cache.ledger_id,
+                    cache.kernel_file_len,
+                    cache.journal_id,
+                    cache.journal_len,
+                    cache.journal_sha256,
+                    cache.clean_read,
+                    cache.published_with_streams,
+                )
+            });
+        if let Some((
+            expected_ledger_id,
+            expected_ledger_len,
+            expected_journal_id,
+            expected_journal_len,
+            expected_journal_sha,
+            clean_read,
+            published_with_streams,
+        )) = cached
+            && !has_live_worker
+            && clean_read
+            && (!has_streams || published_with_streams)
+            && let Ok(actual_ledger_id) = file_dev_ino(&ledger_path)
+            && actual_ledger_id == expected_ledger_id
+            && let Ok(ledger_meta) = fs::metadata(&ledger_path)
+            && ledger_meta.len() == expected_ledger_len
+            && let Ok(actual_journal_id) = file_dev_ino(&journal_path)
+            && actual_journal_id == expected_journal_id
+            && let Ok(journal_bytes) = fs::read(&journal_path)
+            && journal_bytes.len() as u64 == expected_journal_len
+            && <[u8; 32]>::from(Sha256::digest(&journal_bytes)) == expected_journal_sha
+        {
+            return Ok(());
+        }
+        self.reconcile_projection(session_id)
+    }
+}
+
+fn verify_existing_journal_matches_ledger(root: &Path, session_id: &str) -> Result<(), String> {
+    let folder = root.join("threads").join(session_id);
+    let journal_path = folder.join("endpoint.jsonl");
+    let ledger_path = folder.join("main.jsonl");
+    let Ok(journal_bytes) = fs::read(&journal_path) else {
+        return Ok(());
+    };
+    if journal_bytes.is_empty() {
+        return Ok(());
+    }
+    let ledger_bytes = fs::read(&ledger_path).map_err(|error| error.to_string())?;
+    let scan = scan_valid_prefix(&ledger_bytes, schema::READER_VERSION);
+    if scan.needs_repair() {
+        return Ok(());
+    }
+    let Some(projection) = scan.projection else {
+        return Ok(());
+    };
+    let journal = EndpointJournal::open(&folder).map_err(|error| error.to_string())?;
+    let existing = journal.records().map_err(|error| error.to_string())?;
+    if existing.is_empty() {
+        return Ok(());
+    }
+    let mut fresh = Projector::default();
+    let expected = fresh
+        .project_verified_records(&projection.events, &folder)
+        .map_err(|error| error.to_string())?;
+    let mut expected_by_id = HashMap::with_capacity(expected.len());
+    for record in expected {
+        if let Some(anchor) = record.kernel_seqs.last().copied() {
+            expected_by_id.insert((anchor, record.slot.clone()), record);
+        }
+    }
+    for record in existing {
+        let Some(anchor) = record.kernel_seqs.last().copied() else {
+            return Err("endpoint journal lacks causal anchor while worker owns line".to_owned());
+        };
+        let Some(mut expected_record) = expected_by_id.remove(&(anchor, record.slot.clone()))
+        else {
+            return Err("endpoint journal content mismatch while worker owns line".to_owned());
+        };
+        expected_record.event.seq = record.event.seq;
+        let expected_bytes = expected_record
+            .canonical_bytes()
+            .map_err(|error| error.to_string())?;
+        let actual_bytes = record
+            .canonical_bytes()
+            .map_err(|error| error.to_string())?;
+        if expected_bytes != actual_bytes {
+            return Err("endpoint journal content mismatch while worker owns line".to_owned());
+        }
+    }
+    Ok(())
 }
 
 impl QueueTransactionAuthority for ProductionProcessHost {
@@ -13092,6 +13689,558 @@ mod tests {
             .find(|item| item.session_id == session)
             .expect("session row");
         assert_eq!(item.title, None, "live steer rejection must not seed title");
+        host.shutdown();
+    }
+
+    #[test]
+    fn bench_163_publish_appended_and_attempt_step_counts() {
+        for num_turns in [10_u64, 50_u64, 150_u64] {
+            let root = tempfile::tempdir().expect("root");
+            let session = "018f0000-0000-7000-8000-000000000163";
+            let folder = root.path().join("threads").join(session);
+            fs::create_dir_all(folder.join("assets")).expect("thread folder");
+            let ledger = folder.join("main.jsonl");
+            let mut lines = Vec::new();
+            let mut seq = 1_u64;
+            lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:00.000Z","format":1,"kind":"genesis","min_reader":schema::EXECUTION_READER,"min_writer":1,"origin_key":"c1","origin_tuple":{"principal":"p","client":"c","target":session,"op":"create","key":"c1"},"resume":"never","config":{"digest":"test"},"thread":session,"execution":test_support::execution_fixture(),"cwd":test_support::execution_fixture().cwd}));
+            for turn in 1..=num_turns {
+                seq += 1;
+                let input_seq = seq;
+                lines.push(json!({"v":1,"seq":input_seq,"ts":"2026-08-28T00:00:01.000Z","kind":"input","content":[{"type":"text","text":"q"}],"origin_key":format!("k-{turn}"),"origin_tuple":{"principal":"p","client":"c","target":session,"op":"session.prompt","key":format!("k-{turn}")}}));
+                seq += 1;
+                lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","kind":"run_start","run":format!("r-{turn}"),"mode":"ordinary","binary":"w","config_digest":"cfg","instruction_digest":"ins","policy":"p","recovery_ordinal":0}));
+                seq += 1;
+                lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","turn":turn,"kind":"turn_open","trigger":{"inputs":[input_seq]}}));
+                seq += 1;
+                lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","kind":"epoch","id":format!("e-{turn}"),"adapter":"fake","model":"m","reason":"initial","renderer":1,"system":{"asset":"sha256-aa","digest":"d"},"tools":{"asset":"sha256-td","digest":"td"}}));
+                for step in 0..3_u64 {
+                    seq += 1;
+                    lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","turn":turn,"kind":"attempt","attempt":format!("a-{turn}-{step}"),"epoch":format!("e-{turn}"),"request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":64},"wire_digest":"wd","admits":if step==0{json!([{"from":input_seq,"to":input_seq}])}else{json!([])}}));
+                    seq += 1;
+                    lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","turn":turn,"kind":"output","attempt":format!("a-{turn}-{step}"),"content":[{"type":"text","text":"hi"}],"final_answer":step==2,"usage":{"availability":"reported","input_tokens":"1","output_tokens":"1"},"sealed":{"version":1,"adapter":"fake","fragments":"[]"}}));
+                }
+                let out_seq = seq;
+                seq += 1;
+                lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:02.000Z","turn":turn,"kind":"settle","outcome":"completed","promoted_output_seq":out_seq}));
+            }
+            let body = lines
+                .iter()
+                .map(|v| serde_json_canonicalizer::to_string(v).unwrap() + "\n")
+                .collect::<String>();
+            fs::write(&ledger, body).expect("seed ledger");
+
+            let bin = std::env::current_exe().expect("test bin");
+            let host = ProductionProcessHost::open(
+                root.path(),
+                &bin,
+                "test",
+                root.path().join("missing-agent"),
+            )
+            .expect("host");
+            host.publish_appended(session)
+                .expect("warm initial publish");
+
+            // Append 1 small 2-event batch (input + run_start) at tail via publish_appended
+            {
+                let mut f = fs::OpenOptions::new().append(true).open(&ledger).unwrap();
+                for extra in [
+                    json!({"v":1,"seq":seq+1,"ts":"2026-08-28T00:00:03.000Z","kind":"input","content":[{"type":"text","text":"next"}],"origin_key":"next-1","origin_tuple":{"principal":"p","client":"c","target":session,"op":"session.prompt","key":"next-1"}}),
+                    json!({"v":1,"seq":seq+2,"ts":"2026-08-28T00:00:03.000Z","kind":"run_start","run":"r-next","mode":"ordinary","binary":"w","config_digest":"cfg","instruction_digest":"ins","policy":"p","recovery_ordinal":0}),
+                ] {
+                    writeln!(
+                        f,
+                        "{}",
+                        serde_json_canonicalizer::to_string(&extra).unwrap()
+                    )
+                    .unwrap();
+                }
+            }
+            let t0 = Instant::now();
+            host.publish_appended(session)
+                .expect("incremental append publish");
+            let elapsed_us = t0.elapsed().as_micros();
+            let ev_cnt = host.last_publish_projected_events.load(Ordering::Relaxed);
+            let step_checks = host.last_publish_attempt_checks.load(Ordering::Relaxed);
+            eprintln!(
+                "METRIC #163 turns={num_turns} total_events={} projected_events={ev_cnt} attempt_step_checks={step_checks} elapsed_us={elapsed_us}",
+                seq + 2
+            );
+            host.shutdown();
+        }
+    }
+
+    #[test]
+    fn file_changes_idle_poll_caches_authority_until_root_symlink_or_config_changes() {
+        let root = tempfile::tempdir().expect("root");
+        let workspace_parent = tempfile::tempdir().expect("ws parent");
+        let work_dir = workspace_parent.path().join("repo");
+        fs::create_dir_all(&work_dir).unwrap();
+        let canonical_work = fs::canonicalize(&work_dir).unwrap();
+        let outside_dir = workspace_parent.path().join("outside");
+        fs::create_dir_all(&outside_dir).unwrap();
+
+        let target_file = canonical_work.join("note.txt");
+        fs::write(&target_file, "v0\n").unwrap();
+
+        let session = "018f0000-0000-7000-8000-000000000162";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).unwrap();
+        let exec: schema::ExecutionConfig = serde_json::from_value(json!({
+            "cwd": canonical_work,
+            "allowed_tools": ["read"]
+        }))
+        .unwrap();
+        let genesis = serde_json::json!({
+            "v": 1, "seq": 1, "kind": "genesis", "ts": "2026-08-28T00:00:00.000Z",
+            "format": 1, "min_reader": schema::EXECUTION_READER, "min_writer": 1,
+            "thread": session, "execution": exec, "cwd": exec.cwd,
+            "origin_key": format!("create-{session}"),
+            "origin_tuple": {"principal": "test", "client": "test", "target": session, "op": "create", "key": format!("create-{session}")},
+            "resume": "never", "config": {"digest": "test"}
+        });
+        let ledger_path = folder.join("main.jsonl");
+        fs::write(
+            &ledger_path,
+            serde_json_canonicalizer::to_string(&genesis).unwrap() + "\n",
+        )
+        .unwrap();
+
+        let bin = std::env::current_exe().expect("test bin");
+        let host = ProductionProcessHost::open(
+            root.path(),
+            &bin,
+            "test",
+            root.path().join("missing-agent"),
+        )
+        .expect("host");
+
+        let mut feed = host.client_file_changes(session).expect("open feed");
+        assert_eq!(feed.poll().unwrap(), vec![json!({"kind": "ready"})]);
+        host.client_file_page(session, "note.txt", true, 1, 10)
+            .expect("register observation");
+
+        assert_eq!(
+            host.file_authority_full_scans.load(Ordering::Relaxed),
+            1,
+            "only initial open performs full authority resolution"
+        );
+
+        for _ in 0..50 {
+            assert!(feed.poll().unwrap().is_empty());
+        }
+        assert_eq!(
+            host.file_authority_full_scans.load(Ordering::Relaxed),
+            1,
+            "50 idle polls must not re-read ledger or config"
+        );
+
+        // Observing an actual file edit still emits change notification and keeps cache hit.
+        fs::write(&target_file, "v1\n").unwrap();
+        let frames = feed.poll().unwrap();
+        assert_eq!(frames.len(), 1);
+        assert_eq!(host.file_authority_full_scans.load(Ordering::Relaxed), 1);
+
+        // Corrupting config/settings.json invalidates fingerprint -> full resolve fails closed.
+        fs::create_dir_all(root.path().join("config")).unwrap();
+        fs::write(root.path().join("config/settings.json"), b"not-json\n").unwrap();
+        assert!(feed.poll().is_err(), "corrupt config must stop feed");
+        fs::remove_file(root.path().join("config/settings.json")).unwrap();
+
+        // New feed recovers cleanly, then replacing root with symlink must fail closed.
+        let mut feed2 = host.client_file_changes(session).expect("reopen feed");
+        assert_eq!(feed2.poll().unwrap(), vec![json!({"kind": "ready"})]);
+        fs::remove_dir_all(&canonical_work).unwrap();
+        assert!(feed2.poll().is_err(), "deleted root must stop feed");
+
+        #[cfg(unix)]
+        {
+            std::os::unix::fs::symlink(&outside_dir, &canonical_work).unwrap();
+            assert!(
+                feed2.poll().is_err(),
+                "symlinked root changing canonical path must stop feed"
+            );
+            // Also verify changing folder out from under active threads stops or re-validates.
+        }
+        host.shutdown();
+    }
+
+    #[test]
+    fn incremental_projection_handles_noop_frame_transition_journal_rebuild_and_stale_fold() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-000000000164";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        let ledger = folder.join("main.jsonl");
+        let mut seq = 1_u64;
+        let mut lines = vec![json!({
+            "v": 1, "seq": seq, "ts": "2026-08-28T00:00:00.000Z", "format": 1, "kind": "genesis",
+            "min_reader": schema::EXECUTION_READER, "min_writer": 1, "origin_key": "c1",
+            "origin_tuple": {"principal": "p", "client": "c", "target": session, "op": "create", "key": "c1"},
+            "resume": "never", "config": {"digest": "test"}, "thread": session,
+            "execution": test_support::execution_fixture(), "cwd": test_support::execution_fixture().cwd
+        })];
+        for turn in 1..=5_u64 {
+            seq += 1;
+            let input_seq = seq;
+            lines.push(json!({"v":1,"seq":input_seq,"ts":"2026-08-28T00:00:01.000Z","kind":"input","content":[{"type":"text","text":"q"}],"origin_key":format!("k-{turn}"),"origin_tuple":{"principal":"p","client":"c","target":session,"op":"session.prompt","key":format!("k-{turn}")}}));
+            seq += 1;
+            lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","kind":"run_start","run":format!("r-{turn}"),"mode":"ordinary","binary":"w","config_digest":"cfg","instruction_digest":"ins","policy":"p","recovery_ordinal":0}));
+            seq += 1;
+            lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","turn":turn,"kind":"turn_open","trigger":{"inputs":[input_seq]}}));
+            seq += 1;
+            lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","kind":"epoch","id":format!("e-{turn}"),"adapter":"fake","model":"m","reason":"initial","renderer":1,"system":{"asset":"sha256-aa","digest":"d"},"tools":{"asset":"sha256-td","digest":"td"}}));
+            seq += 1;
+            lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","turn":turn,"kind":"attempt","attempt":format!("a-{turn}-0"),"epoch":format!("e-{turn}"),"request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":64},"wire_digest":"wd","admits":[{"from":input_seq,"to":input_seq}]}));
+            seq += 1;
+            lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:01.000Z","turn":turn,"kind":"output","attempt":format!("a-{turn}-0"),"content":[{"type":"text","text":"hi"}],"final_answer":true,"usage":{"availability":"reported","input_tokens":"1","output_tokens":"1"},"sealed":{"version":1,"adapter":"fake","fragments":"[]"}}));
+            let out_seq = seq;
+            seq += 1;
+            lines.push(json!({"v":1,"seq":seq,"ts":"2026-08-28T00:00:02.000Z","turn":turn,"kind":"settle","outcome":"completed","promoted_output_seq":out_seq}));
+        }
+        let body = lines
+            .iter()
+            .map(|v| serde_json_canonicalizer::to_string(v).unwrap() + "\n")
+            .collect::<String>();
+        fs::write(&ledger, body).unwrap();
+
+        let bin = std::env::current_exe().expect("test bin");
+        let host = ProductionProcessHost::open(
+            root.path(),
+            &bin,
+            "test",
+            root.path().join("missing-agent"),
+        )
+        .expect("host");
+
+        // 1. Cold publish then duplicate no-op publish (0 events projected).
+        host.publish_appended(session).unwrap();
+        assert_eq!(
+            host.last_publish_projected_events.load(Ordering::Relaxed),
+            36
+        );
+        host.publish_appended(session).unwrap();
+        assert_eq!(
+            host.last_publish_projected_events.load(Ordering::Relaxed),
+            0
+        );
+        assert_eq!(host.last_publish_attempt_checks.load(Ordering::Relaxed), 0);
+
+        // 2. Append open turn + attempt + publish_frame -> publish_appended preserves next_frames & outputs O(1) incremental counts.
+        {
+            let mut f = fs::OpenOptions::new().append(true).open(&ledger).unwrap();
+            for extra in [
+                json!({"v":1,"seq":seq+1,"ts":"2026-08-28T00:00:03.000Z","kind":"input","content":[{"type":"text","text":"q6"}],"origin_key":"k-6","origin_tuple":{"principal":"p","client":"c","target":session,"op":"session.prompt","key":"k-6"}}),
+                json!({"v":1,"seq":seq+2,"ts":"2026-08-28T00:00:03.000Z","kind":"run_start","run":"r-6","mode":"ordinary","binary":"w","config_digest":"cfg","instruction_digest":"ins","policy":"p","recovery_ordinal":0}),
+                json!({"v":1,"seq":seq+3,"ts":"2026-08-28T00:00:03.000Z","turn":6,"kind":"turn_open","trigger":{"inputs":[seq+1]}}),
+                json!({"v":1,"seq":seq+4,"ts":"2026-08-28T00:00:03.000Z","kind":"epoch","id":"e-6","adapter":"fake","model":"m","reason":"initial","renderer":1,"system":{"asset":"sha256-aa","digest":"d"},"tools":{"asset":"sha256-td","digest":"td"}}),
+                json!({"v":1,"seq":seq+5,"ts":"2026-08-28T00:00:03.000Z","turn":6,"kind":"attempt","attempt":"a-6-0","epoch":"e-6","request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":64},"wire_digest":"wd","admits":[{"from":seq+1,"to":seq+1}]}),
+            ] {
+                writeln!(
+                    f,
+                    "{}",
+                    serde_json_canonicalizer::to_string(&extra).unwrap()
+                )
+                .unwrap();
+            }
+        }
+        host.publish_appended(session).unwrap();
+        assert_eq!(
+            host.last_publish_projected_events.load(Ordering::Relaxed),
+            5
+        );
+        assert_eq!(host.last_publish_attempt_checks.load(Ordering::Relaxed), 1);
+
+        let frame = Frame {
+            attempt: "a-6-0".to_owned(),
+            channel: FrameChannel::Text,
+            block: 0,
+            delta: "hello".to_owned(),
+            call_id: None,
+            name: None,
+            arguments_complete: None,
+            ledger_seq: Some(seq + 5),
+        };
+        host.publish_frame(session, frame.clone()).unwrap();
+        host.publish_frame(session, frame).unwrap();
+        {
+            let mut f = fs::OpenOptions::new().append(true).open(&ledger).unwrap();
+            for extra in [
+                json!({"v":1,"seq":seq+6,"ts":"2026-08-28T00:00:04.000Z","turn":6,"kind":"output","attempt":"a-6-0","content":[{"type":"text","text":"hello"}],"final_answer":true,"usage":{"availability":"reported","input_tokens":"1","output_tokens":"1"},"sealed":{"version":1,"adapter":"fake","fragments":"[]"}}),
+                json!({"v":1,"seq":seq+7,"ts":"2026-08-28T00:00:04.000Z","turn":6,"kind":"settle","outcome":"completed","promoted_output_seq":seq+6}),
+            ] {
+                writeln!(
+                    f,
+                    "{}",
+                    serde_json_canonicalizer::to_string(&extra).unwrap()
+                )
+                .unwrap();
+            }
+        }
+        host.publish_appended(session).unwrap();
+        assert_eq!(
+            host.last_publish_projected_events.load(Ordering::Relaxed),
+            2
+        );
+        {
+            let cache = host.projection_cache.lock().unwrap();
+            assert_eq!(cache[session].next_frames.get("a-6-0").copied(), Some(2));
+        }
+
+        // 3. Concurrent newer fold during after_decode must not have its cache overwritten by older fold.
+        let append_later = || {
+            let mut f = fs::OpenOptions::new().append(true).open(&ledger).unwrap();
+            writeln!(
+                f,
+                "{}",
+                serde_json_canonicalizer::to_string(&json!({
+                    "v":1,"seq":seq+8,"ts":"2026-08-28T00:00:05.000Z","kind":"input",
+                    "content":[{"type":"text","text":"concurrent"}],"origin_key":"k-7",
+                    "origin_tuple":{"principal":"p","client":"c","target":session,"op":"session.prompt","key":"k-7"}
+                }))
+                .unwrap()
+            )
+            .unwrap();
+            host.publish_appended(session).unwrap();
+        };
+        host.publish_appended_with(session, Some(&append_later))
+            .unwrap();
+        {
+            let cache = host.projection_cache.lock().unwrap();
+            assert_eq!(cache[session].projected_event_count, (seq + 8) as usize);
+        }
+
+        // 4. Removing endpoint.jsonl triggers clean full rebuild fallback on next publish_appended,
+        //    yielding byte-identical output to a fresh Projector::default().reconcile.
+        fs::remove_file(folder.join("endpoint.jsonl")).unwrap();
+        host.publish_appended(session).unwrap();
+        assert_eq!(
+            host.last_publish_projected_events.load(Ordering::Relaxed),
+            seq + 8
+        );
+
+        let full_dir = tempfile::tempdir().unwrap();
+        let full_journal = EndpointJournal::open(full_dir.path()).unwrap();
+        let bytes = fs::read(&ledger).unwrap();
+        let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
+        Projector::default()
+            .reconcile(&scan.projection.unwrap().events, &full_journal)
+            .unwrap();
+        assert_eq!(
+            fs::read(folder.join("endpoint.jsonl")).unwrap(),
+            fs::read(full_dir.path().join("endpoint.jsonl")).unwrap()
+        );
+        host.shutdown();
+    }
+
+    #[test]
+    fn frozen_tool_launch_policy_sorts_read_roots_when_read_root_precedes_cwd() {
+        let storage_root = tempfile::tempdir().unwrap();
+        let workspace = tempfile::tempdir().unwrap();
+        let alpha_read = {
+            fs::create_dir_all(workspace.path().join("alpha_read")).unwrap();
+            fs::canonicalize(workspace.path().join("alpha_read")).unwrap()
+        };
+        let zeta_cwd = {
+            fs::create_dir_all(workspace.path().join("zeta_cwd")).unwrap();
+            fs::canonicalize(workspace.path().join("zeta_cwd")).unwrap()
+        };
+        assert!(
+            alpha_read.to_string_lossy().as_bytes() < zeta_cwd.to_string_lossy().as_bytes(),
+            "test requires read_root to sort before cwd"
+        );
+        let config = ConfigSnapshot {
+            format: 1,
+            user_agent_dir: None,
+            execution: profile::ResolvedExecution {
+                session_id: "018f0000-0000-7000-8000-000000000165".to_owned(),
+                cwd: vec![
+                    zeta_cwd.to_string_lossy().into_owned(),
+                    alpha_read.to_string_lossy().into_owned(),
+                ],
+                policy: profile::ExecutionPolicy::default(),
+            },
+            revisions: profile::RevisionVector {
+                providers: 1,
+                settings: 0,
+                session_settings: None,
+            },
+            providers: profile::ProvidersConfig::default(),
+            settings: profile::SettingsConfig::default(),
+            session_settings: None,
+        };
+        let instruction = profile::InstructionSnapshot {
+            format: 1,
+            sources: Vec::new(),
+            effective: profile::EffectiveInstructions::default(),
+        };
+        let launch = frozen_tool_launch_policy(storage_root.path(), &config, &instruction)
+            .expect("sorted sandbox read_roots must allow read_roots before cwd");
+        assert_eq!(launch.primary_workspace_cwd(), zeta_cwd.to_string_lossy());
+        assert_eq!(
+            launch.base_sandbox().read_roots,
+            vec![
+                alpha_read.to_string_lossy().into_owned(),
+                zeta_cwd.to_string_lossy().into_owned(),
+            ]
+        );
+    }
+
+    #[test]
+    fn same_length_in_place_journal_mutation_rebuilds_across_live_reconnect_and_pagination() {
+        let root = tempfile::tempdir().unwrap();
+        let session = "018f0000-0000-7000-8000-000000000163";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).unwrap();
+        let ledger = folder.join("main.jsonl");
+        let events = [
+            json!({"v":1,"seq":1,"kind":"genesis","ts":"2026-08-28T00:00:00.000Z","format":1,"min_reader":1,"min_writer":1,"thread":session,"workspace":"w","origin_key":format!("c-{session}"),"origin_tuple":{"principal":"p","client":"c","target":session,"op":"create","key":format!("c-{session}")},"resume":"never","config":{"digest":"test"}}),
+            json!({"v":1,"seq":2,"ts":"2026-08-28T00:00:01.000Z","kind":"input","content":[{"type":"text","text":"q1"}],"origin_key":"k-1","origin_tuple":{"principal":"p","client":"c","target":session,"op":"session.prompt","key":"k-1"}}),
+            json!({"v":1,"seq":3,"ts":"2026-08-28T00:00:01.000Z","turn":1,"kind":"turn_open","trigger":{"inputs":[2]}}),
+            json!({"v":1,"seq":4,"ts":"2026-08-28T00:00:01.000Z","kind":"input","steer":true,"target_turn":1,"content":[{"type":"text","text":"steer-note"}],"origin_key":"k-steer","origin_tuple":{"principal":"p","client":"c","target":session,"op":"session.prompt","key":"k-steer"}}),
+            json!({"v":1,"seq":5,"ts":"2026-08-28T00:00:01.000Z","kind":"epoch","id":"e-1","adapter":"fake","model":"m","reason":"initial","renderer":1,"system":{"asset":"sha256-aa","digest":"d"},"tools":{"asset":"sha256-td","digest":"td"}}),
+            json!({"v":1,"seq":6,"ts":"2026-08-28T00:00:01.000Z","turn":1,"kind":"attempt","attempt":"a-1","epoch":"e-1","request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":64},"wire_digest":"wd","admits":[{"from":2,"to":2},{"from":4,"to":4}]}),
+            json!({"v":1,"seq":7,"ts":"2026-08-28T00:00:02.000Z","turn":1,"kind":"output","attempt":"a-1","content":[{"type":"text","text":"CLEAN_SEQ4_TEXT"}],"final_answer":true,"usage":{"availability":"reported","input_tokens":"1","output_tokens":"1"},"sealed":{"version":1,"adapter":"fake","fragments":"[]"}}),
+            json!({"v":1,"seq":8,"ts":"2026-08-28T00:00:02.000Z","turn":1,"kind":"settle","outcome":"completed","promoted_output_seq":7}),
+        ];
+        fs::write(
+            &ledger,
+            events
+                .iter()
+                .map(|v| serde_json_canonicalizer::to_string(v).unwrap() + "\n")
+                .collect::<String>(),
+        )
+        .unwrap();
+
+        let bin = std::env::current_exe().expect("test bin");
+        let host = ProductionProcessHost::open(
+            root.path(),
+            &bin,
+            "test",
+            root.path().join("missing-agent"),
+        )
+        .expect("host");
+        let streams = ProductionCarrierStreams::new(root.path());
+        host.attach_streams(streams.clone());
+        host.release_for_test(session);
+        host.publish_appended(session).unwrap();
+
+        let journal_path = folder.join("endpoint.jsonl");
+        let warmed = fs::read(&journal_path).unwrap();
+        let warmed_rows: Vec<serde_json::Value> = warmed
+            .split(|b| *b == b'\n')
+            .filter(|l| !l.is_empty())
+            .map(|l| serde_json::from_slice(l).unwrap())
+            .collect();
+        assert_eq!(warmed_rows.len(), 7);
+        assert_eq!(warmed_rows[4]["event"]["seq"], 4);
+        assert!(
+            serde_json::to_string(&warmed_rows[4])
+                .unwrap()
+                .contains("CLEAN_SEQ4_TEXT")
+        );
+
+        // Mutate 1 byte of seq 4 text in-place (valid canonical JSON, same inode, same byte len).
+        let before_meta = fs::metadata(&journal_path).unwrap();
+        let mut tampered = warmed.clone();
+        let needle = b"CLEAN_SEQ4_TEXT";
+        let pos = tampered
+            .windows(needle.len())
+            .position(|w| w == needle)
+            .expect("seq 4 text");
+        tampered[pos + 5] = b'X';
+        {
+            let mut f = fs::OpenOptions::new()
+                .write(true)
+                .open(&journal_path)
+                .unwrap();
+            use std::io::{Seek, SeekFrom};
+            f.seek(SeekFrom::Start(pos as u64)).unwrap();
+            f.write_all(&tampered[pos..pos + needle.len()]).unwrap();
+            f.sync_all().unwrap();
+        }
+        let after_meta = fs::metadata(&journal_path).unwrap();
+        assert_eq!(before_meta.ino(), after_meta.ino());
+        assert_eq!(before_meta.len(), after_meta.len());
+
+        // Subscribe live mux before appending new events -> snapshot & page & subsequent live must not carry tampered text.
+        let mut live_journal = streams
+            .open_mux(
+                1,
+                endpoint::SessionStreamTarget::SessionJournal {
+                    address: endpoint::SessionAddress {
+                        session_id: session.to_owned(),
+                    },
+                    max_messages: 50,
+                },
+            )
+            .expect("open mux journal detects and rebuilds from verified ledger");
+        let snapshot_frame = block_on_ready(endpoint::SessionStream::recv(&mut *live_journal))
+            .expect("snapshot")
+            .expect("snapshot frame");
+        let snapshot_json = serde_json::to_string(&snapshot_frame).unwrap();
+        assert!(
+            !snapshot_json.contains("CLEANXSEQ4_TEXT"),
+            "{snapshot_json}"
+        );
+        assert!(snapshot_json.contains("CLEAN_SEQ4_TEXT"), "{snapshot_json}");
+
+        let page = streams
+            .mux_journal_page(endpoint::SessionMuxClientFrame::JournalPage {
+                request_id: "page-1".to_owned(),
+                address: endpoint::SessionAddress {
+                    session_id: session.to_owned(),
+                },
+                through_sequence: 6,
+                before_sequence: None,
+                max_messages: 50,
+            })
+            .expect("pagination page");
+        let page_json = serde_json::to_string(&page).unwrap();
+        assert!(!page_json.contains("CLEANXSEQ4_TEXT"), "{page_json}");
+        assert!(page_json.contains("CLEAN_SEQ4_TEXT"), "{page_json}");
+
+        // Now corrupt seq 4 in-place again WHILE live subscriber is active and append 2 normal events to main.jsonl.
+        {
+            let mut f = fs::OpenOptions::new()
+                .write(true)
+                .open(&journal_path)
+                .unwrap();
+            use std::io::{Seek, SeekFrom};
+            f.seek(SeekFrom::Start(pos as u64)).unwrap();
+            f.write_all(&tampered[pos..pos + needle.len()]).unwrap();
+            f.sync_all().unwrap();
+        }
+        {
+            let mut f = fs::OpenOptions::new().append(true).open(&ledger).unwrap();
+            for extra in [
+                json!({"v":1,"seq":9,"ts":"2026-08-28T00:00:03.000Z","kind":"input","content":[{"type":"text","text":"q2"}],"origin_key":"k-2","origin_tuple":{"principal":"p","client":"c","target":session,"op":"session.prompt","key":"k-2"}}),
+                json!({"v":1,"seq":10,"ts":"2026-08-28T00:00:03.000Z","turn":2,"kind":"turn_open","trigger":{"inputs":[9]}}),
+            ] {
+                writeln!(
+                    f,
+                    "{}",
+                    serde_json_canonicalizer::to_string(&extra).unwrap()
+                )
+                .unwrap();
+            }
+        }
+        host.publish_appended(session).unwrap();
+        let live_text = fs::read_to_string(&journal_path).unwrap();
+        assert!(!live_text.contains("CLEANXSEQ4_TEXT"), "{live_text}");
+        assert!(live_text.contains("CLEAN_SEQ4_TEXT"), "{live_text}");
+
+        // If main.jsonl itself fails verification while endpoint.jsonl is tampered, reconciliation rejects cleanly.
+        let main_bytes = fs::read(&ledger).unwrap();
+        let mut corrupt_main = main_bytes;
+        let kind_pos = corrupt_main
+            .windows(b"\"kind\":\"input\"".len())
+            .rposition(|w| w == b"\"kind\":\"input\"")
+            .expect("kind input in main.jsonl");
+        corrupt_main[kind_pos + 8..kind_pos + 13].copy_from_slice(b"bogus");
+        fs::write(&ledger, corrupt_main).unwrap();
+        fs::write(&journal_path, &tampered).unwrap();
+        assert!(host.publish_appended(session).is_err());
+
         host.shutdown();
     }
 }

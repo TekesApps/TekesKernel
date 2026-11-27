@@ -5,9 +5,9 @@
 //! in the group or none of them, and dispatch is delegated to exactly one
 //! durable authority backend.
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use endpoint::{DurableHandoffProof, EndpointHostCall, MethodClass, RpcDurableIdentity};
 use profile::ResourceCatalog;
@@ -25,6 +25,25 @@ use crate::resource_capability::{
     ClientResourceService, CommandRunRequest, EndpointCommandInputAuthority,
     map_prompt_materialize_error, map_resource_failure,
 };
+
+std::thread_local! {
+    static PRESET_EXECUTION_PARSES: std::cell::Cell<u64> = const { std::cell::Cell::new(0) };
+}
+
+fn note_preset_execution_parse() {
+    PRESET_EXECUTION_PARSES.with(|c| c.set(c.get() + 1));
+}
+
+#[doc(hidden)]
+pub fn reset_preset_execution_parses() {
+    PRESET_EXECUTION_PARSES.with(|c| c.set(0));
+}
+
+#[doc(hidden)]
+#[must_use]
+pub fn preset_execution_parses() -> u64 {
+    PRESET_EXECUTION_PARSES.with(std::cell::Cell::get)
+}
 
 pub const RESOURCE_METHODS: [(&str, MethodClass); 5] = [
     ("skills/list", MethodClass::ReadOnly),
@@ -147,6 +166,14 @@ pub const USAGE_METHODS: [(&str, MethodClass); 2] = [
 /// implementations receive the endpoint rpc id unchanged; dropping or
 /// replacing it would break their durable idempotency namespace.
 pub trait ClientExtensionAuthority: Send + Sync {
+    fn validate_payload(
+        &self,
+        operation: &str,
+        payload: &Value,
+    ) -> Result<(), ProductionRouteFailure> {
+        validate_payload(operation, payload)
+    }
+
     fn execute(
         &self,
         operation: &str,
@@ -217,7 +244,7 @@ impl ProductionEndpointRoutes for AtomicCapabilityRoutes {
                 serde_json::json!({"operation":operation}),
             ));
         }
-        validate_payload(operation, payload)
+        self.authority.validate_payload(operation, payload)
     }
 
     fn extension_failure_is_exact(
@@ -312,6 +339,34 @@ pub struct ProductionClientExtensions {
     commands: ClientResourceService<EndpointCommandInputAuthority>,
     search: ThreadSearchAuthority,
     process: Arc<ProductionProcessHost>,
+    validated_preset_executions: Mutex<VecDeque<(Value, schema::ExecutionConfig)>>,
+}
+
+const VALIDATED_PRESET_EXECUTION_CAP: usize = 32;
+
+fn cache_validated_preset_execution(
+    cache: &Mutex<VecDeque<(Value, schema::ExecutionConfig)>>,
+    key: Value,
+    execution: schema::ExecutionConfig,
+) {
+    let mut guard = cache
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    if guard.len() >= VALIDATED_PRESET_EXECUTION_CAP {
+        guard.pop_front();
+    }
+    guard.push_back((key, execution));
+}
+
+fn take_validated_preset_execution(
+    cache: &Mutex<VecDeque<(Value, schema::ExecutionConfig)>>,
+    key: &Value,
+) -> Option<schema::ExecutionConfig> {
+    let mut guard = cache
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let idx = guard.iter().position(|(cached_key, _)| cached_key == key)?;
+    guard.remove(idx).map(|(_, execution)| execution)
 }
 
 impl ProductionClientExtensions {
@@ -329,6 +384,7 @@ impl ProductionClientExtensions {
             search: ThreadSearchAuthority::open(&root).map_err(map_search_error)?,
             root,
             process,
+            validated_preset_executions: Mutex::new(VecDeque::new()),
         })
     }
 
@@ -894,6 +950,37 @@ impl ProductionClientExtensions {
 }
 
 impl ClientExtensionAuthority for ProductionClientExtensions {
+    fn validate_payload(
+        &self,
+        operation: &str,
+        payload: &Value,
+    ) -> Result<(), ProductionRouteFailure> {
+        if operation == "session.presets.resolve" {
+            let Some(object) = payload.as_object() else {
+                return Err(bad_request("request is {execution, preset}"));
+            };
+            if object.len() != 2 || !object.contains_key("preset") {
+                return Err(bad_request("request is {execution, preset}"));
+            }
+            let Some(exec_value) = object.get("execution") else {
+                return Err(bad_request("request is {execution, preset}"));
+            };
+            note_preset_execution_parse();
+            let execution: schema::ExecutionConfig = serde_json::from_value(exec_value.clone())
+                .map_err(|_| bad_request("request is {execution, preset}"))?;
+            if execution.validate().is_err() {
+                return Err(bad_request("request is {execution, preset}"));
+            }
+            cache_validated_preset_execution(
+                &self.validated_preset_executions,
+                exec_value.clone(),
+                execution,
+            );
+            return Ok(());
+        }
+        validate_payload(operation, payload)
+    }
+
     fn execute(
         &self,
         operation: &str,
@@ -905,17 +992,30 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
         match operation {
             "session.presets.describe" => encode(&tools::describe_presets()),
             "session.presets.resolve" => {
-                let execution: schema::ExecutionConfig =
-                    serde_json::from_value(payload["execution"].clone())
-                        .map_err(|_| bad_request("execution is required"))?;
+                let execution = if let Some(cached) = take_validated_preset_execution(
+                    &self.validated_preset_executions,
+                    &payload["execution"],
+                ) {
+                    cached
+                } else {
+                    note_preset_execution_parse();
+                    let execution: schema::ExecutionConfig =
+                        serde_json::from_value(payload["execution"].clone())
+                            .map_err(|_| bad_request("execution is required"))?;
+                    execution
+                        .validate()
+                        .map_err(|_| bad_request("invalid execution"))?;
+                    execution
+                };
                 let repository = profile::ConfigRepository::open(&self.root)
                     .map_err(|_| bad_request("configuration unavailable"))?;
-                let execution = repository
-                    .normalize_execution(&execution)
+                let normalized = repository
+                    .normalize_execution_checked(&execution)
                     .map_err(|_| bad_request("invalid execution"))?;
                 let snapshot = repository
-                    .resolve_execution("preview", &execution, None)
+                    .resolve_normalized_execution("preview", &normalized, None)
                     .map_err(|_| bad_request("invalid execution"))?;
+                let execution = normalized.as_execution();
                 let instruction = profile::InstructionResolver::new_scoped(
                     self.process.user_agent_dir(),
                     self.root.join("session-instructions/preview"),
@@ -1727,6 +1827,7 @@ fn validate_payload(operation: &str, payload: &Value) -> Result<(), ProductionRo
             let exact = payload.as_object().is_some_and(|object| {
                 object.len() == 2
                     && object.get("execution").is_some_and(|value| {
+                        note_preset_execution_parse();
                         serde_json::from_value::<schema::ExecutionConfig>(value.clone())
                             .is_ok_and(|execution| execution.validate().is_ok())
                     })

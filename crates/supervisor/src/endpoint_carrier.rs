@@ -67,6 +67,13 @@ pub trait SupervisorSessionAuthority: Send + Sync {
     /// against the frames still queued in its control pipe.
     fn reconcile_projection(&self, session_id: &str) -> Result<(), String>;
 
+    /// Verifies that the persisted journal for `session_id` matches the last
+    /// cached verified checksum/length before pagination, rebuilding from the
+    /// ledger only on mismatch or growth.
+    fn verify_journal_for_page(&self, session_id: &str) -> Result<(), String> {
+        self.reconcile_projection(session_id)
+    }
+
     /// The List without decoding any ledger: catalog rows (waiting a bounded time for threads
     /// that still need verifying), plus archived ids when asked. `None` means this authority
     /// has no catalog and the caller falls back to scanning the ledgers.
@@ -2175,16 +2182,18 @@ impl ProductionCarrierStreams {
             }
             return Err(error);
         }
-        // A stale journal (projection failed after settle, or a supervisor locked
-        // append with no worker) must not become the snapshot a client folds
-        // from. Failure only logs: the periodic sweep repairs within one tick.
-        if let Some(authority) = self.session_authority()
-            && let Err(error) = authority.reconcile_projection(&address.session_id)
-        {
-            eprintln!(
-                "carrier-journal-open-projection-failed: session={} error={error}",
-                address.session_id
-            );
+        // A stale or corrupted journal must not become the snapshot a client folds
+        // from. Verify/rebuild against the ledger before opening the baseline; if
+        // reconciliation fails, fail closed instead of serving corrupted rows.
+        if let Some(authority) = self.session_authority() {
+            authority
+                .reconcile_projection(&address.session_id)
+                .map_err(|error| {
+                    ProductionCarrierError::Lifecycle(format!(
+                        "journal reconciliation failed for {}: {error}",
+                        address.session_id
+                    ))
+                })?;
         }
         let journal = load_mux_journal(&self.inner.root, &address.session_id)?;
         let rpc_id = self.next_rpc_id("journal-follow");
@@ -2383,7 +2392,7 @@ impl ProductionCarrierStreams {
         }
     }
 
-    fn mux_journal_page(
+    pub(crate) fn mux_journal_page(
         &self,
         request: SessionMuxClientFrame,
     ) -> Result<SessionJournalPage, ProductionCarrierError> {
@@ -2405,6 +2414,16 @@ impl ProductionCarrierStreams {
             return Ok(page);
         }
         self.verify_session_carrier(&address.session_id)?;
+        if let Some(authority) = self.session_authority() {
+            authority
+                .verify_journal_for_page(&address.session_id)
+                .map_err(|error| {
+                    ProductionCarrierError::Lifecycle(format!(
+                        "journal reconciliation failed for {}: {error}",
+                        address.session_id
+                    ))
+                })?;
+        }
         let journal = load_mux_journal(&self.inner.root, &address.session_id)?;
         let mut page = endpoint::frozen_history_page(
             &journal,

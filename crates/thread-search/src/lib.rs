@@ -6,9 +6,11 @@
 mod host;
 pub use host::{SessionSearchHit, SessionSearchResults};
 
-use std::collections::{BTreeSet, HashSet};
+use std::collections::{BTreeSet, HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, Mutex};
 
 use base64::Engine as _;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
@@ -85,16 +87,61 @@ pub struct SearchPage {
     pub index_use: IndexUse,
 }
 
+#[doc(hidden)]
+#[derive(Debug, Default)]
+pub struct SearchMetrics {
+    pub ledger_reads: AtomicU64,
+    pub events_decoded: AtomicU64,
+    pub body_fallbacks: AtomicU64,
+    pub index_repairs: AtomicU64,
+}
+
+#[derive(Clone, Debug)]
+struct CachedSessionScan {
+    ledger_sha256: [u8; 32],
+    entry: IndexEntry,
+    visible_texts_rev: Vec<String>,
+}
+
+#[derive(Clone, Debug)]
+struct ScannedSession {
+    entry: IndexEntry,
+    visible_texts_rev: Vec<String>,
+}
+
 #[derive(Clone, Debug)]
 pub struct ThreadSearchAuthority {
     store: ThreadStore,
+    metrics: Arc<SearchMetrics>,
+    scan_cache: Arc<Mutex<HashMap<(String, bool), CachedSessionScan>>>,
 }
 
 impl ThreadSearchAuthority {
     pub fn open(root: impl AsRef<Path>) -> Result<Self, SearchError> {
         Ok(Self {
             store: ThreadStore::open(root)?,
+            metrics: Arc::new(SearchMetrics::default()),
+            scan_cache: Arc::new(Mutex::new(HashMap::new())),
         })
+    }
+
+    #[doc(hidden)]
+    pub fn reset_metrics(&self) {
+        self.metrics.ledger_reads.store(0, Ordering::Relaxed);
+        self.metrics.events_decoded.store(0, Ordering::Relaxed);
+        self.metrics.body_fallbacks.store(0, Ordering::Relaxed);
+        self.metrics.index_repairs.store(0, Ordering::Relaxed);
+    }
+
+    #[doc(hidden)]
+    #[must_use]
+    pub fn metrics(&self) -> (u64, u64, u64, u64) {
+        (
+            self.metrics.ledger_reads.load(Ordering::Relaxed),
+            self.metrics.events_decoded.load(Ordering::Relaxed),
+            self.metrics.body_fallbacks.load(Ordering::Relaxed),
+            self.metrics.index_repairs.load(Ordering::Relaxed),
+        )
     }
 
     /// Searches one authoritative catalog snapshot. The search lock prevents
@@ -176,18 +223,20 @@ impl ThreadSearchAuthority {
         let _search = NamedLock::exclusive(self.store.root().join(".thread-search.lock"))?;
         let _rewrite = NamedLock::shared(self.store.root().join(".rewrite.lock"))?;
         let _membership = NamedLock::shared(self.store.root().join(".thread-catalog.lock"))?;
-        let sources = scan_sources(self.store.root())?;
-        for source in &sources {
+        let scanned = self.scan_sources_cached()?;
+        let entries: Vec<IndexEntry> = scanned.into_iter().map(|s| s.entry).collect();
+        for source in &entries {
             publish_index(source)?;
         }
-        digest_entries(&sources)
+        digest_entries(&entries)
     }
 
     fn scan_and_repair_indices(&self) -> Result<(Vec<IndexEntry>, IndexUse), SearchError> {
-        let sources = scan_sources(self.store.root())?;
+        let sources = self.scan_sources_cached()?;
         let mut use_counts = IndexUse::default();
         let mut usable = Vec::with_capacity(sources.len());
-        for source in sources {
+        for scanned in sources {
+            let source = scanned.entry;
             let _ = std::fs::remove_file(source.folder.join(LEGACY_INDEX_NAME));
             let path = source.folder.join(INDEX_NAME);
             match fs::read(&path) {
@@ -212,12 +261,119 @@ impl ThreadSearchAuthority {
                     use_counts.corrupt += 1;
                 }
             }
+            self.metrics.index_repairs.fetch_add(1, Ordering::Relaxed);
             if publish_index(&source).is_err() {
                 use_counts.write_failed += 1;
             }
             usable.push(source);
         }
         Ok((usable, use_counts))
+    }
+
+    fn scan_sources_cached(&self) -> Result<Vec<ScannedSession>, SearchError> {
+        let root = self.store.root();
+        let mut scanned_list = Vec::new();
+        let mut identities = HashSet::new();
+        let mut seen_keys = HashSet::new();
+        for (area, archived) in [("threads", false), ("archive", true)] {
+            let mut folders = fs::read_dir(root.join(area))?.collect::<Result<Vec<_>, _>>()?;
+            folders.sort_by_key(std::fs::DirEntry::file_name);
+            for folder in folders {
+                if !folder.file_type()?.is_dir() {
+                    continue;
+                }
+                let session_id = folder.file_name().to_string_lossy().into_owned();
+                validate_session_id(&session_id)?;
+                if !identities.insert(session_id.clone()) {
+                    return Err(SearchError::SourceCorrupt(format!(
+                        "session {session_id} exists in active and archive catalogs"
+                    )));
+                }
+                seen_keys.insert((session_id.clone(), archived));
+                match self.scan_session_cached(&folder.path(), session_id.clone(), archived) {
+                    Ok(scanned) => scanned_list.push(scanned),
+                    Err(SearchError::SourceCorrupt(reason)) => note_skipped(&session_id, &reason),
+                    Err(SearchError::Io(error)) if error.kind() == std::io::ErrorKind::NotFound => {
+                        note_skipped(&session_id, "ledger is missing");
+                    }
+                    Err(error) => return Err(error),
+                }
+            }
+        }
+        self.scan_cache
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .retain(|key, _| seen_keys.contains(key));
+        scanned_list.sort_by(|left, right| {
+            left.entry
+                .session_id
+                .as_bytes()
+                .cmp(right.entry.session_id.as_bytes())
+        });
+        Ok(scanned_list)
+    }
+
+    fn scan_session_cached(
+        &self,
+        folder: &Path,
+        session_id: String,
+        archived: bool,
+    ) -> Result<ScannedSession, SearchError> {
+        self.metrics.ledger_reads.fetch_add(1, Ordering::Relaxed);
+        let bytes = match fs::read(folder.join("main.jsonl")) {
+            Ok(bytes) => bytes,
+            Err(error) => {
+                self.scan_cache
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                    .remove(&(session_id, archived));
+                return Err(error.into());
+            }
+        };
+        let ledger_sha256: [u8; 32] = Sha256::digest(&bytes).into();
+        let cache_key = (session_id.clone(), archived);
+        {
+            let cache = self
+                .scan_cache
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            if let Some(hit) = cache.get(&cache_key)
+                && hit.ledger_sha256 == ledger_sha256
+            {
+                let mut entry = hit.entry.clone();
+                entry.folder = folder.to_path_buf();
+                return Ok(ScannedSession {
+                    entry,
+                    visible_texts_rev: hit.visible_texts_rev.clone(),
+                });
+            }
+        }
+
+        let scan_result =
+            decode_session_ledger(folder, session_id, archived, &bytes, &self.metrics);
+        match scan_result {
+            Ok(scanned) => {
+                self.scan_cache
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                    .insert(
+                        cache_key,
+                        CachedSessionScan {
+                            ledger_sha256,
+                            entry: scanned.entry.clone(),
+                            visible_texts_rev: scanned.visible_texts_rev.clone(),
+                        },
+                    );
+                Ok(scanned)
+            }
+            Err(error) => {
+                self.scan_cache
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                    .remove(&cache_key);
+                Err(error)
+            }
+        }
     }
 }
 
@@ -338,44 +494,19 @@ fn note_skipped(session_id: &str, reason: &str) {
     }
 }
 
-fn scan_sources(root: &Path) -> Result<Vec<IndexEntry>, SearchError> {
-    let mut entries = Vec::new();
-    let mut identities = HashSet::new();
-    for (area, archived) in [("threads", false), ("archive", true)] {
-        let mut folders = fs::read_dir(root.join(area))?.collect::<Result<Vec<_>, _>>()?;
-        folders.sort_by_key(std::fs::DirEntry::file_name);
-        for folder in folders {
-            if !folder.file_type()?.is_dir() {
-                continue;
-            }
-            let session_id = folder.file_name().to_string_lossy().into_owned();
-            validate_session_id(&session_id)?;
-            if !identities.insert(session_id.clone()) {
-                return Err(SearchError::SourceCorrupt(format!(
-                    "session {session_id} exists in active and archive catalogs"
-                )));
-            }
-            match scan_session(&folder.path(), session_id.clone(), archived) {
-                Ok(entry) => entries.push(entry),
-                Err(SearchError::SourceCorrupt(reason)) => note_skipped(&session_id, &reason),
-                Err(SearchError::Io(error)) if error.kind() == std::io::ErrorKind::NotFound => {
-                    note_skipped(&session_id, "ledger is missing");
-                }
-                Err(error) => return Err(error),
-            }
-        }
-    }
-    entries.sort_by(|left, right| left.session_id.as_bytes().cmp(right.session_id.as_bytes()));
-    Ok(entries)
-}
-
-fn scan_session(
+fn decode_session_ledger(
     folder: &Path,
     session_id: String,
     archived: bool,
-) -> Result<IndexEntry, SearchError> {
-    let bytes = fs::read(folder.join("main.jsonl"))?;
-    let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
+    bytes: &[u8],
+    metrics: &SearchMetrics,
+) -> Result<ScannedSession, SearchError> {
+    let scan = scan_valid_prefix(bytes, schema::READER_VERSION);
+    if let Some(projection) = scan.projection.as_ref() {
+        metrics
+            .events_decoded
+            .fetch_add(projection.events.len() as u64, Ordering::Relaxed);
+    }
     let valid_len = usize::try_from(scan.valid_bytes)
         .map_err(|_| SearchError::SourceCorrupt("valid prefix is too large".to_owned()))?;
     if bytes
@@ -419,14 +550,43 @@ fn scan_session(
             SearchError::SourceCorrupt(format!("session {session_id} tail lacks timestamp"))
         })?
         .to_owned();
-    Ok(IndexEntry {
-        session_id,
-        normalized_title: title.as_deref().map(normalize),
-        title,
-        updated_at,
-        archived,
-        as_of_seq: projection.last_seq,
-        folder: folder.to_path_buf(),
+    let mut visible_texts_rev = Vec::new();
+    for event in projection.events.iter().rev() {
+        if superseded.contains(&event.seq())
+            || !matches!(event.kind(), EventKind::Input | EventKind::Output)
+        {
+            continue;
+        }
+        let raw: serde_json::Value = serde_json::from_slice(
+            &event
+                .raw()
+                .canonical_bytes()
+                .map_err(|error| SearchError::SourceCorrupt(error.to_string()))?,
+        )
+        .map_err(|error| SearchError::SourceCorrupt(error.to_string()))?;
+        let Some(blocks) = raw.get("content").and_then(serde_json::Value::as_array) else {
+            continue;
+        };
+        for block in blocks {
+            if block.get("type").and_then(serde_json::Value::as_str) != Some("text") {
+                continue;
+            }
+            if let Some(text) = block.get("text").and_then(serde_json::Value::as_str) {
+                visible_texts_rev.push(text.to_owned());
+            }
+        }
+    }
+    Ok(ScannedSession {
+        entry: IndexEntry {
+            session_id,
+            normalized_title: title.as_deref().map(normalize),
+            title,
+            updated_at,
+            archived,
+            as_of_seq: projection.last_seq,
+            folder: folder.to_path_buf(),
+        },
+        visible_texts_rev,
     })
 }
 
