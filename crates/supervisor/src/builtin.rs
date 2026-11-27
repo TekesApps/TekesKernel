@@ -29,6 +29,8 @@ pub struct BuiltInLaunch {
     pub configuration_mode: ConfigurationMode,
     #[serde(default)]
     pub providers: LaunchProviders,
+    #[serde(default)]
+    pub automatic_title: Option<profile::AutomaticTitleSettings>,
     pub credential_bindings: BTreeMap<String, String>,
     #[serde(default)]
     pub stdio_channels: BTreeMap<String, PathBuf>,
@@ -163,6 +165,16 @@ fn validate_credential_bindings(
     }
 }
 
+fn validate_launch_automatic_title(launch: &BuiltInLaunch) -> Result<()> {
+    if launch.configuration_mode == ConfigurationMode::Existing && launch.automatic_title.is_some()
+    {
+        return Err(
+            io::Error::other("existing configuration mode forbids launch automatic_title").into(),
+        );
+    }
+    Ok(())
+}
+
 pub async fn run(path: PathBuf) -> Result<()> {
     let launch: BuiltInLaunch = serde_json::from_slice(&std::fs::read(path)?)?;
     if launch.format != 1
@@ -183,6 +195,7 @@ pub async fn run(path: PathBuf) -> Result<()> {
     }
     // Load and validate existing files before creating thread storage or any
     // other root state. A malformed/missing config must fail without writes.
+    validate_launch_automatic_title(&launch)?;
     let providers = configured_providers(&launch)?;
     if launch.credential_bindings.values().any(|name| {
         name.is_empty()
@@ -230,6 +243,8 @@ pub async fn run(path: PathBuf) -> Result<()> {
         // Keep a still-selected default; otherwise new sessions use the first enabled
         // model from the application's ordered launch configuration.
         let mut settings = repository.settings()?;
+        let initial_revision = settings.revision;
+        let mut settings_changed = false;
         let default_is_available = provided.providers.iter().any(|provider| {
             settings.default_provider.as_deref() == Some(provider.id.as_str())
                 && provider.models.iter().any(|model| {
@@ -246,14 +261,20 @@ pub async fn run(path: PathBuf) -> Result<()> {
             });
             let (provider, model) = selected.map_or((None, None), |(p, m)| (Some(p), Some(m)));
             if settings.default_provider != provider || settings.default_model != model {
-                let revision = settings.revision;
-                settings.revision = revision
-                    .checked_add(1)
-                    .ok_or_else(|| io::Error::other("settings revision overflow"))?;
                 settings.default_provider = provider;
                 settings.default_model = model;
-                repository.publish_settings(revision, &settings)?;
+                settings_changed = true;
             }
+        }
+        if settings.automatic_title != launch.automatic_title {
+            settings.automatic_title = launch.automatic_title.clone();
+            settings_changed = true;
+        }
+        if settings_changed {
+            settings.revision = initial_revision
+                .checked_add(1)
+                .ok_or_else(|| io::Error::other("settings revision overflow"))?;
+            repository.publish_settings(initial_revision, &settings)?;
         }
     }
     crate::boot_trace::phase("config");
@@ -430,6 +451,7 @@ mod tests {
             listen: "127.0.0.1:0".parse().unwrap(),
             configuration_mode: ConfigurationMode::Existing,
             providers: LaunchProviders::Omitted,
+            automatic_title: None,
             credential_bindings: BTreeMap::new(),
             stdio_channels: BTreeMap::new(),
             web_listen: None,
@@ -452,6 +474,7 @@ mod tests {
             default_provider: Some("glm".into()),
             default_model: Some("glm-model".into()),
             limits: None,
+            automatic_title: None,
         };
         fs::write(
             root.path().join("config/settings.json"),
@@ -543,5 +566,40 @@ mod tests {
         mixed["configuration_mode"] = "existing".into();
         let mixed: BuiltInLaunch = serde_json::from_value(mixed).unwrap();
         assert!(configured_providers(&mixed).is_err());
+    }
+
+    #[test]
+    fn launch_automatic_title_is_allowed_in_provided_mode_and_rejected_in_existing_mode() {
+        let providers = serde_json::to_value(eight_provider_config()).unwrap();
+        let provided: BuiltInLaunch = serde_json::from_value(serde_json::json!({
+            "format": 1,
+            "bootstrap_version": crate::bootstrap::VERSION,
+            "root": "/tmp/root",
+            "worker": "/tmp/worker",
+            "listen": "127.0.0.1:0",
+            "providers": providers,
+            "automatic_title": {
+                "mode": "model",
+                "provider": "openai",
+                "model": "openai-model",
+                "max_input_chars": 250
+            },
+            "credential_bindings": {}
+        }))
+        .unwrap();
+        assert!(validate_launch_automatic_title(&provided).is_ok());
+
+        let existing: BuiltInLaunch = serde_json::from_value(serde_json::json!({
+            "format": 1,
+            "bootstrap_version": crate::bootstrap::VERSION,
+            "root": "/tmp/root",
+            "worker": "/tmp/worker",
+            "listen": "127.0.0.1:0",
+            "configuration_mode": "existing",
+            "automatic_title": { "mode": "local" },
+            "credential_bindings": {}
+        }))
+        .unwrap();
+        assert!(validate_launch_automatic_title(&existing).is_err());
     }
 }

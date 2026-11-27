@@ -52,11 +52,11 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/provider/src/native_deferred.rs](../../src/native_deferred.rs) | 11 | 170 | [Symbols and calls](src--native_deferred.md) |
 | [crates/provider/src/normalize.rs](../../src/normalize.rs) | 101 | 1895 | [Symbols and calls](src--normalize.md) |
 | [crates/provider/src/oauth.rs](../../src/oauth.rs) | 27 | 294 | [Symbols and calls](src--oauth.md) |
-| [crates/provider/src/request.rs](../../src/request.rs) | 73 | 926 | [Symbols and calls](src--request.md) |
+| [crates/provider/src/request.rs](../../src/request.rs) | 74 | 948 | [Symbols and calls](src--request.md) |
 | [crates/provider/src/secret_store.rs](../../src/secret_store.rs) | 35 | 131 | [Symbols and calls](src--secret_store.md) |
 | [crates/provider/src/sse.rs](../../src/sse.rs) | 15 | 92 | [Symbols and calls](src--sse.md) |
 | [crates/provider/tests/anthropic_messages_alignment.rs](../../tests/anthropic_messages_alignment.rs) | 24 | 205 | `inventory.json` |
-| [crates/provider/tests/dialect_profiles.rs](../../tests/dialect_profiles.rs) | 37 | 895 | `inventory.json` |
+| [crates/provider/tests/dialect_profiles.rs](../../tests/dialect_profiles.rs) | 38 | 911 | `inventory.json` |
 | [crates/provider/tests/live_anthropic_thinking.rs](../../tests/live_anthropic_thinking.rs) | 2 | 153 | `inventory.json` |
 | [crates/provider/tests/live_cache.rs](../../tests/live_cache.rs) | 5 | 107 | `inventory.json` |
 | [crates/provider/tests/live_chat_layout.rs](../../tests/live_chat_layout.rs) | 1 | 57 | `inventory.json` |

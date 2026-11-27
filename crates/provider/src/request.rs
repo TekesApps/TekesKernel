@@ -298,7 +298,7 @@ fn prepare_inner(
     }
     merge_controls(&mut body, controls)?;
     if let Some(cap) = title_output_cap {
-        apply_title_output_cap(dialect, &mut body, cap)?;
+        apply_title_output_cap(&resolved, &mut body, cap)?;
     }
     // Prefix edits (compaction, result trimming, system/tool changes) are
     // intentional Kernel operations. Let Anthropic drop only invalid thinking
@@ -614,7 +614,7 @@ fn apply_dialect_controls(
         return unsupported_controls(dialect, controls);
     }
     if reasoning_disabled {
-        return apply_reasoning_disabled(dialect, controls, reasoning_effort.is_some());
+        return apply_reasoning_disabled(profile, controls, reasoning_effort.is_some());
     }
     let effort = reasoning_effort
         .as_ref()
@@ -735,13 +735,21 @@ fn apply_dialect_controls(
     Ok(())
 }
 
+fn is_non_reasoning_profile(profile: &crate::ResolvedDialectProfile) -> bool {
+    profile.reasoning_efforts().is_empty()
+        && profile.default_reasoning_effort().is_none()
+        && profile.thinking_wire().is_none()
+        && !profile.pro_reasoning()
+}
+
 /// Runtime-internal requests (automatic titles) must not reason, whatever the
 /// model would do by default. Omitting the effort is not enough: deepseek-flash
 /// thinks by default and, given a long coding prompt, reasoned for 25k tokens
-/// and began implementing it. Only dialects with a verified off switch accept
-/// the control; the rest fail closed so the caller sends nothing.
+/// and began implementing it. Dialects with a verified off switch and
+/// non-reasoning profiles without reasoning controls accept `reasoning_disabled`;
+/// reasoning profiles without a verified off switch fail closed.
 fn apply_reasoning_disabled(
-    dialect: DialectId,
+    profile: &crate::ResolvedDialectProfile,
     controls: &mut serde_json::Map<String, Value>,
     has_effort: bool,
 ) -> Result<(), PrepareError> {
@@ -750,6 +758,7 @@ fn apply_reasoning_disabled(
             "reasoning_disabled cannot be combined with reasoning_effort",
         ));
     }
+    let dialect = profile.dialect;
     match dialect {
         DialectId::DeepseekResponsesV1 => {
             controls.insert("reasoning".to_owned(), json!({"effort":"none"}));
@@ -757,6 +766,11 @@ fn apply_reasoning_disabled(
         DialectId::DeepseekChatV1 | DialectId::DeepseekAnthropicV1 => {
             controls.insert("thinking".to_owned(), json!({"type":"disabled"}));
         }
+        _ if is_non_reasoning_profile(profile)
+            && matches!(
+                dialect.family(),
+                AdapterId::Responses | AdapterId::ChatCompletion | AdapterId::Anthropic
+            ) => {}
         _ => {
             return Err(invalid(format!(
                 "reasoning cannot be disabled for exact dialect {}",
@@ -770,13 +784,15 @@ fn apply_reasoning_disabled(
 /// Output ceiling for the automatic thread-title request only (control
 /// `title_max_output_tokens`), so a model that ignores the title instruction
 /// cannot generate thousands of tokens. Rendered as each dialect's wire field
-/// (`max_output_tokens` on Responses, `max_tokens` on chat/anthropic). Like
-/// `reasoning_disabled`, only verified DeepSeek dialects accept it.
+/// (`max_output_tokens` on Responses, `max_tokens` on chat/anthropic). Accepted
+/// on verified DeepSeek dialects and non-reasoning Responses/Chat/Anthropic
+/// profiles; reasoning profiles without a verified off switch fail closed.
 fn apply_title_output_cap(
-    dialect: DialectId,
+    profile: &crate::ResolvedDialectProfile,
     body: &mut Value,
     cap: u64,
 ) -> Result<(), PrepareError> {
+    let dialect = profile.dialect;
     let object = body
         .as_object_mut()
         .ok_or_else(|| invalid("provider request body must be an object"))?;
@@ -791,6 +807,24 @@ fn apply_title_output_cap(
                 .map_or(cap, |c| c.min(cap));
             object.insert("max_tokens".to_owned(), Value::from(ceiling));
         }
+        _ if is_non_reasoning_profile(profile) => match dialect.family() {
+            AdapterId::Responses => {
+                object.insert("max_output_tokens".to_owned(), Value::from(cap));
+            }
+            AdapterId::ChatCompletion | AdapterId::Anthropic => {
+                let ceiling = object
+                    .get("max_tokens")
+                    .and_then(Value::as_u64)
+                    .map_or(cap, |c| c.min(cap));
+                object.insert("max_tokens".to_owned(), Value::from(ceiling));
+            }
+            AdapterId::GoogleGeneration | AdapterId::GoogleInteractions => {
+                return Err(invalid(format!(
+                    "title_max_output_tokens is not supported for exact dialect {}",
+                    dialect.as_str()
+                )));
+            }
+        },
         _ => {
             return Err(invalid(format!(
                 "title_max_output_tokens is not supported for exact dialect {}",

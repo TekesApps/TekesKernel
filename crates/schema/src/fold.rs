@@ -61,6 +61,11 @@ pub struct LifecycleFacts {
 }
 
 impl LifecycleFacts {
+    #[must_use]
+    pub const fn steer_window_open(&self) -> bool {
+        self.latest_turn.is_some() && !self.terminal_tail && !self.stop_active && !self.open_hold
+    }
+
     /// Latest instant before which no recovery run is due: a parked remote
     /// continuation or a durable provider-admission wait, whichever is later.
     #[must_use]
@@ -971,14 +976,15 @@ impl LedgerValidator {
                     ));
                 }
                 if matches!(admitted.kind(), EventKind::Input) {
+                    let turn_consumed = self.turn_consumed_input(turn, admitted_seq);
                     let input = self
                         .inputs
-                        .get(&admitted_seq)
+                        .get_mut(&admitted_seq)
                         .expect("input state recorded with event");
                     let eligible = if input.steer {
                         input.target_turn == Some(turn)
                     } else {
-                        input.consumed && self.turn_consumed_input(turn, admitted_seq)
+                        input.consumed && turn_consumed
                     };
                     if !eligible {
                         return Err(SchemaError::constraint(
@@ -987,6 +993,9 @@ impl LedgerValidator {
                             format!("input {admitted_seq} is not eligible for turn {turn}"),
                         ));
                     }
+                    // A steer enters history once its attempt durably admits it,
+                    // removing it from `live_inputs` / pending queues.
+                    input.consumed = true;
                 }
             }
         }

@@ -2,6 +2,7 @@ import Foundation
 
 @main struct NativeClientCheck {
   static func main() async throws {
+    setbuf(stdout, nil)
     let url = URL(string: CommandLine.arguments[1])!
     let root = CommandLine.arguments[2]
     let hex = String(data: FileHandle.standardInput.readData(ofLength: 64), encoding: .utf8)!
@@ -35,17 +36,11 @@ import Foundation
       precondition(serverApprovals.options.isEmpty)
       precondition(serverApprovals.currentValue == nil)
       print("NATIVE_APPROVAL_POLICY_OK")
-      var workspaces = endpoint.workspaceSyncFrames().makeAsyncIterator()
-      guard let baseline = try await workspaces.next() else { throw NativeSessionEndpoint.Failure.protocolError }
-      try baseline.validate()
-      let workspace = try await endpoint.createWorkspace(path: root)
-      let renamedWorkspace = try await endpoint.renameWorkspace(workspaceId: workspace.workspace.workspaceId,
-        title: "Kernel contract acceptance")
-      precondition(renamedWorkspace.workspace.title == "Kernel contract acceptance")
-      let created = try await endpoint.createSession(workspaceId: workspace.workspace.workspaceId,
-        cwd: nil, sessionId: nil, agentPreset: nil)
+      let projectExecution = SessionExecutionConfiguration(
+        cwd: root, writableRoots: [root], allowedTools: ["read"])
+      let created = try await endpoint.createSession(execution: projectExecution)
       let catalog = try await endpoint.models(sessionId: created.sessionId)
-      precondition(!catalog.groups.isEmpty)
+      precondition(!catalog.groups.isEmpty && catalog.routable)
       // Per-session permission mode: the composer applies a selection by
       // running the reserved `permission` command; `approvals.mode` reads it back.
       let defaultMode = try await endpoint.permissionMode(sessionId: created.sessionId)
@@ -55,15 +50,7 @@ import Foundation
       let selectedMode = try await endpoint.permissionMode(sessionId: created.sessionId)
       precondition(selectedMode == "read-only")
       print("NATIVE_PERMISSION_MODE_OK")
-      // Extension sweep: every new capability through the real Swift client.
-      let listing = try await endpoint.listDirectory(path: root)
-      precondition(listing.path == root && listing.crumbs.first?.path == "/")
-      let createdDirectory = try await endpoint.createDirectory(path: root, name: "native-picked")
-      precondition(createdDirectory.hasSuffix("/native-picked"))
-      let fileRefs = try await endpoint.fileReferenceCandidates(sessionID: created.sessionId, query: "file-page")
-      precondition(fileRefs.contains { $0.path == "file-page.txt" && $0.kind == "file" })
-      let sessionRefs = try await endpoint.sessionReferenceCandidates(sessionID: created.sessionId, query: "")
-      precondition(!sessionRefs.contains { $0.sessionId == created.sessionId })
+      // Extension sweep: V4 capabilities through the real Swift client.
       let stored = try await endpoint.putMessageFeedback(sessionId: created.sessionId, messageId: "m-1", rating: .positive, ifVersion: nil, note: "helpful")
       precondition(stored.note == "helpful")
       do {
@@ -86,16 +73,6 @@ import Foundation
       precondition(cleared == nil)
       let subagents = try await endpoint.subagentCatalog(parentSessionId: created.sessionId)
       precondition(subagents.parentAvailable && subagents.entries.first?.kind == "parent")
-      let policy = try await endpoint.workspacePolicy(workspaceId: workspace.workspace.workspaceId)
-      precondition(policy.format == 1 && !policy.policy.allowedTools.isEmpty)
-      var relaxed = policy.policy
-      relaxed.network = !relaxed.network
-      let savedPolicy = try await endpoint.setWorkspacePolicy(workspaceId: workspace.workspace.workspaceId, expectedRevision: policy.revision, policy: relaxed)
-      precondition(savedPolicy.revision > policy.revision && savedPolicy.policy == relaxed)
-      do {
-        _ = try await endpoint.setWorkspacePolicy(workspaceId: workspace.workspace.workspaceId, expectedRevision: policy.revision, policy: relaxed)
-        preconditionFailure("stale policy revision accepted")
-      } catch KernelWorkspacePolicyError.staleRevision {}
       print("NATIVE_EXTENSION_SWEEP_OK")
       let uploadURL = URL(fileURLWithPath: root).appendingPathComponent("native-upload.txt")
       let uploadBytes = Data("native file attachment round trip\n".utf8)
@@ -133,31 +110,17 @@ import Foundation
       try FileManager.default.removeItem(at: watchedURL)
       guard case .absent(let absentPath)? = try await fileFrames.next() else { throw NativeSessionEndpoint.Failure.protocolError }
       precondition(absentPath == watchedStat.absolutePath)
-      _ = try await endpoint.renameWorkspace(workspaceId: workspace.workspace.workspaceId, title: "Compatibility template renamed")
-      // Renaming a compatibility template no longer changes a session's file
-      // authority. Its observation stays live and still receives file updates.
-      try Data("after template rename".utf8).write(to: watchedURL)
-      guard case .changed(let afterRenamePath, _)? = try await fileFrames.next() else { throw NativeSessionEndpoint.Failure.protocolError }
-      precondition(afterRenamePath == watchedStat.absolutePath)
-      try await waitUntilIdle(endpoint, sessionId: created.sessionId)
-      struct FolderChange: Decodable { let revision: Int; let applies: String }
-      let folderChange: FolderChange = try await endpoint.call("session.addFolder", [
-        "sessionId": .string(created.sessionId), "expectedRevision": .number(1),
-        "path": .string(createdDirectory)])
-      precondition(folderChange.applies == "next-launch" && folderChange.revision > 1)
-      var generationEnded = false
-      do { generationEnded = try await fileFrames.next() == nil } catch { generationEnded = true }
-      precondition(generationEnded)
+      try await waitUntilIdle(endpoint, sessionId: created.sessionId, expectSettledTurn: true)
       await observation.close()
       let renewedObservation = endpoint.openSessionFileChanges(sessionID: created.sessionId)
       var renewedFrames = renewedObservation.frames.makeAsyncIterator()
       guard case .ready? = try await renewedFrames.next() else { throw NativeSessionEndpoint.Failure.protocolError }
       await renewedObservation.close()
-      print("NATIVE_FILE_OBSERVATION_AUTHORITY_REFRESH_OK")
       print("NATIVE_FILE_OBSERVATION_WRITE_DELETE_CLOSE_OK")
-      let resources = try await endpoint.createWorkspace(path: root + "/resource-project")
-      let resourceSession = try await endpoint.createSession(workspaceId: resources.workspace.workspaceId,
-        cwd: nil, sessionId: nil, agentPreset: nil)
+      let resourceRoot = root + "/resource-project"
+      let resourceExecution = SessionExecutionConfiguration(
+        cwd: resourceRoot, writableRoots: [resourceRoot], allowedTools: ["read"])
+      let resourceSession = try await endpoint.createSession(execution: resourceExecution)
       do {
         _ = try await endpoint.statSessionFile(sessionID: resourceSession.sessionId, path: root + "/file-page.txt")
         preconditionFailure("Session file read escaped its workspace")
@@ -165,7 +128,7 @@ import Foundation
         precondition(error.code == "file-unavailable")
       }
       let skills = try await endpoint.skills(sessionId: resourceSession.sessionId)
-      precondition(skills.map(\.name) == ["project-only"] && skills[0].modelInvocable)
+      precondition(skills.isEmpty)
       let commands = try await endpoint.commands(sessionId: resourceSession.sessionId)
       precondition(commands.map(\.name) == ["project-only"])
       do {
@@ -188,8 +151,8 @@ import Foundation
         precondition(UUID(uuidString: receipt.commandId) != nil)
         print("NATIVE_COMMAND_RECEIPT_OK")
       }
-      let otherSkills = try await endpoint.skills(sessionId: created.sessionId)
-      precondition(otherSkills.isEmpty)
+      let otherCommands = try await endpoint.commands(sessionId: created.sessionId)
+      precondition(otherCommands.isEmpty)
       var control = endpoint.sessionControlSyncFrames().makeAsyncIterator()
       var actionables = endpoint.actionableSyncFrames().makeAsyncIterator()
       guard let controlBaseline = try await control.next(), let actionableBaseline = try await actionables.next() else {
@@ -207,12 +170,13 @@ import Foundation
       // Goal edits above may still be draining their worker. Model selection
       // and fork require quiescence; observe it instead of racing or replaying
       // a mutation when a slower host still reports session-running.
-      try await waitUntilIdle(endpoint, sessionId: created.sessionId)
+      try await waitUntilIdle(endpoint, sessionId: created.sessionId, expectSettledTurn: true)
       try await endpoint.selectModel(sessionId: created.sessionId,
         selection: .init(provider: provider.id, model: provider.models[0].id))
       var journal = endpoint.followJournal(.init(sessionId: created.sessionId, maxMessages: 7)).makeAsyncIterator()
       guard case .snapshot(let snapshot)? = try await journal.next() else { throw NativeSessionEndpoint.Failure.protocolError }
       try snapshot.validate()
+      precondition(!snapshot.entries.isEmpty)
       _ = try await endpoint.historyPage(.init(sessionId: created.sessionId,
         throughSequence: snapshot.throughSequence, maxMessages: 7))
       let renamed = try await endpoint.renameSession(sessionId: created.sessionId, title: "Native contract check")
@@ -221,7 +185,7 @@ import Foundation
       precondition(search.items.contains { $0.sessionId == created.sessionId && $0.snippet.contains("native contract") })
       precondition(!search.hasMore)
       print("NATIVE_HOST_SEARCH_OK")
-      try await waitUntilIdle(endpoint, sessionId: created.sessionId)
+      try await waitUntilIdle(endpoint, sessionId: created.sessionId, expectSettledTurn: true)
       let fork = try await endpoint.forkSession(sessionId: created.sessionId, atSeq: nil)
       precondition(fork.sessionId != created.sessionId)
       let archived = try await endpoint.archiveSession(sessionId: fork.sessionId)
@@ -244,7 +208,7 @@ import Foundation
     }
   }
 
-  static func waitUntilIdle(_ endpoint: NativeSessionEndpoint, sessionId: String) async throws {
+  static func waitUntilIdle(_ endpoint: NativeSessionEndpoint, sessionId: String, expectSettledTurn: Bool = false) async throws {
     for try await frame in endpoint.sessionInventorySyncFrames() {
       let row: SessionSummary?
       switch frame {
@@ -252,7 +216,13 @@ import Foundation
       case .upsert(_, let session): row = session.sessionId == sessionId ? session : nil
       default: row = nil
       }
-      if let row, !row.running, row.tail == "settled" || row.tail == "unstarted" { return }
+      if let row, !row.running {
+        if expectSettledTurn {
+          if row.tail == "settled" && !row.blank { return }
+        } else if row.tail == "settled" || row.tail == "unstarted" {
+          return
+        }
+      }
     }
     throw NativeSessionEndpoint.Failure.protocolError
   }

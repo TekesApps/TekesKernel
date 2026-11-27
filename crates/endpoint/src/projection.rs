@@ -997,6 +997,9 @@ fn text_content(value: &str) -> Value {
 fn response_error_message(classification: &str, detail: Option<&str>) -> &'static str {
     match (classification, detail) {
         ("transport", Some("user_stop")) => "The response was stopped by the user.",
+        ("transport", Some("supervisor_lost")) => {
+            "The local runtime connection was lost before the provider response finished; the provider request outcome is unknown."
+        }
         ("provider_terminal", Some("network_disabled")) => {
             "Network access is disabled for this workspace."
         }
@@ -1778,5 +1781,87 @@ mod tests {
         let (content, error, _) = tool_result_wire(&value, &journal).expect("spill mapping");
         assert!(error.is_none(), "an ok outcome carries no error key");
         assert_eq!(content[0]["text"], "asset result");
+    }
+
+    #[test]
+    fn supervisor_lost_projects_distinct_local_loss_message() {
+        let folder = tempfile::tempdir().expect("folder");
+        let journal = EndpointJournal::open(folder.path()).expect("journal");
+        let mut projector = Projector::default();
+        let error = Event::decode(
+            br#"{"classification":"transport","detail":"supervisor_lost","kind":"error","recoverable":false,"seq":1,"ts":"2026-10-28T00:00:00.000Z","turn":1,"v":1}"#,
+        )
+        .expect("supervisor_lost error");
+        let wire = projector.project(&error, &journal).expect("project");
+        let data = serde_json::to_value(&wire[0].2.data).expect("wire data");
+        assert_eq!(wire[0].2.event_type, "response/error");
+        assert_eq!(data["classification"], "transport");
+        assert_eq!(data["recoverable"], false);
+        assert_eq!(
+            data["message"],
+            "The local runtime connection was lost before the provider response finished; the provider request outcome is unknown."
+        );
+        assert_ne!(
+            data["message"],
+            response_error_message("provider_terminal", Some("provider_error"))
+        );
+        assert_ne!(
+            data["message"],
+            response_error_message("unresolved_dispatch", None)
+        );
+        assert_ne!(
+            data["message"],
+            response_error_message("transport", Some("user_stop"))
+        );
+    }
+
+    #[test]
+    fn supervisor_lost_retires_prior_v6_projection_cache_after_upgrade() {
+        use std::fs;
+
+        let folder = tempfile::tempdir().expect("folder");
+        let journal = EndpointJournal::open(folder.path()).expect("journal");
+        let event = Event::decode(
+            br#"{"classification":"transport","detail":"supervisor_lost","kind":"error","recoverable":false,"seq":5,"ts":"2026-10-28T00:00:00.000Z","turn":1,"v":1}"#,
+        )
+        .expect("supervisor_lost event");
+        let mut projector = Projector::default();
+        let projected = projector.project(&event, &journal).expect("project");
+        let mut stale = projected[0].2.clone();
+        stale.data = schema::IJsonValue::parse(
+            &serde_json::to_vec(&json!({
+                "turn": 1,
+                "classification": "transport",
+                "recoverable": false,
+                "message": "The provider request failed."
+            }))
+            .expect("stale data JSON"),
+        )
+        .expect("stale I-JSON");
+        let stale_record = crate::JournalRecord {
+            v: 6,
+            event: stale,
+            kernel_seqs: vec![5],
+            slot: "response-error".to_owned(),
+        };
+        drop(journal);
+
+        let mut line = serde_json_canonicalizer::to_vec(&stale_record).expect("canonical");
+        line.push(b'\n');
+        fs::write(folder.path().join("endpoint.jsonl"), line).expect("seed v6 journal");
+
+        let upgraded = EndpointJournal::open(folder.path()).expect("retire v6 journal");
+        let mut upgraded_projector = Projector::default();
+        upgraded_projector
+            .reconcile(&[event], &upgraded)
+            .expect("rebuild from upgraded journal");
+        let records = upgraded.records().expect("records");
+        assert_eq!(records.len(), 1);
+        assert_eq!(records[0].v, crate::journal::JOURNAL_RECORD_VERSION);
+        let data = serde_json::to_value(&records[0].event.data).expect("rebuilt data");
+        assert_eq!(
+            data["message"],
+            "The local runtime connection was lost before the provider response finished; the provider request outcome is unknown."
+        );
     }
 }

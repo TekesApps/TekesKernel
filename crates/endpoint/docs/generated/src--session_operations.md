@@ -656,7 +656,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_sessions` | `fs::OpenOptions::new()             .create` | [369](../../src/session_operations.rs#L369) | receiver-type-required |
 | `open_sessions` | `fs::OpenOptions::new` | [369](../../src/session_operations.rs#L369) | external-constructor-callback-or-unresolved |
 | `open_sessions` | `Ok` | [373](../../src/session_operations.rs#L373) | external-constructor-callback-or-unresolved |
-| `open_sessions` | `ConfigRepository::open` | [374](../../src/session_operations.rs#L374) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L543) |
+| `open_sessions` | `ConfigRepository::open` | [374](../../src/session_operations.rs#L374) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L568) |
 | `recover_sessions` | `self.recover_skipping` | [385](../../src/session_operations.rs#L385) | [endpoint::session_operations::SessionOperations::recover_skipping](../../src/session_operations.rs#L405) |
 | `recover` | `self.recover_with_queue_driver` | [395](../../src/session_operations.rs#L395) | [endpoint::session_operations::SessionOperations::recover_with_queue_driver](../../src/session_operations.rs#L398) |
 | `recover_with_queue_driver` | `self.recover_skipping` | [402](../../src/session_operations.rs#L402) | [endpoint::session_operations::SessionOperations::recover_skipping](../../src/session_operations.rs#L405) |
@@ -1079,7 +1079,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_session_create` | `AssetStore::new` | [1333](../../src/session_operations.rs#L1333) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
 | `drive_session_create` | `payload.join` | [1333](../../src/session_operations.rs#L1333), [1348](../../src/session_operations.rs#L1348) | receiver-type-required |
 | `drive_session_create` | `asset_store.read_verified` | [1334](../../src/session_operations.rs#L1334), [1335](../../src/session_operations.rs#L1335) | receiver-type-required |
-| `drive_session_create` | `profile::ConfigSnapshot::decode` | [1336](../../src/session_operations.rs#L1336) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L194) |
+| `drive_session_create` | `profile::ConfigSnapshot::decode` | [1336](../../src/session_operations.rs#L1336) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L219) |
 | `drive_session_create` | `profile::InstructionSnapshot::decode` | [1337](../../src/session_operations.rs#L1337) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L186) |
 | `drive_session_create` | `instruction.validate_against_config` | [1338](../../src/session_operations.rs#L1338) | receiver-type-required |
 | `drive_session_create` | `execution_path_from_snapshot` | [1340](../../src/session_operations.rs#L1340) | [endpoint::session_operations::execution_path_from_snapshot](../../src/session_operations.rs#L1810) |

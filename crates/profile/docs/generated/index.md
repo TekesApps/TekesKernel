@@ -30,7 +30,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/profile/src/config.rs](../../src/config.rs) | 72 | 576 | [Symbols and calls](src--config.md) |
+| [crates/profile/src/config.rs](../../src/config.rs) | 78 | 621 | [Symbols and calls](src--config.md) |
 | [crates/profile/src/execution.rs](../../src/execution.rs) | 3 | 57 | [Symbols and calls](src--execution.md) |
 | [crates/profile/src/instruction.rs](../../src/instruction.rs) | 53 | 458 | [Symbols and calls](src--instruction.md) |
 | [crates/profile/src/launch.rs](../../src/launch.rs) | 46 | 328 | [Symbols and calls](src--launch.md) |

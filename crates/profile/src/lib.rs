@@ -9,8 +9,10 @@ mod resources;
 mod scope;
 
 pub use config::{
-    ConfigRepository, ConfigSnapshot, ExecutionPolicy, Limits, Model, Provider, ProvidersConfig,
-    ResolvedExecution, RevisionVector, SessionSettings, SettingsConfig, WebSearch,
+    AutomaticTitleMode, AutomaticTitleSettings, ConfigRepository, ConfigSnapshot,
+    DEFAULT_AUTOMATIC_TITLE_MAX_INPUT_CHARS, ExecutionPolicy, Limits,
+    MAX_AUTOMATIC_TITLE_MAX_INPUT_CHARS, Model, Provider, ProvidersConfig, ResolvedExecution,
+    RevisionVector, SessionSettings, SettingsConfig, WebSearch,
 };
 pub use execution::ExecutionConfig;
 pub use instruction::{

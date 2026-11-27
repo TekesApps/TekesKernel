@@ -52,10 +52,12 @@ This page retains the gates' original numbers and applicable baselines. It defin
 
 ## Endpoint transport
 
-65. ◎ **EndpointTransportAuthority** — Setup: imported Client-v2 corpus and
-    raw HTTP/WebSocket fixtures. Action: round-trip every unary and stream
+65. ◎ **EndpointTransportAuthority** — Setup: historical Slice-9 Client-v2 corpus and
+    raw HTTP/WebSocket fixtures (retained for carrier/idempotency fixture
+    coverage; current public V4 omits retired `host.describe`/`workspace.*`/
+    `session.list`/`session.history` routes). Action: round-trip every unary and stream
     shape. Assert: DTO values are unchanged, no AS-v1 method exists, UUID is
-    the public id, `host.describe` matches `SessionHostDescription`, and the
+    the public id, historical `host.describe` matches `SessionHostDescription` in carrier tests, and the
     `.tekes` driver catalog equals the executable route registry in both
     directions without adding capability/generation wire fields; all 20
     registrations have exact request, success and error fixtures, every

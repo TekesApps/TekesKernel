@@ -96,7 +96,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare` | `endpoint::validate_session_id(&request.session_id)                     .map_err` | [75](../../src/file_leases.rs#L75) | receiver-type-required |
 | `prepare` | `endpoint::validate_session_id` | [75](../../src/file_leases.rs#L75) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
 | `prepare` | `profile::ConfigRepository::open(&self.root)                     .map_err` | [77](../../src/file_leases.rs#L77) | receiver-type-required |
-| `prepare` | `profile::ConfigRepository::open` | [77](../../src/file_leases.rs#L77) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L543) |
+| `prepare` | `profile::ConfigRepository::open` | [77](../../src/file_leases.rs#L77) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L568) |
 | `prepare` | `profile::SessionScope::locate(&self.root, &request.session_id)                     .map_err` | [79](../../src/file_leases.rs#L79) | receiver-type-required |
 | `prepare` | `profile::SessionScope::locate` | [79](../../src/file_leases.rs#L79) | [profile::scope::SessionScope::locate](../../../profile/src/scope.rs#L11) |
 | `prepare` | `scope                     .config(&repository)                     .map_err` | [81](../../src/file_leases.rs#L81) | receiver-type-required |

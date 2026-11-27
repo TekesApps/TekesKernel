@@ -728,7 +728,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_source_ledgers` | `entry.file_name().to_string_lossy` | [783](../../src/rewrite.rs#L783) | receiver-type-required |
 | `read_source_ledgers` | `entry.file_name` | [783](../../src/rewrite.rs#L783) | receiver-type-required |
 | `read_source_ledgers` | `fs::read` | [787](../../src/rewrite.rs#L787) | external-constructor-callback-or-unresolved |
-| `read_source_ledgers` | `validate_ledger` | [788](../../src/rewrite.rs#L788) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
+| `read_source_ledgers` | `validate_ledger` | [788](../../src/rewrite.rs#L788) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1101) |
 | `read_source_ledgers` | `Err` | [790](../../src/rewrite.rs#L790), [796](../../src/rewrite.rs#L796) | external-constructor-callback-or-unresolved |
 | `read_source_ledgers` | `StoreError::Corruption` | [790](../../src/rewrite.rs#L790), [796](../../src/rewrite.rs#L796) | external-constructor-callback-or-unresolved |
 | `read_source_ledgers` | `"empty rewrite ledger".to_owned` | [790](../../src/rewrite.rs#L790) | receiver-type-required |
@@ -783,7 +783,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `encoded_prefix` | `event.canonical_bytes` | [877](../../src/rewrite.rs#L877) | receiver-type-required |
 | `encoded_prefix` | `bytes.push` | [878](../../src/rewrite.rs#L878) | receiver-type-required |
 | `encoded_prefix` | `validate_ledger(&bytes, schema::READER_VERSION)         .map_err` | [880](../../src/rewrite.rs#L880) | receiver-type-required |
-| `encoded_prefix` | `validate_ledger` | [880](../../src/rewrite.rs#L880) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
+| `encoded_prefix` | `validate_ledger` | [880](../../src/rewrite.rs#L880) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1101) |
 | `encoded_prefix` | `StoreError::InvalidForkAnchor` | [881](../../src/rewrite.rs#L881) | external-constructor-callback-or-unresolved |
 | `encoded_prefix` | `Ok` | [882](../../src/rewrite.rs#L882) | external-constructor-callback-or-unresolved |
 | `validate_terminal_source` | `ledgers         .iter()         .map(&#124;(name, bytes)&#124; Ok((name.clone(), decode_events(bytes)?)))         .collect::<Result<BTreeMap<_, _>, StoreError>>` | [886](../../src/rewrite.rs#L886) | receiver-type-required |
@@ -792,7 +792,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_terminal_source` | `Ok` | [888](../../src/rewrite.rs#L888), [981](../../src/rewrite.rs#L981) | external-constructor-callback-or-unresolved |
 | `validate_terminal_source` | `name.clone` | [888](../../src/rewrite.rs#L888) | receiver-type-required |
 | `validate_terminal_source` | `decode_events` | [888](../../src/rewrite.rs#L888) | [store::rewrite::decode_events](../../src/rewrite.rs#L1208) |
-| `validate_terminal_source` | `validate_ledger` | [891](../../src/rewrite.rs#L891) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
+| `validate_terminal_source` | `validate_ledger` | [891](../../src/rewrite.rs#L891) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1101) |
 | `validate_terminal_source` | `Err` | [894](../../src/rewrite.rs#L894), [901](../../src/rewrite.rs#L901), [955](../../src/rewrite.rs#L955), [976](../../src/rewrite.rs#L976) | external-constructor-callback-or-unresolved |
 | `validate_terminal_source` | `StoreError::RewriteSourceNotTerminal` | [894](../../src/rewrite.rs#L894), [901](../../src/rewrite.rs#L901), [911](../../src/rewrite.rs#L911), [915](../../src/rewrite.rs#L915), [921](../../src/rewrite.rs#L921), [924](../../src/rewrite.rs#L924), [927](../../src/rewrite.rs#L927), [933](../../src/rewrite.rs#L933), [938](../../src/rewrite.rs#L938), [946](../../src/rewrite.rs#L946), [955](../../src/rewrite.rs#L955), [963](../../src/rewrite.rs#L963), [976](../../src/rewrite.rs#L976) | external-constructor-callback-or-unresolved |
 | `validate_terminal_source` | `decoded         .iter()         .filter` | [906](../../src/rewrite.rs#L906) | receiver-type-required |
@@ -1115,7 +1115,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `project_file` | `materialize_meta` | [1557](../../src/rewrite.rs#L1557) | [store::rewrite::materialize_meta](../../src/rewrite.rs#L1921) |
 | `project_file` | `compact_summaries.is_empty` | [1562](../../src/rewrite.rs#L1562) | receiver-type-required |
 | `project_file` | `materialize_epoch` | [1607](../../src/rewrite.rs#L1607) | [store::rewrite::materialize_epoch](../../src/rewrite.rs#L1945) |
-| `project_file` | `validate_ledger` | [1610](../../src/rewrite.rs#L1610) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
+| `project_file` | `validate_ledger` | [1610](../../src/rewrite.rs#L1610) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1101) |
 | `project_file` | `Ok` | [1611](../../src/rewrite.rs#L1611) | external-constructor-callback-or-unresolved |
 | `build_genesis` | `event_value` | [1618](../../src/rewrite.rs#L1618) | [store::rewrite::event_value](../../src/rewrite.rs#L1217) |
 | `build_genesis` | `(context.source_file == "main.jsonl")         .then_some(context.operation.genesis_origin.as_ref())         .flatten` | [1619](../../src/rewrite.rs#L1619) | receiver-type-required |
@@ -1423,7 +1423,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_payload` | `"validated rewrite lacks payload".to_owned` | [2214](../../src/rewrite.rs#L2214) | receiver-type-required |
 | `validate_payload` | `fs::read` | [2218](../../src/rewrite.rs#L2218), [2252](../../src/rewrite.rs#L2252) | external-constructor-callback-or-unresolved |
 | `validate_payload` | `payload.join` | [2218](../../src/rewrite.rs#L2218), [2250](../../src/rewrite.rs#L2250), [2252](../../src/rewrite.rs#L2252) | receiver-type-required |
-| `validate_payload` | `validate_ledger` | [2219](../../src/rewrite.rs#L2219) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
+| `validate_payload` | `validate_ledger` | [2219](../../src/rewrite.rs#L2219) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1101) |
 | `validate_payload` | `crate::tail::check_write_versions` | [2220](../../src/rewrite.rs#L2220) | [store::tail::check_write_versions](../../src/tail.rs#L154) |
 | `validate_payload` | `projection.events.first().ok_or_else` | [2221](../../src/rewrite.rs#L2221) | receiver-type-required |
 | `validate_payload` | `projection.events.first` | [2221](../../src/rewrite.rs#L2221) | receiver-type-required |

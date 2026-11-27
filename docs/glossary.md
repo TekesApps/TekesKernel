@@ -22,10 +22,10 @@ names and commit messages, most of which come from how the project was built.
 | Term | Meaning |
 |---|---|
 | **Session Endpoint** | The HTTP and WebSocket protocol clients use to talk to the supervisor. Contract: [spec/session-endpoint.md](../spec/session-endpoint.md). |
-| **V2**, **V3** | Versions of the Session Endpoint protocol. V3 is current (`protocolVersion: 3`); V2 names remain on some durable carriers whose bytes predate V3. |
-| **`remote.mux`** | The multiplexed WebSocket route of the Session Endpoint. It carries the five synchronization streams: workspace, session inventory, session journal, session control, and actionables. |
-| **unary method** | A request/response call `POST /api/{method}`; the endpoint registers 16. |
-| **client extension**, **capability** (`*.v1`) | An optional group of methods registered beside the 16 unary methods, for example `tools.v1` or `initialPresets.v1`. Contract: [spec/client-extensions.md](../spec/client-extensions.md). |
+| **V2**, **V3**, **V4** | Versions of the Session Endpoint protocol. **V4** (`protocolVersion: 4` on `GET /api/remote.mux`) is current; historical V2/V3 names remain only on retired carrier fixtures and legacy durable carriers. Built-in child launches separately carry `bootstrapVersion: 1` for the private stdin bootstrap frame and stdout readiness line. |
+| **`remote.mux`** | The multiplexed WebSocket route of the Session Endpoint. In V4 it carries the four live synchronization streams: `session-inventory`, `session-journal`, `session-control`, and `actionables` (`workspace` / `workspace-sync` is retired in V4). |
+| **unary method** | A request/response call `POST /api/{method}`; V4 registers 13 base methods (`TEKES_UNARY_ROUTES` alongside `remote.mux`). |
+| **client extension**, **capability** (`*.v1`) | An optional group of methods registered beside the 13 base V4 unary methods, for example `tools.v1` or `initialPresets.v1`. Contract: [spec/client-extensions.md](../spec/client-extensions.md). |
 | **carrier** | A durable record whose exact bytes and identity must be preserved for a protocol or provider, rather than recomputed from the ledger, for example an exact-retry intent or a native provider item. |
 | **DSH** | DeepSeek Harness, an open-source (MIT) agent harness by DeepSeek. Parts of the Session Endpoint were aligned with its client protocol ("DSH-compatible"), and it served as a reference in design comparisons. |
 | **native client** | The Tekes desktop application, maintained separately and not open source. |

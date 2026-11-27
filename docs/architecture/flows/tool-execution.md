@@ -26,7 +26,7 @@ sequenceDiagram
     alt approval is required
         P->>S: durable approval_request
         P-->>W: hold
-        Note over W,S: Client answers v3 actionable, response enters durable worker control
+        Note over W,S: Client answers V4 actionable, response enters durable worker control
         W->>P: resume with durable approval_response
     else denied or invalid
         P->>S: paired terminal result where pipeline owns execution

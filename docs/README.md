@@ -150,7 +150,7 @@ Everything that remains after the reduction. Nothing else is kernel.
 
 This is a logical execution-core diagram, not the complete OS process tree.
 Helper, MCP and workspace-service processes also appear on demand. See [current process ownership](architecture/processes.md) and
-[the source atlas](architecture/README.md). The native Client uses the V3 endpoint;
+[the source atlas](architecture/README.md). The native Client uses the V4 endpoint;
 this conceptual diagram does not authorize direct Client filesystem access.
 
 ```
@@ -158,7 +158,7 @@ this conceptual diagram does not authorize direct Client filesystem access.
 │ clients (macOS app, CLI, remote)                    │
 │   render = projection over events; input = control │
 └──────────────┬──────────────────────────────────────┘
-               │ current Client endpoint (V3); host reads authoritative files
+               │ current Client endpoint (V4); host reads authoritative files
 ┌──────────────┴──────────────────────────────────────┐
 │ supervisor (resident execution host)                │
 │   process table · spawn/reap/reconcile · delivery   │

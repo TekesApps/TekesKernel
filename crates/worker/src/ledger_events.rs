@@ -205,6 +205,7 @@ pub(crate) fn append_and_receipt(
                 delivery,
                 seq: *existing_seq,
                 deduplicated: true,
+                rejected: None,
             },
         )?)?;
         stdout.flush()?;
@@ -219,6 +220,7 @@ pub(crate) fn append_and_receipt(
             delivery,
             seq,
             deduplicated: false,
+            rejected: None,
         },
     )?)?;
     stdout.flush()?;

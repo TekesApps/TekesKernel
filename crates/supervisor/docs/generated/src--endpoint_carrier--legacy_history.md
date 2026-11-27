@@ -101,7 +101,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `legacy_mutation_failure` | `self.inner                     .root                     .join("threads")                     .join` | [57](../../src/endpoint_carrier/legacy_history.rs#L57) | receiver-type-required |
 | `legacy_mutation_failure` | `self.inner                     .root                     .join` | [57](../../src/endpoint_carrier/legacy_history.rs#L57) | receiver-type-required |
 | `legacy_mutation_failure` | `schema::validate_historical_ledger(&bytes, schema::READER_VERSION).is_ok` | [65](../../src/endpoint_carrier/legacy_history.rs#L65) | receiver-type-required |
-| `legacy_mutation_failure` | `schema::validate_historical_ledger` | [65](../../src/endpoint_carrier/legacy_history.rs#L65) | [schema::fold::validate_historical_ledger](../../../schema/src/fold.rs#L1199) |
+| `legacy_mutation_failure` | `schema::validate_historical_ledger` | [65](../../src/endpoint_carrier/legacy_history.rs#L65) | [schema::fold::validate_historical_ledger](../../../schema/src/fold.rs#L1208) |
 | `legacy_mutation_failure` | `recognized.then` | [67](../../src/endpoint_carrier/legacy_history.rs#L67) | receiver-type-required |
 | `legacy_mutation_failure` | `Some` | [68](../../src/endpoint_carrier/legacy_history.rs#L68) | external-constructor-callback-or-unresolved |
 | `legacy_mutation_failure` | `"internal".into` | [69](../../src/endpoint_carrier/legacy_history.rs#L69) | receiver-type-required |
@@ -120,7 +120,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_legacy_journal` | `self.inner.root.join` | [90](../../src/endpoint_carrier/legacy_history.rs#L90) | receiver-type-required |
 | `open_legacy_journal` | `fs::read` | [91](../../src/endpoint_carrier/legacy_history.rs#L91), [109](../../src/endpoint_carrier/legacy_history.rs#L109) | external-constructor-callback-or-unresolved |
 | `open_legacy_journal` | `folder.join` | [91](../../src/endpoint_carrier/legacy_history.rs#L91), [109](../../src/endpoint_carrier/legacy_history.rs#L109) | receiver-type-required |
-| `open_legacy_journal` | `schema::validate_historical_ledger` | [92](../../src/endpoint_carrier/legacy_history.rs#L92) | [schema::fold::validate_historical_ledger](../../../schema/src/fold.rs#L1199) |
+| `open_legacy_journal` | `schema::validate_historical_ledger` | [92](../../src/endpoint_carrier/legacy_history.rs#L92) | [schema::fold::validate_historical_ledger](../../../schema/src/fold.rs#L1208) |
 | `open_legacy_journal` | `ledger             .events()             .first()             .and_then` | [93](../../src/endpoint_carrier/legacy_history.rs#L93) | receiver-type-required |
 | `open_legacy_journal` | `ledger             .events()             .first` | [93](../../src/endpoint_carrier/legacy_history.rs#L93) | receiver-type-required |
 | `open_legacy_journal` | `ledger             .events` | [93](../../src/endpoint_carrier/legacy_history.rs#L93) | receiver-type-required |

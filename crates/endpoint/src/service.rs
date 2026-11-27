@@ -644,18 +644,29 @@ impl NativeEndpoint {
         steer: bool,
         operation: &str,
     ) -> Result<MutationReceipt, NativeEndpointError> {
-        self.keyed(session_id, origin, operation, |seq| {
-            let submission = self.submission_snapshot(session_id)?;
-            let mut value = json!({
-                "v": 1, "seq": seq, "ts": timestamp, "kind": "input",
-                "content": content, "origin_key": origin.key, "origin_tuple": origin,
-                "submission": submission,
-            });
-            if steer {
-                value["steer"] = Value::Bool(true);
-            }
-            event(value)
-        })
+        self.validate_origin(session_id, origin, operation)?;
+        let outcome = self
+            .store
+            .append_keyed_with_projection_if(session_id, origin, |seq, projection| {
+                if steer && !projection.lifecycle.steer_window_open() {
+                    return Ok(None);
+                }
+                let submission = self.submission_snapshot(session_id).map_err(store_error)?;
+                let mut value = json!({
+                    "v": 1, "seq": seq, "ts": timestamp, "kind": "input",
+                    "content": content, "origin_key": origin.key, "origin_tuple": origin,
+                    "submission": submission,
+                });
+                if steer {
+                    value["steer"] = Value::Bool(true);
+                }
+                event(value).map(Some).map_err(store_error)
+            })
+            .map_err(map_store_error)?;
+        match outcome {
+            ConditionalAppendOutcome::Appended(appended) => Ok(appended.into()),
+            ConditionalAppendOutcome::Skipped => Err(NativeEndpointError::SteerUnavailable),
+        }
     }
 
     pub fn update_queue(
@@ -1065,6 +1076,8 @@ pub enum NativeEndpointError {
     Archived,
     #[error("session was not found")]
     NotFound,
+    #[error("current turn no longer accepts steering")]
+    SteerUnavailable,
     #[error("endpoint sequence {0} cannot be represented on the v2 wire")]
     SequenceOverflow(u64),
     #[error("inventory ledger lacks a timestamp")]

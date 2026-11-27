@@ -277,12 +277,9 @@ fn queue_target(
 }
 
 fn queue_steer_window_open(ledger: &LockedLedger) -> bool {
-    ledger.projection().is_some_and(|projection| {
-        projection.latest_turn.is_some()
-            && !projection.terminal_tail
-            && !projection.lifecycle.stop_active
-            && !projection.lifecycle.open_hold
-    })
+    ledger
+        .projection()
+        .is_some_and(|projection| projection.lifecycle.steer_window_open())
 }
 
 fn verify_queue_assets(
