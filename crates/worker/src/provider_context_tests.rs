@@ -2090,6 +2090,151 @@ fn queue_transaction_from_control_receiver_is_acked_during_active_provider_reque
 }
 
 #[test]
+fn deliveries_and_queue_transactions_are_receipted_while_awaiting_saturated_provider_lease() {
+    #[derive(Clone)]
+    struct SharedOutput(Arc<Mutex<Vec<u8>>>);
+
+    impl Write for SharedOutput {
+        fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+            self.0.lock().expect("shared output").write(buf)
+        }
+
+        fn flush(&mut self) -> io::Result<()> {
+            self.0.lock().expect("shared output").flush()
+        }
+    }
+
+    let (directory, mut ledger) = context_ledger("openai_responses_v1", true);
+    let queue_target_seq = ledger.next_seq();
+    let queue_item_origin = queue_origin("saturated-lease-queued-input");
+    let mut queued_input = origin_event(
+        &ledger,
+        "2026-08-28T09:00:02.000Z",
+        "input",
+        &queue_item_origin,
+    );
+    queued_input.insert(
+        "content".to_owned(),
+        json!([{"type":"text","text":"queued before lease wait"}]),
+    );
+    ledger
+        .append_contract(
+            make_event(Value::Object(queued_input)).expect("queued input"),
+            BarrierContext::default(),
+        )
+        .expect("append queued input");
+
+    let profile = configured_test_provider_profile(directory.path());
+    let options = test_options(&ledger);
+    let cancellation = RuntimeCancellation::default();
+    let (control_sender, control_receiver) = sync_channel(1);
+    let mut lines = ControlLines {
+        receiver: control_receiver,
+        cancellation: cancellation.clone(),
+    };
+    let (incoming_sender, incoming_receiver) = std::sync::mpsc::channel();
+    let reader_cancellation = cancellation.clone();
+    let reader = std::thread::spawn(move || {
+        forward_control_lines(
+            incoming_receiver.into_iter(),
+            control_sender,
+            reader_cancellation,
+        )
+    });
+
+    let buffer = Arc::new(Mutex::new(Vec::new()));
+    let mut output = SharedOutput(Arc::clone(&buffer));
+    let observed_buffer = Arc::clone(&buffer);
+    let transaction = QueueTransaction {
+        delivery: "delivery-lease-wait-remove".to_owned(),
+        rpc_id: "rpc-lease-wait-remove".to_owned(),
+        target_seq: queue_target_seq,
+        retract_origin: queue_origin("rpc-lease-wait-remove/retract"),
+        action: QueueTransactionAction::Remove,
+    };
+    let transaction_line = String::from_utf8(
+        worker_control::encode_queue_transaction(&transaction).expect("transaction line"),
+    )
+    .expect("UTF-8 transaction");
+    let input_line = r#"{"input":{"assets":null,"content":[{"text":"prompt during saturated lease","type":"text"}],"delivery":"delivery-lease-wait-input","origin":{"client":"cli","key":"rpc-lease-wait-input","op":"session.prompt","principal":"p","target":"018f0000-0000-7000-8000-000000000003"},"steer":null}}"#.to_owned();
+
+    let driver = std::thread::spawn(move || {
+        let deadline = Instant::now() + Duration::from_secs(5);
+        let attempt = loop {
+            let text =
+                String::from_utf8_lossy(&observed_buffer.lock().expect("buffer")).into_owned();
+            if let Some(line) = text.lines().find(|line| line.contains("\"lease_request\"")) {
+                let parsed: Value = serde_json::from_str(line).expect("lease_request JSON");
+                break parsed["lease_request"]["attempt"]
+                    .as_str()
+                    .expect("attempt string")
+                    .to_owned();
+            }
+            assert!(
+                Instant::now() < deadline,
+                "worker never sent lease_request: {text}"
+            );
+            std::thread::sleep(Duration::from_millis(5));
+        };
+
+        // Both deliveries arrive BEFORE SupervisorMessage::Lease is answered.
+        incoming_sender.send(Ok(input_line)).expect("send input");
+        incoming_sender
+            .send(Ok(transaction_line))
+            .expect("send queue transaction");
+
+        loop {
+            let text =
+                String::from_utf8_lossy(&observed_buffer.lock().expect("buffer")).into_owned();
+            let got_input = text.contains("\"delivery\":\"delivery-lease-wait-input\"");
+            let got_queue = text.contains("\"delivery\":\"delivery-lease-wait-remove\"");
+            if got_input && got_queue {
+                break;
+            }
+            assert!(
+                Instant::now() < deadline,
+                "worker failed to receipt deliveries while awaiting lease: {text}"
+            );
+            std::thread::sleep(Duration::from_millis(5));
+        }
+
+        incoming_sender
+            .send(Ok(
+                json!({"lease":{"attempt":attempt,"granted":false}}).to_string()
+            ))
+            .expect("send lease denial after receipts");
+        drop(incoming_sender);
+    });
+
+    let result = run_provider_turn_with_controls(
+        &mut ledger,
+        &options,
+        &profile,
+        &Selected { version: 2 },
+        &mut None,
+        &mut lines,
+        &mut output,
+    );
+    result.expect("lease denial unwinds cleanly");
+    driver.join().expect("driver");
+    reader.join().expect("reader");
+
+    let events = &ledger.projection().expect("projection").events;
+    assert!(
+        events
+            .iter()
+            .any(|event| event.string_field("origin_key") == Some("rpc-lease-wait-input")),
+        "queued prompt during lease wait must be durable"
+    );
+    assert!(
+        events
+            .iter()
+            .any(|event| event.string_field("origin_key") == Some("rpc-lease-wait-remove/retract")),
+        "queue transaction during lease wait must be durable"
+    );
+}
+
+#[test]
 fn post_turn_open_turn_without_stop_exits_for_tail_recovery() {
     let (_directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
     let options = test_options(&ledger);

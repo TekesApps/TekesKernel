@@ -21,6 +21,15 @@ trait ProviderControlInput: Iterator<Item = io::Result<String>> {
         cancellation: &RuntimeCancellation,
         stdout: &mut impl Write,
     ) -> Result<(), Box<dyn std::error::Error>>;
+
+    fn next_while_draining_deliveries(
+        &mut self,
+        ledger: &mut LockedLedger,
+        options: &Options,
+        selected: &Selected,
+        cancellation: &RuntimeCancellation,
+        stdout: &mut impl Write,
+    ) -> Result<Option<io::Result<String>>, Box<dyn std::error::Error>>;
 }
 
 #[cfg(test)]
@@ -47,6 +56,18 @@ impl<I: Iterator<Item = io::Result<String>>> ProviderControlInput for IteratorCo
     ) -> Result<(), Box<dyn std::error::Error>> {
         drain_parked_deliveries(ledger, options, selected, cancellation, stdout)
     }
+
+    fn next_while_draining_deliveries(
+        &mut self,
+        ledger: &mut LockedLedger,
+        options: &Options,
+        selected: &Selected,
+        cancellation: &RuntimeCancellation,
+        stdout: &mut impl Write,
+    ) -> Result<Option<io::Result<String>>, Box<dyn std::error::Error>> {
+        drain_parked_deliveries(ledger, options, selected, cancellation, stdout)?;
+        Ok(self.0.next())
+    }
 }
 
 impl ProviderControlInput for ControlLines {
@@ -59,6 +80,27 @@ impl ProviderControlInput for ControlLines {
         stdout: &mut impl Write,
     ) -> Result<(), Box<dyn std::error::Error>> {
         drain_ready_deliveries(ledger, options, selected, self, stdout)
+    }
+
+    fn next_while_draining_deliveries(
+        &mut self,
+        ledger: &mut LockedLedger,
+        options: &Options,
+        selected: &Selected,
+        cancellation: &RuntimeCancellation,
+        stdout: &mut impl Write,
+    ) -> Result<Option<io::Result<String>>, Box<dyn std::error::Error>> {
+        loop {
+            drain_parked_deliveries(ledger, options, selected, cancellation, stdout)?;
+            if let Some(line) = cancellation.take_deferred() {
+                return Ok(Some(Ok(line)));
+            }
+            match self.receiver.recv_timeout(Duration::from_millis(10)) {
+                Ok(line) => return Ok(Some(line)),
+                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {}
+                Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => return Ok(None),
+            }
+        }
     }
 }
 
@@ -706,7 +748,7 @@ fn run_provider_turn_inner(
     stdout.flush()?;
     let granted = loop {
         let line = lines
-            .next()
+            .next_while_draining_deliveries(ledger, options, run.selected, cancellation, stdout)?
             .ok_or_else(|| {
                 ProtocolFailure("supervisor EOF while awaiting provider lease".to_owned())
             })?
@@ -726,7 +768,9 @@ fn run_provider_turn_inner(
                 cancellation.defer(line);
                 break false;
             }
-            SupervisorMessage::QueueTransaction(_) => cancellation.park_delivery(line),
+            message @ SupervisorMessage::QueueTransaction(_) => {
+                handle_delivery(ledger, options, run.selected, stdout, message)?;
+            }
             _ => {
                 return Err(Box::new(ProtocolFailure(
                     "unexpected supervisor message while awaiting provider lease".to_owned(),

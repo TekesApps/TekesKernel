@@ -37,13 +37,13 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 |---|---:|---:|---|
 | [crates/endpoint/src/all_session.rs](../../src/all_session.rs) | 23 | 149 | [Symbols and calls](src--all_session.md) |
 | [crates/endpoint/src/approval_policy.rs](../../src/approval_policy.rs) | 9 | 6 | [Symbols and calls](src--approval_policy.md) |
-| [crates/endpoint/src/attachment.rs](../../src/attachment.rs) | 91 | 880 | [Symbols and calls](src--attachment.md) |
+| [crates/endpoint/src/attachment.rs](../../src/attachment.rs) | 92 | 911 | [Symbols and calls](src--attachment.md) |
 | [crates/endpoint/src/carrier_adapter.rs](../../src/carrier_adapter.rs) | 40 | 225 | [Symbols and calls](src--carrier_adapter.md) |
 | [crates/endpoint/src/client_wire.rs](../../src/client_wire.rs) | 8 | 22 | [Symbols and calls](src--client_wire.md) |
 | [crates/endpoint/src/history.rs](../../src/history.rs) | 6 | 65 | [Symbols and calls](src--history.md) |
-| [crates/endpoint/src/host.rs](../../src/host.rs) | 67 | 115 | [Symbols and calls](src--host.md) |
+| [crates/endpoint/src/host.rs](../../src/host.rs) | 68 | 124 | [Symbols and calls](src--host.md) |
 | [crates/endpoint/src/hub.rs](../../src/hub.rs) | 43 | 232 | [Symbols and calls](src--hub.md) |
-| [crates/endpoint/src/idempotency.rs](../../src/idempotency.rs) | 35 | 418 | [Symbols and calls](src--idempotency.md) |
+| [crates/endpoint/src/idempotency.rs](../../src/idempotency.rs) | 45 | 551 | [Symbols and calls](src--idempotency.md) |
 | [crates/endpoint/src/journal.rs](../../src/journal.rs) | 37 | 393 | [Symbols and calls](src--journal.md) |
 | [crates/endpoint/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/endpoint/src/mux.rs](../../src/mux.rs) | 50 | 170 | [Symbols and calls](src--mux.md) |
@@ -62,7 +62,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/endpoint/tests/session_endpoint.rs](../../tests/session_endpoint.rs) | 10 | 100 | `inventory.json` |
 | [crates/endpoint/tests/session_notice.rs](../../tests/session_notice.rs) | 4 | 40 | `inventory.json` |
 | [crates/endpoint/tests/slice6_gates.rs](../../tests/slice6_gates.rs) | 11 | 273 | `inventory.json` |
-| [crates/endpoint/tests/slice9_lower_seam.rs](../../tests/slice9_lower_seam.rs) | 23 | 235 | `inventory.json` |
+| [crates/endpoint/tests/slice9_lower_seam.rs](../../tests/slice9_lower_seam.rs) | 47 | 574 | `inventory.json` |
 | [crates/endpoint/tests/submission_intent.rs](../../tests/submission_intent.rs) | 2 | 107 | `inventory.json` |
 
 ## Cross-file direct calls
@@ -94,6 +94,7 @@ flowchart LR
   m1 -->|"4"| m17
   m2 -->|"1"| m4
   m2 -->|"1"| m11
+  m4 -->|"1"| m6
   m5 -->|"3"| m17
   m6 -->|"3"| m12
   m8 -->|"1"| m3

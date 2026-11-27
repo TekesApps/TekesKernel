@@ -1227,3 +1227,352 @@ fn response_value(response: &endpoint::ServerResponse) -> serde_json::Value {
     )
     .expect("response JSON")
 }
+
+struct CountingDelivery {
+    prompt_calls: std::sync::atomic::AtomicUsize,
+}
+
+impl CountingDelivery {
+    fn new() -> Self {
+        Self {
+            prompt_calls: std::sync::atomic::AtomicUsize::new(0),
+        }
+    }
+}
+
+impl SessionDeliveryAuthority for CountingDelivery {
+    fn prompt(
+        &self,
+        _session_id: &str,
+        _timestamp: &str,
+        _origin: &OriginTuple,
+        _prompt: &endpoint::MaterializedPrompt,
+        _steer: bool,
+    ) -> Result<endpoint::MutationReceipt, ProductionRouteFailure> {
+        self.prompt_calls
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        Err(route_failure())
+    }
+
+    fn cancel(
+        &self,
+        _session_id: &str,
+        _timestamp: &str,
+        _origin: &OriginTuple,
+    ) -> Result<endpoint::MutationReceipt, ProductionRouteFailure> {
+        Err(route_failure())
+    }
+
+    fn rename(
+        &self,
+        _session_id: &str,
+        _timestamp: &str,
+        _origin: &OriginTuple,
+        _title: &str,
+    ) -> Result<endpoint::MutationReceipt, ProductionRouteFailure> {
+        Err(route_failure())
+    }
+}
+
+fn seed_legacy_internal_rpc(root: &std::path::Path, req: &ClientRequest) {
+    let registry = endpoint::RpcRegistry::open(root).expect("registry");
+    let endpoint::RpcBegin::Execute { claim, .. } = registry.begin(req).expect("prepare") else {
+        panic!("expected pending claim");
+    };
+    registry
+        .complete(
+            &claim,
+            &endpoint::RpcResult {
+                ok: false,
+                value: None,
+                error: Some(endpoint::RpcError {
+                    code: "internal".to_owned(),
+                    message: "Endpoint operation failed".to_owned(),
+                    details: IJsonValue::parse_str("{}").expect("details"),
+                }),
+            },
+        )
+        .expect("complete internal");
+}
+
+fn append_raw_input_event(
+    root: &std::path::Path,
+    session: &str,
+    seq: u64,
+    origin: &OriginTuple,
+    text: &str,
+    steer: bool,
+) {
+    let mut value = serde_json::json!({
+        "v": 1,
+        "seq": seq,
+        "ts": TIMESTAMP,
+        "kind": "input",
+        "content": [{"type": "text", "text": text}],
+        "origin_key": origin.key,
+        "origin_tuple": origin,
+    });
+    if steer {
+        value["steer"] = serde_json::Value::Bool(true);
+    }
+    let bytes = schema::Event::decode(serde_json::to_vec(&value).unwrap().as_slice())
+        .expect("valid input event")
+        .canonical_bytes()
+        .expect("canonical input event");
+    let line = format!("{}\n", String::from_utf8(bytes).unwrap());
+    let main_path = root.join("threads").join(session).join("main.jsonl");
+    let mut existing = std::fs::read_to_string(&main_path).expect("read main");
+    existing.push_str(&line);
+    std::fs::write(main_path, existing).expect("append input");
+}
+
+#[test]
+fn production_host_reconciles_legacy_internal_prompt_only_with_exact_durable_input() {
+    let root = tempfile::tempdir().expect("root");
+    write_session_at(root.path(), SESSION, false);
+    let other_session = "018f0000-0000-7000-8000-000000000099";
+    write_session_at(root.path(), other_session, false);
+
+    // SAFETY: geteuid has no preconditions and matches ProductionEndpointHost.principal.
+    let principal = format!("uid:{}", unsafe { libc::geteuid() });
+
+    let matched_req = client_request(
+        "rpc-173-match",
+        "session.prompt",
+        &format!(
+            r#"{{"sessionId":"{SESSION}","mode":"queue","content":[{{"type":"text","text":"EXACT_MATCH"}}]}}"#
+        ),
+    );
+    seed_legacy_internal_rpc(root.path(), &matched_req);
+    append_raw_input_event(
+        root.path(),
+        SESSION,
+        3,
+        &OriginTuple {
+            principal: principal.clone(),
+            client: endpoint::ORIGIN_CLIENT.to_owned(),
+            target: SESSION.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-173-match".to_owned(),
+        },
+        "EXACT_MATCH",
+        false,
+    );
+
+    let missing_req = client_request(
+        "rpc-173-missing",
+        "session.prompt",
+        &format!(
+            r#"{{"sessionId":"{SESSION}","mode":"queue","content":[{{"type":"text","text":"NO_LEDGER_INPUT"}}]}}"#
+        ),
+    );
+    seed_legacy_internal_rpc(root.path(), &missing_req);
+
+    let wrong_principal_req = client_request(
+        "rpc-173-wrong-principal",
+        "session.prompt",
+        &format!(
+            r#"{{"sessionId":"{SESSION}","mode":"queue","content":[{{"type":"text","text":"WRONG_PRINCIPAL"}}]}}"#
+        ),
+    );
+    seed_legacy_internal_rpc(root.path(), &wrong_principal_req);
+    append_raw_input_event(
+        root.path(),
+        SESSION,
+        4,
+        &OriginTuple {
+            principal: "uid:other".to_owned(),
+            client: endpoint::ORIGIN_CLIENT.to_owned(),
+            target: SESSION.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-173-wrong-principal".to_owned(),
+        },
+        "WRONG_PRINCIPAL",
+        false,
+    );
+
+    let wrong_steer_req = client_request(
+        "rpc-173-wrong-steer",
+        "session.prompt",
+        &format!(
+            r#"{{"sessionId":"{SESSION}","mode":"steer","content":[{{"type":"text","text":"STEER_MISMATCH"}}]}}"#
+        ),
+    );
+    seed_legacy_internal_rpc(root.path(), &wrong_steer_req);
+    append_raw_input_event(
+        root.path(),
+        SESSION,
+        5,
+        &OriginTuple {
+            principal,
+            client: endpoint::ORIGIN_CLIENT.to_owned(),
+            target: SESSION.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-173-wrong-steer".to_owned(),
+        },
+        "STEER_MISMATCH",
+        false,
+    );
+
+    let delivery = Arc::new(CountingDelivery::new());
+    let description = SessionHostDescription {
+        version: "0.9.23".to_owned(),
+        cwd: "/tmp".to_owned(),
+        provider: None,
+        model: None,
+        attached_sessions: 0,
+        home: root.path().display().to_string(),
+        can_open_path: false,
+    };
+    let assembly =
+        tekes_supervisor::endpoint_host::ProductionEndpointAssembly::open_with_full_authorities(
+            root.path(),
+            description.clone(),
+            Arc::new(|| Ok(TIMESTAMP.to_owned())),
+            None,
+            None,
+            Some(Arc::clone(&delivery) as Arc<dyn SessionDeliveryAuthority>),
+            None,
+        )
+        .expect("assembly");
+
+    // 1. Exact match reconciles to accepted:true without invoking delivery.
+    let first = block_on_ready(assembly.dispatch(matched_req.clone())).expect("matched dispatch");
+    assert_eq!(
+        response_value(&first),
+        serde_json::json!({"accepted": true})
+    );
+    assert_eq!(
+        delivery
+            .prompt_calls
+            .load(std::sync::atomic::Ordering::SeqCst),
+        0
+    );
+
+    // 2. Restart / reopened assembly returns the same cached accepted receipt and enforces conflicts.
+    let reopened =
+        tekes_supervisor::endpoint_host::ProductionEndpointAssembly::open_with_full_authorities(
+            root.path(),
+            description,
+            Arc::new(|| Ok(TIMESTAMP.to_owned())),
+            None,
+            None,
+            Some(Arc::clone(&delivery) as Arc<dyn SessionDeliveryAuthority>),
+            None,
+        )
+        .expect("reopened assembly");
+    let retry = block_on_ready(reopened.dispatch(matched_req)).expect("retry dispatch");
+    assert_eq!(retry, first);
+
+    let conflict_body = client_request(
+        "rpc-173-match",
+        "session.prompt",
+        &format!(
+            r#"{{"sessionId":"{SESSION}","mode":"queue","content":[{{"type":"text","text":"MODIFIED"}}]}}"#
+        ),
+    );
+    let conflict_body_resp =
+        block_on_ready(reopened.dispatch(conflict_body)).expect("conflict body");
+    assert_eq!(
+        conflict_body_resp.result.error.as_ref().expect("err").code,
+        "idempotency-conflict"
+    );
+
+    let conflict_session = client_request(
+        "rpc-173-match",
+        "session.prompt",
+        &format!(
+            r#"{{"sessionId":"{other_session}","mode":"queue","content":[{{"type":"text","text":"EXACT_MATCH"}}]}}"#
+        ),
+    );
+    let conflict_session_resp =
+        block_on_ready(reopened.dispatch(conflict_session)).expect("conflict session");
+    assert_eq!(
+        conflict_session_resp
+            .result
+            .error
+            .as_ref()
+            .expect("err")
+            .code,
+        "idempotency-conflict"
+    );
+
+    // 3. Missing durable input, wrong principal, and steer mismatch stay internal.
+    for negative in [missing_req, wrong_principal_req, wrong_steer_req] {
+        let resp = block_on_ready(reopened.dispatch(negative)).expect("negative dispatch");
+        assert!(!resp.result.ok);
+        assert_eq!(resp.result.error.as_ref().expect("err").code, "internal");
+    }
+    assert_eq!(
+        delivery
+            .prompt_calls
+            .load(std::sync::atomic::Ordering::SeqCst),
+        0
+    );
+
+    // 4. Live carrier path (`ProductionCarrierAssembly` / `LifecycleCarrierHost`) also
+    // reconciles a legacy `Prepared -> Complete(internal)` record with 0 delivery calls.
+    let carrier_req = client_request(
+        "rpc-173-carrier-match",
+        "session.prompt",
+        &format!(
+            r#"{{"sessionId":"{SESSION}","mode":"queue","content":[{{"type":"text","text":"CARRIER_MATCH"}}]}}"#
+        ),
+    );
+    seed_legacy_internal_rpc(root.path(), &carrier_req);
+    append_raw_input_event(
+        root.path(),
+        SESSION,
+        6,
+        &OriginTuple {
+            // SAFETY: geteuid has no preconditions and matches ProductionEndpointHost.principal.
+            principal: format!("uid:{}", unsafe { libc::geteuid() }),
+            client: endpoint::ORIGIN_CLIENT.to_owned(),
+            target: SESSION.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-173-carrier-match".to_owned(),
+        },
+        "CARRIER_MATCH",
+        false,
+    );
+    let carrier = ProductionCarrierAssembly::assemble(
+        root.path(),
+        ProductionEndpointHost::open_with_route_authority(
+            root.path(),
+            SessionHostDescription {
+                version: "0.9.23".to_owned(),
+                cwd: "/tmp".to_owned(),
+                provider: None,
+                model: None,
+                attached_sessions: 0,
+                home: root.path().display().to_string(),
+                can_open_path: false,
+            },
+            Arc::new(|| Ok(TIMESTAMP.to_owned())),
+            Arc::new(ForkRoute),
+            Some(Arc::new(Providers)),
+            Some(Arc::clone(&delivery) as Arc<dyn SessionDeliveryAuthority>),
+            Some(Arc::new(Queue)),
+        )
+        .expect("carrier host"),
+        Arc::new(NoLiveWorker),
+        TransportConfig::loopback(
+            SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 0),
+            BearerToken::new([7; 32]),
+        ),
+    )
+    .expect("carrier assembly");
+    carrier.finish_recovery().expect("finish recovery");
+    let carrier_resp =
+        block_on_ready(carrier.host().unary(carrier_req, call_context())).expect("carrier unary");
+    assert_eq!(
+        response_value(&carrier_resp),
+        serde_json::json!({"accepted": true})
+    );
+    assert_eq!(
+        delivery
+            .prompt_calls
+            .load(std::sync::atomic::Ordering::SeqCst),
+        0
+    );
+}

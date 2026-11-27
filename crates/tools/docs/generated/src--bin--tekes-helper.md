@@ -34,9 +34,9 @@ Edges below are syntactically resolved calls only, including private functions. 
 flowchart TD
   n0["tools::bin::tekes-helper::run"]
   n1["tools::bin::tekes-helper::main"]
-  n2["tools::helper::RootBinding::open"]
-  n3["tools::helper::HelperServer::new"]
-  n4["tools::helper::serve_stdio"]
+  n2["tools::helper::serve_stdio"]
+  n3["tools::helper::RootBinding::open"]
+  n4["tools::helper::HelperServer::new"]
   n5["tools::runtime_backends::run_job_runner"]
   n0 --> n2
   n0 --> n3
@@ -78,6 +78,6 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `binding             .split_once('=')             .ok_or` | [39](../../src/bin/tekes-helper.rs#L39) | receiver-type-required |
 | `run` | `binding             .split_once` | [39](../../src/bin/tekes-helper.rs#L39) | receiver-type-required |
 | `run` | `roots.push` | [42](../../src/bin/tekes-helper.rs#L42) | receiver-type-required |
-| `run` | `RootBinding::open` | [42](../../src/bin/tekes-helper.rs#L42) | [tools::helper::RootBinding::open](../../src/helper.rs#L369) |
-| `run` | `HelperServer::new` | [44](../../src/bin/tekes-helper.rs#L44) | [tools::helper::HelperServer::new](../../src/helper.rs#L414) |
-| `run` | `tools::serve_stdio` | [45](../../src/bin/tekes-helper.rs#L45) | [tools::helper::serve_stdio](../../src/helper.rs#L968) |
+| `run` | `RootBinding::open` | [42](../../src/bin/tekes-helper.rs#L42) | [tools::helper::RootBinding::open](../../src/helper.rs#L373) |
+| `run` | `HelperServer::new` | [44](../../src/bin/tekes-helper.rs#L44) | [tools::helper::HelperServer::new](../../src/helper.rs#L418) |
+| `run` | `tools::serve_stdio` | [45](../../src/bin/tekes-helper.rs#L45) | [tools::helper::serve_stdio](../../src/helper.rs#L1053) |

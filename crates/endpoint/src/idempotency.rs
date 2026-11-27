@@ -1,12 +1,14 @@
+use std::collections::HashMap;
 use std::fs::{self, OpenOptions};
-use std::io::Write;
+use std::io::{Seek, SeekFrom, Write};
 use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
 
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD as BASE64;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use store::{FullSync, NamedLock};
+use store::{NamedLock, SyncPolicy, SystemSync};
 use thiserror::Error;
 
 use crate::{
@@ -14,6 +16,7 @@ use crate::{
 };
 
 const VERSION: u64 = 2;
+const RECONCILED_LEDGER_DELIVERY: &str = "reconciled-ledger";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RpcClaim {
@@ -33,6 +36,16 @@ impl RpcClaim {
     #[must_use]
     pub fn method(&self) -> &str {
         &self.operation
+    }
+
+    #[must_use]
+    pub fn request_sha256(&self) -> &str {
+        &self.request_sha256
+    }
+
+    #[must_use]
+    pub fn target_session(&self) -> Option<&str> {
+        self.target_session.as_deref()
     }
 }
 
@@ -117,6 +130,8 @@ pub struct RpcRegistry {
     root: PathBuf,
     rpc_root: PathBuf,
     lock_path: PathBuf,
+    sync: Arc<dyn SyncPolicy>,
+    synced_lengths: Mutex<HashMap<String, u64>>,
 }
 
 impl RpcRegistry {
@@ -137,8 +152,19 @@ impl RpcRegistry {
             root,
             rpc_root,
             lock_path,
+            sync: Arc::new(SystemSync),
+            synced_lengths: Mutex::new(HashMap::new()),
         };
         registry.repair_all()?;
+        Ok(registry)
+    }
+
+    pub fn open_with_sync(
+        endpoint_root: impl AsRef<Path>,
+        sync: Arc<dyn SyncPolicy>,
+    ) -> Result<Self, RpcRegistryError> {
+        let mut registry = Self::open(endpoint_root)?;
+        registry.sync = sync;
         Ok(registry)
     }
 
@@ -151,21 +177,33 @@ impl RpcRegistry {
         let claim = make_claim(request)?;
         let _lock = NamedLock::exclusive(&self.lock_path)?;
         match self.read_unlocked(&claim.rpc_id, false)? {
-            Some(Entry::Active {
-                claim: existing,
-                result,
-                ..
-            }) => {
+            Some((
+                Entry::Active {
+                    claim: existing,
+                    result,
+                    handoff,
+                    ..
+                },
+                len,
+            )) => {
                 same_claim(&existing, &claim)?;
-                Ok(match result {
-                    Some(result) => RpcBegin::Completed(result),
-                    None => RpcBegin::Execute {
+                match result {
+                    Some(result) => {
+                        let skip_sync_for_legacy_internal = claim.operation == "session.prompt"
+                            && handoff.is_none()
+                            && is_legacy_internal_error(&result);
+                        if !skip_sync_for_legacy_internal {
+                            self.ensure_carrier_synced_unlocked(&rpc_hash(&claim.rpc_id), len)?;
+                        }
+                        Ok(RpcBegin::Completed(result))
+                    }
+                    None => Ok(RpcBegin::Execute {
                         claim,
                         recovering: true,
-                    },
-                })
+                    }),
+                }
             }
-            Some(Entry::Retired) => Err(RpcRegistryError::Conflict(claim.rpc_id)),
+            Some((Entry::Retired, _)) => Err(RpcRegistryError::Conflict(claim.rpc_id)),
             None => {
                 self.publish_prepared(&claim)?;
                 Ok(RpcBegin::Execute {
@@ -181,17 +219,23 @@ impl RpcRegistry {
         let _lock = NamedLock::shared(&self.lock_path)?;
         match self.read_unlocked(&claim.rpc_id, false)? {
             None => Ok(RpcLookup::Missing),
-            Some(Entry::Retired) => Err(RpcRegistryError::Conflict(claim.rpc_id)),
-            Some(Entry::Active {
-                claim: existing,
-                result,
-                ..
-            }) => {
+            Some((Entry::Retired, _)) => Err(RpcRegistryError::Conflict(claim.rpc_id)),
+            Some((
+                Entry::Active {
+                    claim: existing,
+                    result,
+                    ..
+                },
+                len,
+            )) => {
                 same_claim(&existing, &claim)?;
-                Ok(match result {
-                    Some(result) => RpcLookup::Completed(result),
-                    None => RpcLookup::Pending(claim),
-                })
+                match result {
+                    Some(result) => {
+                        self.ensure_carrier_synced_unlocked(&rpc_hash(&claim.rpc_id), len)?;
+                        Ok(RpcLookup::Completed(result))
+                    }
+                    None => Ok(RpcLookup::Pending(claim)),
+                }
             }
         }
     }
@@ -201,7 +245,7 @@ impl RpcRegistry {
         claim: &RpcClaim,
     ) -> Result<Option<(String, Option<RpcDurableIdentity>)>, RpcRegistryError> {
         let _lock = NamedLock::shared(&self.lock_path)?;
-        let entry = self
+        let (entry, _) = self
             .read_unlocked(&claim.rpc_id, false)?
             .ok_or_else(|| RpcRegistryError::MissingClaim(claim.rpc_id.clone()))?;
         let Entry::Active {
@@ -223,7 +267,7 @@ impl RpcRegistry {
     ) -> Result<RpcResult, RpcRegistryError> {
         result.validate()?;
         let _lock = NamedLock::exclusive(&self.lock_path)?;
-        let entry = self
+        let (entry, len) = self
             .read_unlocked(&claim.rpc_id, false)?
             .ok_or_else(|| RpcRegistryError::MissingClaim(claim.rpc_id.clone()))?;
         let Entry::Active {
@@ -238,6 +282,7 @@ impl RpcRegistry {
         same_claim(&existing, claim)?;
         if let Some(old) = old {
             return if old == *result {
+                self.ensure_carrier_synced_unlocked(&rpc_hash(&claim.rpc_id), len)?;
                 Ok(old)
             } else {
                 Err(RpcRegistryError::ResultConflict(claim.rpc_id.clone()))
@@ -327,7 +372,7 @@ impl RpcRegistry {
             validate_durable_identity(identity)?;
         }
         let _lock = NamedLock::exclusive(&self.lock_path)?;
-        let entry = self
+        let (entry, _) = self
             .read_unlocked(&claim.rpc_id, false)?
             .ok_or_else(|| RpcRegistryError::MissingClaim(claim.rpc_id.clone()))?;
         let Entry::Active {
@@ -374,6 +419,91 @@ impl RpcRegistry {
         )
     }
 
+    /// Reconciles a legacy `Prepared -> Complete(internal)` record for
+    /// `session.prompt` against persisted ledger evidence supplied by `probe`,
+    /// appending one canonical `Complete({"accepted":true})` row at `ordinal: 2`
+    /// under the registry's exclusive lock.
+    pub fn reconcile_legacy_internal_complete<F>(
+        &self,
+        request: &ClientRequest,
+        probe: F,
+    ) -> Result<Option<RpcResult>, RpcRegistryError>
+    where
+        F: FnOnce(&RpcClaim) -> Option<u64>,
+    {
+        let claim = make_claim(request)?;
+        if claim.operation != "session.prompt" || claim.target_session.is_none() {
+            return Ok(None);
+        }
+        let _lock = NamedLock::exclusive(&self.lock_path)?;
+        let (entry, len) = match self.read_unlocked(&claim.rpc_id, false)? {
+            Some((
+                Entry::Active {
+                    claim: existing,
+                    phase,
+                    result,
+                    handoff,
+                },
+                len,
+            )) => ((existing, phase, result, handoff), len),
+            Some((Entry::Retired, _)) => return Err(RpcRegistryError::Conflict(claim.rpc_id)),
+            None => return Ok(None),
+        };
+        let (existing, phase, result, handoff) = entry;
+        same_claim(&existing, &claim)?;
+        if phase != Phase::Complete {
+            return Ok(None);
+        }
+        let Some(existing_result) = result else {
+            return Ok(None);
+        };
+        if handoff.is_some() && is_accepted_prompt_result(&existing_result) {
+            self.ensure_carrier_synced_unlocked(&rpc_hash(&claim.rpc_id), len)?;
+            return Ok(Some(existing_result));
+        }
+        if handoff.is_some() || !is_legacy_internal_error(&existing_result) {
+            return Ok(None);
+        }
+        let Some(seq) = probe(&claim) else {
+            return Ok(None);
+        };
+        let accepted = RpcResult {
+            ok: true,
+            value: Some(schema::IJsonValue::parse_str(r#"{"accepted":true}"#)?),
+            error: None,
+        };
+        accepted.validate()?;
+        let response_bytes = serde_json_canonicalizer::to_vec(&ServerResponse {
+            envelope_type: "server-response".to_owned(),
+            rpc_id: claim.rpc_id.clone(),
+            result: accepted.clone(),
+        })
+        .map_err(|error| RpcRegistryError::Canonical(error.to_string()))?;
+        self.append(
+            &claim.rpc_id,
+            &Record {
+                v: VERSION,
+                ordinal: 2,
+                rpc_id: Some(claim.rpc_id.clone()),
+                rpc_sha256: None,
+                operation: claim.operation.clone(),
+                request_sha256: claim.request_sha256.clone(),
+                target_session: claim.target_session.clone(),
+                phase: Phase::Complete,
+                delivery: Some(RECONCILED_LEDGER_DELIVERY.to_owned()),
+                durable_identity: Some(RpcDurableIdentity {
+                    kind: "event-origin".to_owned(),
+                    id: claim.rpc_id.clone(),
+                    seq: Some(seq),
+                }),
+                projection_metadata: claim.projection_metadata.clone(),
+                response_b64: Some(BASE64.encode(response_bytes)),
+                retired_reason: None,
+            },
+        )?;
+        Ok(Some(accepted))
+    }
+
     fn publish_prepared(&self, claim: &RpcClaim) -> Result<(), RpcRegistryError> {
         let hash = rpc_hash(&claim.rpc_id);
         let shard = self.rpc_root.join(&hash[..2]);
@@ -406,35 +536,82 @@ impl RpcRegistry {
             .create_new(true)
             .open(&temp)?;
         file.write_all(&bytes)?;
-        FullSync::full_sync(&file)?;
+        self.sync.full_sync(&file)?;
         drop(file);
         fs::rename(temp, path)?;
         fs::File::open(shard)?.sync_all()?;
+        self.record_synced_len(&hash, bytes.len() as u64);
         Ok(())
     }
 
     fn append(&self, rpc_id: &str, record: &Record) -> Result<(), RpcRegistryError> {
         let mut bytes = canonical(record)?;
         bytes.push(b'\n');
-        let mut file = OpenOptions::new()
-            .append(true)
-            .open(self.record_path(&rpc_hash(rpc_id)))?;
-        file.write_all(&bytes)?;
-        FullSync::full_sync(&file)?;
+        let hash = rpc_hash(rpc_id);
+        let path = self.record_path(&hash);
+        let mut file = OpenOptions::new().read(true).write(true).open(path)?;
+        let original_len = file.metadata()?.len();
+        file.seek(SeekFrom::End(0))?;
+        if let Err(error) = file
+            .write_all(&bytes)
+            .and_then(|()| self.sync.full_sync(&file))
+        {
+            // Never leave an unsynced row readable in page cache or on disk if
+            // appending or full-syncing fails.
+            let _ = file.set_len(original_len);
+            self.invalidate_synced_len(&hash);
+            return Err(error.into());
+        }
+        self.record_synced_len(&hash, original_len + bytes.len() as u64);
         Ok(())
+    }
+
+    fn ensure_carrier_synced_unlocked(&self, hash: &str, len: u64) -> Result<(), RpcRegistryError> {
+        if self
+            .synced_lengths
+            .lock()
+            .ok()
+            .and_then(|synced| synced.get(hash).copied())
+            == Some(len)
+        {
+            return Ok(());
+        }
+        let file = fs::File::open(self.record_path(hash))?;
+        if file.metadata()?.len() != len {
+            return Err(RpcRegistryError::Corruption(
+                "rpc carrier length changed unexpectedly".to_owned(),
+            ));
+        }
+        self.sync.full_sync(&file)?;
+        self.record_synced_len(hash, len);
+        Ok(())
+    }
+
+    fn record_synced_len(&self, hash: &str, len: u64) {
+        if let Ok(mut synced) = self.synced_lengths.lock() {
+            synced.insert(hash.to_owned(), len);
+        }
+    }
+
+    fn invalidate_synced_len(&self, hash: &str) {
+        if let Ok(mut synced) = self.synced_lengths.lock() {
+            synced.remove(hash);
+        }
     }
 
     fn read_unlocked(
         &self,
         rpc_id: &str,
         partial: bool,
-    ) -> Result<Option<Entry>, RpcRegistryError> {
+    ) -> Result<Option<(Entry, u64)>, RpcRegistryError> {
         let hash = rpc_hash(rpc_id);
         let path = self.record_path(&hash);
         if !path.exists() {
             return Ok(None);
         }
-        Ok(Some(parse(&fs::read(path)?, &hash, partial)?.0))
+        let bytes = fs::read(path)?;
+        let len = bytes.len() as u64;
+        Ok(Some((parse(&bytes, &hash, partial)?.0, len)))
     }
 
     fn repair_all(&self) -> Result<(), RpcRegistryError> {
@@ -476,7 +653,8 @@ impl RpcRegistry {
                 if valid != bytes.len() {
                     let handle = OpenOptions::new().write(true).open(file.path())?;
                     handle.set_len(valid as u64)?;
-                    FullSync::full_sync(&handle)?;
+                    self.sync.full_sync(&handle)?;
+                    self.record_synced_len(hash, valid as u64);
                 }
             }
         }
@@ -667,6 +845,31 @@ fn parse(
                 let response_bytes = decode_response(row)?;
                 result = Some(parse_cached_result(&claim, &response_bytes)?);
             }
+            (Phase::Complete, Phase::Complete)
+                if claim.operation == "session.prompt"
+                    && handoff.is_none()
+                    && result.as_ref().is_some_and(is_legacy_internal_error)
+                    && row.delivery.as_deref() == Some(RECONCILED_LEDGER_DELIVERY)
+                    && row.durable_identity.as_ref().is_some_and(|identity| {
+                        identity.kind == "event-origin"
+                            && identity.id == claim.rpc_id
+                            && identity.seq.is_some()
+                    })
+                    && row.response_b64.is_some() =>
+            {
+                let response_bytes = decode_response(row)?;
+                let reconciled = parse_cached_result(&claim, &response_bytes)?;
+                if !is_accepted_prompt_result(&reconciled) {
+                    return Err(RpcRegistryError::Corruption(
+                        "reconciled complete row must cache accepted:true".to_owned(),
+                    ));
+                }
+                handoff = Some((
+                    row.delivery.clone().expect("guarded"),
+                    row.durable_identity.clone(),
+                ));
+                result = Some(reconciled);
+            }
             _ => {
                 return Err(RpcRegistryError::Corruption(
                     "invalid phase transition".to_owned(),
@@ -684,6 +887,26 @@ fn parse(
         },
         offset,
     ))
+}
+
+pub(crate) fn is_legacy_internal_error(result: &RpcResult) -> bool {
+    !result.ok
+        && result.value.is_none()
+        && result
+            .error
+            .as_ref()
+            .is_some_and(|error| error.code == "internal")
+}
+
+fn is_accepted_prompt_result(result: &RpcResult) -> bool {
+    result.ok
+        && result.error.is_none()
+        && result
+            .value
+            .as_ref()
+            .and_then(|value| value.canonical_bytes().ok())
+            .as_deref()
+            == Some(br#"{"accepted":true}"#)
 }
 
 fn decode_response(row: &Record) -> Result<Vec<u8>, RpcRegistryError> {

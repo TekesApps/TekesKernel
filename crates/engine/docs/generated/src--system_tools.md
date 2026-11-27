@@ -667,7 +667,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `apply_patch` | `BackendOutcome::Completed` | [1003](../../src/system_tools.rs#L1003), [1050](../../src/system_tools.rs#L1050), [1131](../../src/system_tools.rs#L1131) | external-constructor-callback-or-unresolved |
 | `apply_patch` | `Err` | [1003](../../src/system_tools.rs#L1003) | external-constructor-callback-or-unresolved |
 | `apply_patch` | `BackendFailure::Conflict` | [1003](../../src/system_tools.rs#L1003) | external-constructor-callback-or-unresolved |
-| `apply_patch` | `ByteString::from_bytes` | [1031](../../src/system_tools.rs#L1031), [1112](../../src/system_tools.rs#L1112) | [tools::helper::ByteString::from_bytes](../../../tools/src/helper.rs#L61) |
+| `apply_patch` | `ByteString::from_bytes` | [1031](../../src/system_tools.rs#L1031), [1112](../../src/system_tools.rs#L1112) | [tools::helper::ByteString::from_bytes](../../../tools/src/helper.rs#L65) |
 | `apply_patch` | `patch.content.as_bytes` | [1031](../../src/system_tools.rs#L1031), [1112](../../src/system_tools.rs#L1112) | receiver-type-required |
 | `apply_patch` | `Ok` | [1050](../../src/system_tools.rs#L1050), [1131](../../src/system_tools.rs#L1131) | external-constructor-callback-or-unresolved |
 | `apply_patch` | `patch_result_json` | [1050](../../src/system_tools.rs#L1050), [1131](../../src/system_tools.rs#L1131) | [engine::system_tools::patch_result_json](../../src/system_tools.rs#L1988) |
@@ -710,7 +710,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_content` | `before_bytes             .as_deref` | [1248](../../src/system_tools.rs#L1248) | receiver-type-required |
 | `write_content` | `std::str::from_utf8(bytes).ok` | [1250](../../src/system_tools.rs#L1250) | receiver-type-required |
 | `write_content` | `std::str::from_utf8` | [1250](../../src/system_tools.rs#L1250) | external-constructor-callback-or-unresolved |
-| `write_content` | `ByteString::from_bytes` | [1261](../../src/system_tools.rs#L1261), [1266](../../src/system_tools.rs#L1266) | [tools::helper::ByteString::from_bytes](../../../tools/src/helper.rs#L61) |
+| `write_content` | `ByteString::from_bytes` | [1261](../../src/system_tools.rs#L1261), [1266](../../src/system_tools.rs#L1266) | [tools::helper::ByteString::from_bytes](../../../tools/src/helper.rs#L65) |
 | `write_content` | `content.as_bytes` | [1261](../../src/system_tools.rs#L1261), [1266](../../src/system_tools.rs#L1266) | receiver-type-required |
 | `write_content` | `Ok` | [1283](../../src/system_tools.rs#L1283) | external-constructor-callback-or-unresolved |
 | `exec_helper` | `self.invoke_helper` | [1314](../../src/system_tools.rs#L1314) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |

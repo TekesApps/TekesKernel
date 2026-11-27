@@ -270,7 +270,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `receipt_from_cached` | `receipt.reason.is_none` | [382](../../src/carrier_adapter.rs#L382) | receiver-type-required |
 | `receipt_from_cached` | `Ok` | [383](../../src/carrier_adapter.rs#L383) | external-constructor-callback-or-unresolved |
 | `receipt_from_cached` | `"respond rpc carrier cached invalid receipt bytes".to_owned` | [386](../../src/carrier_adapter.rs#L386) | receiver-type-required |
-| `new` | `EndpointDispatcher::new` | [433](../../src/carrier_adapter.rs#L433) | [endpoint::host::EndpointDispatcher::new](../../src/host.rs#L451) |
+| `new` | `EndpointDispatcher::new` | [433](../../src/carrier_adapter.rs#L433) | [endpoint::host::EndpointDispatcher::new](../../src/host.rs#L464) |
 | `new` | `AtomicBool::new` | [436](../../src/carrier_adapter.rs#L436) | external-constructor-callback-or-unresolved |
 | `set_readiness` | `self.ready             .store` | [441](../../src/carrier_adapter.rs#L441) | receiver-type-required |
 | `readiness` | `self.ready.load` | [453](../../src/carrier_adapter.rs#L453) | receiver-type-required |

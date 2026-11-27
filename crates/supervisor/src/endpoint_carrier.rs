@@ -2804,6 +2804,14 @@ impl EndpointHost for LifecycleCarrierHost {
         self.unary.validate_request(request)
     }
 
+    fn reconcile_legacy_internal_prompt(
+        &self,
+        claim: &endpoint::RpcClaim,
+        request: &endpoint::ClientRequest,
+    ) -> Option<u64> {
+        self.unary.reconcile_legacy_internal_prompt(claim, request)
+    }
+
     fn call(&self, request: EndpointHostCall) -> EndpointHostFuture<'_> {
         Box::pin(async move {
             if self.unary.method_class(&request.operation) == endpoint::MethodClass::Mutation

@@ -625,7 +625,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `runner_command` | `BackendFailure::Unavailable` | [598](../../src/runtime_backends.rs#L598), [601](../../src/runtime_backends.rs#L601) | external-constructor-callback-or-unresolved |
 | `runner_command` | `error.to_string` | [598](../../src/runtime_backends.rs#L598), [601](../../src/runtime_backends.rs#L601) | receiver-type-required |
 | `runner_command` | `sandbox_command(effective_policy, &self.probe, &self.executable)             .map_err` | [600](../../src/runtime_backends.rs#L600) | receiver-type-required |
-| `runner_command` | `sandbox_command` | [600](../../src/runtime_backends.rs#L600) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L543) |
+| `runner_command` | `sandbox_command` | [600](../../src/runtime_backends.rs#L600) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L544) |
 | `new` | `Self::open` | [615](../../src/runtime_backends.rs#L615) | [tools::runtime_backends::JobBroker::open](../../src/runtime_backends.rs#L618) |
 | `new` | `root.into` | [615](../../src/runtime_backends.rs#L615) | receiver-type-required |
 | `open` | `Err` | [624](../../src/runtime_backends.rs#L624), [634](../../src/runtime_backends.rs#L634), [645](../../src/runtime_backends.rs#L645) | external-constructor-callback-or-unresolved |
