@@ -1,10 +1,11 @@
 use std::collections::{BTreeSet, HashSet};
 use std::fs;
 use std::path::Path;
+use std::sync::Arc;
 
 use schema::{Event, EventKind, IJsonValue, OriginTuple, ResumePolicy, SeqRange};
 use serde_json::{Value, json};
-use store::{AppendOutcome, ConditionalAppendOutcome, ThreadStore, scan_valid_prefix};
+use store::{AppendOutcome, ConditionalAppendOutcome, SyncPolicy, ThreadStore, scan_valid_prefix};
 use thiserror::Error;
 
 use crate::projection::timestamp_millis;
@@ -263,6 +264,15 @@ impl NativeEndpoint {
     pub fn open(root: impl AsRef<Path>) -> Result<Self, NativeEndpointError> {
         Ok(Self {
             store: ThreadStore::open(root)?,
+        })
+    }
+
+    pub fn open_with_sync(
+        root: impl AsRef<Path>,
+        sync: Arc<dyn SyncPolicy>,
+    ) -> Result<Self, NativeEndpointError> {
+        Ok(Self {
+            store: ThreadStore::open_with_sync(root, sync)?,
         })
     }
 

@@ -976,7 +976,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_route_ownership` | `queue_recovery                 .as_ref` | [806](../../src/endpoint_host.rs#L806) | receiver-type-required |
 | `open_with_route_ownership` | `Ok` | [813](../../src/endpoint_host.rs#L813) | external-constructor-callback-or-unresolved |
 | `open_with_route_ownership` | `root.to_path_buf` | [814](../../src/endpoint_host.rs#L814), [830](../../src/endpoint_host.rs#L830) | receiver-type-required |
-| `open_with_route_ownership` | `NativeEndpoint::open` | [815](../../src/endpoint_host.rs#L815) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L263) |
+| `open_with_route_ownership` | `NativeEndpoint::open` | [815](../../src/endpoint_host.rs#L815) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L264) |
 | `open_with_route_ownership` | `AttachmentAuthority::open` | [816](../../src/endpoint_host.rs#L816) | [endpoint::attachment::AttachmentAuthority::open](../../../endpoint/src/attachment.rs#L242) |
 | `open_with_route_ownership` | `input_admission.unwrap_or_else` | [829](../../src/endpoint_host.rs#L829) | receiver-type-required |
 | `open_with_route_ownership` | `Arc::new` | [830](../../src/endpoint_host.rs#L830) | external-constructor-callback-or-unresolved |
@@ -1826,7 +1826,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `legacy_reconcile_requires_sync_barrier_and_recovers_after_eio_clears` | `ToggleSync::new` | [3086](../../src/endpoint_host.rs#L3086) | [tekes-supervisor::endpoint_host::legacy_reconcile_sync_tests::ToggleSync::new](../../src/endpoint_host.rs#L3001) |
 | `legacy_reconcile_requires_sync_barrier_and_recovers_after_eio_clears` | `sync.fail.store` | [3103](../../src/endpoint_host.rs#L3103), [3122](../../src/endpoint_host.rs#L3122), [3136](../../src/endpoint_host.rs#L3136) | receiver-type-required |
 | `legacy_reconcile_requires_sync_barrier_and_recovers_after_eio_clears` | `store::LockedLedger::open(&main_path, schema::READER_VERSION).expect` | [3121](../../src/endpoint_host.rs#L3121) | receiver-type-required |
-| `legacy_reconcile_requires_sync_barrier_and_recovers_after_eio_clears` | `store::LockedLedger::open` | [3121](../../src/endpoint_host.rs#L3121) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L186) |
+| `legacy_reconcile_requires_sync_barrier_and_recovers_after_eio_clears` | `store::LockedLedger::open` | [3121](../../src/endpoint_host.rs#L3121) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L187) |
 | `verify_and_sync_legacy_input_preserves_torn_tail_across_all_outcomes` | `tempfile::tempdir().expect` | [3155](../../src/endpoint_host.rs#L3155) | receiver-type-required |
 | `verify_and_sync_legacy_input_preserves_torn_tail_across_all_outcomes` | `tempfile::tempdir` | [3155](../../src/endpoint_host.rs#L3155) | external-constructor-callback-or-unresolved |
 | `verify_and_sync_legacy_input_preserves_torn_tail_across_all_outcomes` | `root.path().join("threads").join` | [3157](../../src/endpoint_host.rs#L3157) | receiver-type-required |
@@ -1859,4 +1859,4 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `verify_and_sync_legacy_input_preserves_torn_tail_across_all_outcomes` | `ToggleSync::new` | [3188](../../src/endpoint_host.rs#L3188) | [tekes-supervisor::endpoint_host::legacy_reconcile_sync_tests::ToggleSync::new](../../src/endpoint_host.rs#L3001) |
 | `verify_and_sync_legacy_input_preserves_torn_tail_across_all_outcomes` | `sync.fail.store` | [3226](../../src/endpoint_host.rs#L3226) | receiver-type-required |
 | `verify_and_sync_legacy_input_preserves_torn_tail_across_all_outcomes` | `store::LockedLedger::open(&main_path, schema::READER_VERSION).expect` | [3247](../../src/endpoint_host.rs#L3247) | receiver-type-required |
-| `verify_and_sync_legacy_input_preserves_torn_tail_across_all_outcomes` | `store::LockedLedger::open` | [3247](../../src/endpoint_host.rs#L3247) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L186) |
+| `verify_and_sync_legacy_input_preserves_torn_tail_across_all_outcomes` | `store::LockedLedger::open` | [3247](../../src/endpoint_host.rs#L3247) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L187) |

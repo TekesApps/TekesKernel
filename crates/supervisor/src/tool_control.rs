@@ -36,6 +36,10 @@ pub trait ToolControlHandler {
             ),
         }
     }
+
+    fn authority_fingerprint(&self, _request: &ToolControl) -> Option<String> {
+        None
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -46,8 +50,13 @@ pub enum ToolControlRecovery {
     /// ambiguous attempt by the stable request-id key.
     ExternalEffect,
     /// The operation is effectful but exposes no authoritative query. It must
-    /// not start in production.
+    /// not start in production, and an existing intent cannot fall back to
+    /// blind retry.
     UnqueryableExternalEffect,
+    /// The dynamic tool disappeared from the current catalog. Existing receipts
+    /// still replay and existing unsettled intents stop with EffectConflicted,
+    /// while novel calls fail boundedly as Unavailable.
+    UnavailableDynamicTool,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -118,6 +127,7 @@ pub struct ToolControlSession<H, P> {
     selected: Selected,
     handler: H,
     policy: P,
+    cancellation: tools::CancellationToken,
 }
 
 impl<H: ToolControlHandler, P: ToolControlPolicy> ToolControlSession<H, P> {
@@ -128,7 +138,14 @@ impl<H: ToolControlHandler, P: ToolControlPolicy> ToolControlSession<H, P> {
             selected,
             handler,
             policy,
+            cancellation: tools::CancellationToken::default(),
         }
+    }
+
+    #[must_use]
+    pub fn with_cancellation(mut self, cancellation: tools::CancellationToken) -> Self {
+        self.cancellation = cancellation;
+        self
     }
 
     /// Decodes one worker request and returns the canonical result line. The
@@ -147,12 +164,30 @@ impl<H: ToolControlHandler, P: ToolControlPolicy> ToolControlSession<H, P> {
         let binding_root = store.thread_folder.clone();
         let handler = &mut self.handler;
         let policy = &mut self.policy;
+        let session_cancelled = self.cancellation.clone();
         let recovery = handler.recovery(&request);
+        let authority = handler.authority_fingerprint(&request);
         let resolution = store.publish_or_reconcile(
             &request,
             recovery,
+            authority,
             |request, attempt| match resolve_durable_binding(&binding_root, request) {
-                Ok(_) => match attempt {
+                Ok(resolved) => match attempt {
+                    ToolControlAttempt::Execute
+                        if session_cancelled.is_cancelled()
+                            || resolved.projection.lifecycle.stop_active =>
+                    {
+                        ToolControlAttemptResult::Executed(ToolControlResult::failure(
+                            request.request_id.clone(),
+                            request.call_id.clone(),
+                            ToolControlError {
+                                code: ToolControlErrorCode::Unavailable,
+                                message: "session stop is active; tool execution cancelled"
+                                    .to_owned(),
+                                retryable: false,
+                            },
+                        ))
+                    }
                     ToolControlAttempt::Execute => {
                         ToolControlAttemptResult::Executed(handler.execute(request))
                     }
@@ -218,6 +253,7 @@ impl ToolControlReceiptStore {
         &self,
         request: &ToolControl,
         recovery: ToolControlRecovery,
+        authority: Option<String>,
         mut backend: B,
         apply_policy: P,
     ) -> Result<ToolControlResolution, ToolControlReceiptError>
@@ -244,22 +280,8 @@ impl ToolControlReceiptStore {
                 };
                 self.publish_response(request, apply_policy(response))
             }
-            ToolControlRecovery::UnqueryableExternalEffect => self.publish_response(
-                request,
-                ToolControlResult::failure(
-                    request.request_id.clone(),
-                    request.call_id.clone(),
-                    ToolControlError {
-                        code: ToolControlErrorCode::EffectUnknown,
-                        message: "effectful tool has no idempotency-reconcile authority; manual execution is required".to_owned(),
-                        retryable: false,
-                    },
-                ),
-            ),
-            ToolControlRecovery::ExternalEffect => {
-                // `lookup_settled` returned nothing, so any existing record is
-                // an intent whose effect may have begun.
-                let interrupted = if let Some(intent) = self.read_record(&request.request_id)? {
+            ToolControlRecovery::UnqueryableExternalEffect => {
+                if let Some(intent) = self.read_record(&request.request_id)? {
                     if intent.request != *request {
                         return Ok(ToolControlResolution::Conflict {
                             response: encode_tool_control_result(&ToolControlResult::conflict(
@@ -267,17 +289,78 @@ impl ToolControlReceiptStore {
                             ))?,
                         });
                     }
-                    true
+                    return self.unresolved(
+                        request,
+                        ToolControlErrorCode::EffectConflicted,
+                        "external-effect reconciliation authority was removed after intent was recorded",
+                    );
+                }
+                self.publish_response(
+                    request,
+                    ToolControlResult::failure(
+                        request.request_id.clone(),
+                        request.call_id.clone(),
+                        ToolControlError {
+                            code: ToolControlErrorCode::EffectUnknown,
+                            message: "effectful tool has no idempotency-reconcile authority; manual execution is required".to_owned(),
+                            retryable: false,
+                        },
+                    ),
+                )
+            }
+            ToolControlRecovery::UnavailableDynamicTool => {
+                if let Some(intent) = self.read_record(&request.request_id)? {
+                    if intent.request != *request {
+                        return Ok(ToolControlResolution::Conflict {
+                            response: encode_tool_control_result(&ToolControlResult::conflict(
+                                request,
+                            ))?,
+                        });
+                    }
+                    return self.unresolved(
+                        request,
+                        ToolControlErrorCode::EffectConflicted,
+                        "dynamic tool is no longer present in the catalog after intent was recorded",
+                    );
+                }
+                self.unresolved(
+                    request,
+                    ToolControlErrorCode::Unsupported,
+                    "dynamic tool is unavailable",
+                )
+            }
+            ToolControlRecovery::ExternalEffect => {
+                // `lookup_settled` returned nothing, so any existing record is
+                // an intent whose effect may have begun.
+                let (interrupted, record_authority) = if let Some(intent) =
+                    self.read_record(&request.request_id)?
+                {
+                    if intent.request != *request {
+                        return Ok(ToolControlResolution::Conflict {
+                            response: encode_tool_control_result(&ToolControlResult::conflict(
+                                request,
+                            ))?,
+                        });
+                    }
+                    if intent.authority.is_some() && intent.authority != authority {
+                        return self.unresolved(
+                            request,
+                            ToolControlErrorCode::EffectConflicted,
+                            "external-effect reconciliation authority changed after intent was recorded",
+                        );
+                    }
+                    (true, intent.authority.or(authority))
                 } else {
                     let intent = ControlRecord {
                         request: request.clone(),
                         response: None,
+                        authority: authority.clone(),
                     };
                     AtomicPublisher::replace(
                         self.record_path(&request.request_id),
                         &intent.canonical_bytes()?,
                     )?;
-                    false
+                    (false, authority)
                 };
 
                 if interrupted {
@@ -286,9 +369,10 @@ impl ToolControlReceiptStore {
                     else {
                         return Err(ToolControlReceiptError::ReceiptShape);
                     };
-                    return self.resolve_external(
+                    return self.resolve_external_with_authority(
                         request,
                         resolution,
+                        record_authority.as_deref(),
                         &mut backend,
                         apply_policy,
                     );
@@ -299,17 +383,20 @@ impl ToolControlReceiptStore {
                 else {
                     return Err(ToolControlReceiptError::ReceiptShape);
                 };
-                if response.error.as_ref().is_some_and(|error| {
-                    error.code == ToolControlErrorCode::EffectUnknown
-                }) {
+                if response
+                    .error
+                    .as_ref()
+                    .is_some_and(|error| error.code == ToolControlErrorCode::EffectUnknown)
+                {
                     let ToolControlAttemptResult::Reconciled(resolution) =
                         backend(request, ToolControlAttempt::Reconcile)
                     else {
                         return Err(ToolControlReceiptError::ReceiptShape);
                     };
-                    return self.resolve_external(
+                    return self.resolve_external_with_authority(
                         request,
                         resolution,
+                        record_authority.as_deref(),
                         &mut backend,
                         apply_policy,
                     );
@@ -325,15 +412,20 @@ impl ToolControlReceiptStore {
                         &error.message,
                     );
                 }
-                self.publish_response(request, apply_policy(response))
+                self.publish_response_with_authority(
+                    request,
+                    apply_policy(response),
+                    record_authority.as_deref(),
+                )
             }
         }
     }
 
-    fn resolve_external<B, P>(
+    fn resolve_external_with_authority<B, P>(
         &self,
         request: &ToolControl,
         resolution: ExternalEffectResolution,
+        authority: Option<&str>,
         backend: &mut B,
         apply_policy: P,
     ) -> Result<ToolControlResolution, ToolControlReceiptError>
@@ -343,7 +435,7 @@ impl ToolControlReceiptStore {
     {
         match resolution {
             ExternalEffectResolution::Confirmed(response) => {
-                self.publish_response(request, apply_policy(response))
+                self.publish_response_with_authority(request, apply_policy(response), authority)
             }
             ExternalEffectResolution::NotFound => {
                 let ToolControlAttemptResult::Executed(response) =
@@ -370,7 +462,7 @@ impl ToolControlReceiptStore {
                         _ => {}
                     }
                 }
-                self.publish_response(request, apply_policy(response))
+                self.publish_response_with_authority(request, apply_policy(response), authority)
             }
             ExternalEffectResolution::Unknown { message } => {
                 self.unresolved(request, ToolControlErrorCode::EffectUnknown, &message)
@@ -431,10 +523,20 @@ impl ToolControlReceiptStore {
         request: &ToolControl,
         response: ToolControlResult,
     ) -> Result<ToolControlResolution, ToolControlReceiptError> {
+        self.publish_response_with_authority(request, response, None)
+    }
+
+    fn publish_response_with_authority(
+        &self,
+        request: &ToolControl,
+        response: ToolControlResult,
+        authority: Option<&str>,
+    ) -> Result<ToolControlResolution, ToolControlReceiptError> {
         response.validate_for(request)?;
         let receipt = ControlRecord {
             request: request.clone(),
             response: Some(response),
+            authority: authority.map(str::to_owned),
         };
         let receipt_path = self.record_path(&request.request_id);
         AtomicPublisher::replace(&receipt_path, &receipt.canonical_bytes()?)?;
@@ -476,6 +578,7 @@ impl ToolControlReceiptStore {
         let receipt = ControlRecord {
             request: request.clone(),
             response: Some(response),
+            authority: None,
         };
         let receipt_bytes = receipt.canonical_bytes()?;
         AtomicPublisher::replace(&receipt_path, &receipt_bytes)?;
@@ -729,6 +832,7 @@ impl ToolControlResolution {
 pub struct ControlRecord {
     pub request: ToolControl,
     pub response: Option<ToolControlResult>,
+    pub authority: Option<String>,
 }
 
 impl ControlRecord {
@@ -737,6 +841,9 @@ impl ControlRecord {
             "format": RECORD_FORMAT,
             "request": self.request,
         });
+        if let Some(authority) = &self.authority {
+            value["authority"] = Value::String(authority.clone());
+        }
         if let Some(response) = &self.response {
             let mut envelope = Map::new();
             envelope.insert(
@@ -766,11 +873,12 @@ fn read_record(path: &Path) -> Result<ControlRecord, ToolControlReceiptError> {
     let object = value
         .as_object()
         .ok_or(ToolControlReceiptError::ReceiptShape)?;
-    let settled = match object.len() {
-        2 => false,
-        3 if object.contains_key("response") => true,
-        _ => return Err(ToolControlReceiptError::ReceiptShape),
-    };
+    let settled = object.contains_key("response");
+    let has_authority = object.contains_key("authority");
+    let expected_len = 2 + usize::from(settled) + usize::from(has_authority);
+    if object.len() != expected_len {
+        return Err(ToolControlReceiptError::ReceiptShape);
+    }
     if object.get("format").and_then(Value::as_u64) != Some(RECORD_FORMAT) {
         return Err(ToolControlReceiptError::ReceiptShape);
     }
@@ -781,6 +889,16 @@ fn read_record(path: &Path) -> Result<ControlRecord, ToolControlReceiptError> {
             .ok_or(ToolControlReceiptError::ReceiptShape)?,
     )?;
     request.validate()?;
+    let authority = if has_authority {
+        let raw = object
+            .get("authority")
+            .and_then(Value::as_str)
+            .filter(|value| !value.is_empty())
+            .ok_or(ToolControlReceiptError::ReceiptShape)?;
+        Some(raw.to_owned())
+    } else {
+        None
+    };
     let response = if settled {
         let response_bytes = {
             let mut bytes = serde_json_canonicalizer::to_vec(&object["response"])?;
@@ -791,7 +909,11 @@ fn read_record(path: &Path) -> Result<ControlRecord, ToolControlReceiptError> {
     } else {
         None
     };
-    Ok(ControlRecord { request, response })
+    Ok(ControlRecord {
+        request,
+        response,
+        authority,
+    })
 }
 
 #[derive(Debug, Error)]

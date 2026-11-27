@@ -383,8 +383,8 @@ flowchart TD
   n58["schema::ijson::IJsonValue::parse"]
   n59["store::asset::AssetStore::new"]
   n60["store::atomic::AtomicPublisher::replace"]
-  n61["store::folder::ThreadStore::open"]
-  n62["store::folder::move_thread_folder"]
+  n61["store::folder::move_thread_folder"]
+  n62["store::folder::ThreadStore::open"]
   n63["store::management_root::session_settings_path"]
   n64["store::platform::NamedLock::exclusive"]
   n65["store::platform::DirectoryLock::try_exclusive"]
@@ -415,7 +415,7 @@ flowchart TD
   n5 --> n34
   n5 --> n48
   n5 --> n54
-  n5 --> n61
+  n5 --> n62
   n5 --> n64
   n5 --> n65
   n6 --> n28
@@ -423,7 +423,7 @@ flowchart TD
   n6 --> n33
   n6 --> n46
   n6 --> n48
-  n6 --> n61
+  n6 --> n62
   n7 --> n16
   n7 --> n19
   n7 --> n28
@@ -447,7 +447,7 @@ flowchart TD
   n8 --> n55
   n8 --> n56
   n8 --> n59
-  n8 --> n61
+  n8 --> n62
   n10 --> n20
   n10 --> n28
   n10 --> n31
@@ -461,7 +461,7 @@ flowchart TD
   n12 --> n31
   n12 --> n38
   n12 --> n51
-  n12 --> n61
+  n12 --> n62
   n13 --> n20
   n13 --> n28
   n13 --> n39
@@ -476,7 +476,7 @@ flowchart TD
   n16 --> n35
   n16 --> n49
   n16 --> n58
-  n16 --> n62
+  n16 --> n61
   n16 --> n65
   n52 --> n17
   n52 --> n22
@@ -647,7 +647,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `file_identity` | `metadata.modified` | [351](../../src/session_operations.rs#L351) | receiver-type-required |
 | `open_sessions` | `storage_root.as_ref().to_path_buf` | [365](../../src/session_operations.rs#L365) | receiver-type-required |
 | `open_sessions` | `storage_root.as_ref` | [365](../../src/session_operations.rs#L365) | receiver-type-required |
-| `open_sessions` | `ThreadStore::open` | [366](../../src/session_operations.rs#L366) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `open_sessions` | `ThreadStore::open` | [366](../../src/session_operations.rs#L366) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L48) |
 | `open_sessions` | `storage_root.join` | [367](../../src/session_operations.rs#L367) | receiver-type-required |
 | `open_sessions` | `fs::create_dir_all` | [368](../../src/session_operations.rs#L368) | external-constructor-callback-or-unresolved |
 | `open_sessions` | `root.join` | [368](../../src/session_operations.rs#L368), [372](../../src/session_operations.rs#L372) | receiver-type-required |
@@ -800,7 +800,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `select_model` | `self.drive_select_model` | [699](../../src/session_operations.rs#L699), [760](../../src/session_operations.rs#L760) | [endpoint::session_operations::SessionOperations::drive_select_model](../../src/session_operations.rs#L1424) |
 | `select_model` | `active_session_folder` | [701](../../src/session_operations.rs#L701) | [endpoint::session_operations::active_session_folder](../../src/session_operations.rs#L2392) |
 | `select_model` | `ThreadStore::open(&self.storage_root)?             .session_has_live_line_holder` | [702](../../src/session_operations.rs#L702) | receiver-type-required |
-| `select_model` | `ThreadStore::open` | [702](../../src/session_operations.rs#L702) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `select_model` | `ThreadStore::open` | [702](../../src/session_operations.rs#L702) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L48) |
 | `select_model` | `SessionOperationError::SessionRunning` | [705](../../src/session_operations.rs#L705), [723](../../src/session_operations.rs#L723) | external-constructor-callback-or-unresolved |
 | `select_model` | `request.session_id.to_owned` | [706](../../src/session_operations.rs#L706), [724](../../src/session_operations.rs#L724), [750](../../src/session_operations.rs#L750) | receiver-type-required |
 | `select_model` | `valid_folder_projection` | [709](../../src/session_operations.rs#L709) | [endpoint::session_operations::valid_folder_projection](../../src/session_operations.rs#L2407) |
@@ -840,7 +840,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `fork_session` | `active_session_count` | [783](../../src/session_operations.rs#L783) | [endpoint::session_operations::active_session_count](../../src/session_operations.rs#L2452) |
 | `fork_session` | `active_session_folder` | [786](../../src/session_operations.rs#L786) | [endpoint::session_operations::active_session_folder](../../src/session_operations.rs#L2392) |
 | `fork_session` | `crate::NativeEndpoint::open(&self.storage_root)?             .reconcile_projection` | [787](../../src/session_operations.rs#L787) | receiver-type-required |
-| `fork_session` | `crate::NativeEndpoint::open` | [787](../../src/session_operations.rs#L787) | [endpoint::service::NativeEndpoint::open](../../src/service.rs#L263) |
+| `fork_session` | `crate::NativeEndpoint::open` | [787](../../src/session_operations.rs#L787) | [endpoint::service::NativeEndpoint::open](../../src/service.rs#L264) |
 | `fork_session` | `crate::EndpointJournal::open` | [789](../../src/session_operations.rs#L789) | [endpoint::journal::EndpointJournal::open](../../src/journal.rs#L225) |
 | `fork_session` | `journal.last_settled_endpoint_seq()?.ok_or_else` | [795](../../src/session_operations.rs#L795) | receiver-type-required |
 | `fork_session` | `journal.last_settled_endpoint_seq` | [795](../../src/session_operations.rs#L795) | receiver-type-required |
@@ -1003,7 +1003,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `discard_session` | `SessionOperationError::SessionRunning` | [1162](../../src/session_operations.rs#L1162), [1166](../../src/session_operations.rs#L1166) | external-constructor-callback-or-unresolved |
 | `discard_session` | `SessionOperationError::Store` | [1163](../../src/session_operations.rs#L1163) | external-constructor-callback-or-unresolved |
 | `discard_session` | `ThreadStore::open(&self.storage_root)?.session_has_live_line_holder` | [1165](../../src/session_operations.rs#L1165) | receiver-type-required |
-| `discard_session` | `ThreadStore::open` | [1165](../../src/session_operations.rs#L1165) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `discard_session` | `ThreadStore::open` | [1165](../../src/session_operations.rs#L1165) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L48) |
 | `discard_session` | `folder_reservation` | [1168](../../src/session_operations.rs#L1168) | [endpoint::session_operations::folder_reservation](../../src/session_operations.rs#L2422) |
 | `discard_session` | `drop` | [1169](../../src/session_operations.rs#L1169) | external-constructor-callback-or-unresolved |
 | `discard_session` | `request_sha256.to_owned` | [1174](../../src/session_operations.rs#L1174) | receiver-type-required |
@@ -1023,7 +1023,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_discard` | `"discard reservation no longer matches target".to_owned` | [1210](../../src/session_operations.rs#L1210) | receiver-type-required |
 | `drive_discard` | `ThreadStore::open(&self.storage_root)?                     .discard_ephemeral(&intent.session_id)                     .map_err` | [1213](../../src/session_operations.rs#L1213) | receiver-type-required |
 | `drive_discard` | `ThreadStore::open(&self.storage_root)?                     .discard_ephemeral` | [1213](../../src/session_operations.rs#L1213) | receiver-type-required |
-| `drive_discard` | `ThreadStore::open` | [1213](../../src/session_operations.rs#L1213) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `drive_discard` | `ThreadStore::open` | [1213](../../src/session_operations.rs#L1213) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L48) |
 | `drive_discard` | `SessionOperationError::SessionRunning` | [1217](../../src/session_operations.rs#L1217) | external-constructor-callback-or-unresolved |
 | `drive_discard` | `intent.session_id.clone` | [1217](../../src/session_operations.rs#L1217), [1220](../../src/session_operations.rs#L1220) | receiver-type-required |
 | `drive_discard` | `SessionOperationError::SessionNotEphemeral` | [1220](../../src/session_operations.rs#L1220) | external-constructor-callback-or-unresolved |
@@ -1100,7 +1100,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_session_create` | `genesis_preset_defaults` | [1371](../../src/session_operations.rs#L1371) | [endpoint::session_operations::genesis_preset_defaults](../../src/session_operations.rs#L1850) |
 | `drive_session_create` | `publish_canonical` | [1375](../../src/session_operations.rs#L1375), [1384](../../src/session_operations.rs#L1384), [1394](../../src/session_operations.rs#L1394), [1400](../../src/session_operations.rs#L1400) | [endpoint::session_operations::publish_canonical](../../src/session_operations.rs#L1984) |
 | `drive_session_create` | `ThreadStore::open(&self.storage_root)?.create_thread_with_assets` | [1378](../../src/session_operations.rs#L1378) | receiver-type-required |
-| `drive_session_create` | `ThreadStore::open` | [1378](../../src/session_operations.rs#L1378) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `drive_session_create` | `ThreadStore::open` | [1378](../../src/session_operations.rs#L1378) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L48) |
 | `drive_session_create` | `self.apply_preset_defaults` | [1388](../../src/session_operations.rs#L1388) | [endpoint::session_operations::SessionOperations::apply_preset_defaults](../../src/session_operations.rs#L858) |
 | `drive_session_create` | `self.storage_root.join("threads").join` | [1389](../../src/session_operations.rs#L1389) | receiver-type-required |
 | `drive_session_create` | `self.storage_root.join` | [1389](../../src/session_operations.rs#L1389) | receiver-type-required |
@@ -1170,7 +1170,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_fork` | `"session.fork".to_owned` | [1545](../../src/session_operations.rs#L1545) | receiver-type-required |
 | `drive_fork` | `record.rpc_id.clone` | [1546](../../src/session_operations.rs#L1546) | receiver-type-required |
 | `drive_fork` | `ThreadStore::open(&self.storage_root)?.begin_fork_at_kernel_anchor` | [1548](../../src/session_operations.rs#L1548) | receiver-type-required |
-| `drive_fork` | `ThreadStore::open` | [1548](../../src/session_operations.rs#L1548), [1569](../../src/session_operations.rs#L1569) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `drive_fork` | `ThreadStore::open` | [1548](../../src/session_operations.rs#L1548), [1569](../../src/session_operations.rs#L1569) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L48) |
 | `drive_fork` | `intent                             .preset                             .as_ref()                             .map(serde_json::to_value)                             .transpose` | [1556](../../src/session_operations.rs#L1556) | receiver-type-required |
 | `drive_fork` | `intent                             .preset                             .as_ref()                             .map` | [1556](../../src/session_operations.rs#L1556) | receiver-type-required |
 | `drive_fork` | `intent                             .preset                             .as_ref` | [1556](../../src/session_operations.rs#L1556) | receiver-type-required |
@@ -1250,7 +1250,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_folder_move` | `verify_folder_reservation` | [1733](../../src/session_operations.rs#L1733), [1744](../../src/session_operations.rs#L1744) | [endpoint::session_operations::verify_folder_reservation](../../src/session_operations.rs#L2439) |
 | `drive_folder_move` | `destination.exists` | [1734](../../src/session_operations.rs#L1734) | receiver-type-required |
 | `drive_folder_move` | `"folder move destination already exists".to_owned` | [1736](../../src/session_operations.rs#L1736) | receiver-type-required |
-| `drive_folder_move` | `store::move_thread_folder` | [1741](../../src/session_operations.rs#L1741) | [store::folder::move_thread_folder](../../../store/src/folder.rs#L986) |
+| `drive_folder_move` | `store::move_thread_folder` | [1741](../../src/session_operations.rs#L1741) | [store::folder::move_thread_folder](../../../store/src/folder.rs#L1029) |
 | `drive_folder_move` | `drop` | [1742](../../src/session_operations.rs#L1742) | external-constructor-callback-or-unresolved |
 | `drive_folder_move` | `destination.is_dir` | [1743](../../src/session_operations.rs#L1743) | receiver-type-required |
 | `drive_folder_move` | `"folder move lost both source and destination".to_owned` | [1747](../../src/session_operations.rs#L1747) | receiver-type-required |
@@ -1621,7 +1621,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `active_session_folder` | `folder.is_dir` | [2399](../../src/session_operations.rs#L2399) | receiver-type-required |
 | `active_session_folder` | `SessionOperationError::SessionNotFound` | [2400](../../src/session_operations.rs#L2400) | external-constructor-callback-or-unresolved |
 | `active_session_folder` | `Ok` | [2404](../../src/session_operations.rs#L2404) | external-constructor-callback-or-unresolved |
-| `valid_folder_projection` | `store::read_ledger_repaired` | [2411](../../src/session_operations.rs#L2411) | [store::tail::read_ledger_repaired](../../../store/src/tail.rs#L651) |
+| `valid_folder_projection` | `store::read_ledger_repaired` | [2411](../../src/session_operations.rs#L2411) | [store::tail::read_ledger_repaired](../../../store/src/tail.rs#L676) |
 | `valid_folder_projection` | `folder.join` | [2411](../../src/session_operations.rs#L2411) | receiver-type-required |
 | `valid_folder_projection` | `Err` | [2413](../../src/session_operations.rs#L2413) | external-constructor-callback-or-unresolved |
 | `valid_folder_projection` | `SessionOperationError::CorruptOperation` | [2413](../../src/session_operations.rs#L2413), [2418](../../src/session_operations.rs#L2418) | external-constructor-callback-or-unresolved |
@@ -1629,7 +1629,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `valid_folder_projection` | `scan.projection.ok_or_else` | [2417](../../src/session_operations.rs#L2417) | receiver-type-required |
 | `valid_folder_projection` | `"session ledger has no valid genesis".to_owned` | [2418](../../src/session_operations.rs#L2418) | receiver-type-required |
 | `folder_reservation` | `fs::metadata` | [2423](../../src/session_operations.rs#L2423) | external-constructor-callback-or-unresolved |
-| `folder_reservation` | `store::read_ledger_repaired` | [2424](../../src/session_operations.rs#L2424) | [store::tail::read_ledger_repaired](../../../store/src/tail.rs#L651) |
+| `folder_reservation` | `store::read_ledger_repaired` | [2424](../../src/session_operations.rs#L2424) | [store::tail::read_ledger_repaired](../../../store/src/tail.rs#L676) |
 | `folder_reservation` | `folder.join` | [2424](../../src/session_operations.rs#L2424) | receiver-type-required |
 | `folder_reservation` | `scan.projection.is_none` | [2425](../../src/session_operations.rs#L2425) | receiver-type-required |
 | `folder_reservation` | `Err` | [2426](../../src/session_operations.rs#L2426) | external-constructor-callback-or-unresolved |

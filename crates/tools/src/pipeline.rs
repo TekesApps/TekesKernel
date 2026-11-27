@@ -130,6 +130,7 @@ pub struct ToolPipeline<'a> {
     ledger: &'a mut LockedLedger,
     assets: AssetStore,
     scanner: SecretScanner,
+    resume_started: bool,
 }
 
 impl<'a> ToolPipeline<'a> {
@@ -139,7 +140,14 @@ impl<'a> ToolPipeline<'a> {
             ledger,
             assets,
             scanner,
+            resume_started: false,
         }
+    }
+
+    #[must_use]
+    pub const fn with_resume_started(mut self, resume_started: bool) -> Self {
+        self.resume_started = resume_started;
+        self
     }
 
     pub fn execute<F>(
@@ -420,6 +428,13 @@ impl<'a> ToolPipeline<'a> {
                 let terminal = backend(execution, &invocation, Some(&response));
                 return self.complete_terminal(execution, hooks, &invocation, Map::new(), terminal);
             }
+            DurableApprovalState::Started {
+                invocation,
+                response,
+            } => {
+                let terminal = backend(execution, &invocation, response.as_ref());
+                return self.complete_terminal(execution, hooks, &invocation, Map::new(), terminal);
+            }
         }
 
         let mut invocation = execution.invocation.clone();
@@ -654,6 +669,7 @@ impl<'a> ToolPipeline<'a> {
         let mut request = None;
         let mut response = None;
         let mut effective = None;
+        let mut started_seq = None;
         let mut result_seq = None;
 
         for event in &projection.events {
@@ -704,6 +720,14 @@ impl<'a> ToolPipeline<'a> {
                     }
                     response = Some((event.seq(), raw));
                 }
+                schema::EventKind::ToolExecutionStarted => {
+                    if event.turn() != Some(execution.turn) {
+                        return Err(ToolPipelineError::DurableBinding(
+                            "tool_execution_started turn does not match tool_call",
+                        ));
+                    }
+                    started_seq = Some(event.seq());
+                }
                 schema::EventKind::ToolResult => result_seq = Some(event.seq()),
                 _ => {}
             }
@@ -712,7 +736,14 @@ impl<'a> ToolPipeline<'a> {
         if let Some(result_seq) = result_seq {
             return Ok(DurableApprovalState::Completed { result_seq });
         }
+        let invocation = effective.unwrap_or_else(|| execution.invocation.clone());
         let Some((request_seq, scope)) = request else {
+            if self.resume_started && started_seq.is_some() {
+                return Ok(DurableApprovalState::Started {
+                    invocation,
+                    response: None,
+                });
+            }
             return Ok(DurableApprovalState::None);
         };
         let Some((response_seq, response)) = response else {
@@ -746,14 +777,21 @@ impl<'a> ToolPipeline<'a> {
             .cloned()
             .map(value_to_ijson)
             .transpose()?;
+        let durable_response = DurableApprovalResponse {
+            request_seq,
+            response_seq,
+            scope,
+            answer,
+        };
+        if self.resume_started && started_seq.is_some_and(|seq| seq > response_seq) {
+            return Ok(DurableApprovalState::Started {
+                invocation,
+                response: Some(durable_response),
+            });
+        }
         Ok(DurableApprovalState::Granted {
-            invocation: effective.unwrap_or_else(|| execution.invocation.clone()),
-            response: DurableApprovalResponse {
-                request_seq,
-                response_seq,
-                scope,
-                answer,
-            },
+            invocation,
+            response: durable_response,
         })
     }
 
@@ -940,6 +978,10 @@ enum DurableApprovalState {
     Granted {
         invocation: IJsonValue,
         response: DurableApprovalResponse,
+    },
+    Started {
+        invocation: IJsonValue,
+        response: Option<DurableApprovalResponse>,
     },
 }
 

@@ -10344,3 +10344,1189 @@ fn handle_delivery_rejects_steer_when_window_closed_and_deduplicates_accepted() 
         assert!(retry_row["receipt"].get("rejected").is_none());
     }
 }
+
+#[test]
+fn append_and_receipt_and_queue_transaction_require_durable_sync_barrier_on_retry() {
+    use std::collections::VecDeque;
+    use std::sync::Mutex;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+
+    struct ScriptedSync {
+        outcomes: Mutex<VecDeque<Result<(), io::ErrorKind>>>,
+        successful_syncs: AtomicUsize,
+    }
+
+    impl ScriptedSync {
+        fn new(outcomes: impl IntoIterator<Item = Result<(), io::ErrorKind>>) -> Self {
+            Self {
+                outcomes: Mutex::new(outcomes.into_iter().collect()),
+                successful_syncs: AtomicUsize::new(0),
+            }
+        }
+
+        fn push(&self, outcome: Result<(), io::ErrorKind>) {
+            self.outcomes.lock().unwrap().push_back(outcome);
+        }
+
+        fn successful_syncs(&self) -> usize {
+            self.successful_syncs.load(Ordering::SeqCst)
+        }
+    }
+
+    impl store::SyncPolicy for ScriptedSync {
+        fn full_sync(&self, _file: &fs::File) -> io::Result<()> {
+            let next = self.outcomes.lock().unwrap().pop_front().unwrap_or(Ok(()));
+            match next {
+                Ok(()) => {
+                    self.successful_syncs.fetch_add(1, Ordering::SeqCst);
+                    Ok(())
+                }
+                Err(kind) => Err(io::Error::from(kind)),
+            }
+        }
+    }
+
+    use worker_control::{Input, SupervisorMessage};
+
+    let selected = Selected { version: 2 };
+    let make_input = |rpc_id: &str| {
+        SupervisorMessage::Input(Input {
+            delivery: format!("d-{rpc_id}"),
+            origin: schema::OriginTuple {
+                principal: "p".to_owned(),
+                client: "c".to_owned(),
+                target: "t".to_owned(),
+                op: "session.prompt".to_owned(),
+                key: rpc_id.to_owned(),
+            },
+            content: vec![schema::Block::Text {
+                text: "durable test".to_owned(),
+            }],
+            submission: None,
+            steer: Some(false),
+            assets: None,
+        })
+    };
+
+    // Part A: `append_and_receipt` retry after initial `full_sync` failure.
+    {
+        let (_dir, ledger) = context_ledger("openai_responses_v1", false);
+        let options = test_options(&ledger);
+        let path = ledger.path().to_owned();
+        drop(ledger);
+
+        let sync = Arc::new(ScriptedSync::new([Err(io::ErrorKind::Other)]));
+        let mut ledger =
+            LockedLedger::open_with_sync(&path, schema::READER_VERSION, sync.clone()).unwrap();
+        let mut out = Vec::new();
+        assert!(
+            handle_delivery(
+                &mut ledger,
+                &options,
+                &selected,
+                &mut out,
+                make_input("sync-1")
+            )
+            .is_err(),
+            "first append must fail when full_sync fails"
+        );
+        assert!(out.is_empty(), "failed sync must emit no receipt");
+        assert_eq!(sync.successful_syncs(), 0);
+        drop(ledger);
+
+        // Reopen with same origin present on disk; next sync fails -> retry must also fail.
+        sync.push(Err(io::ErrorKind::Other));
+        let mut ledger =
+            LockedLedger::open_with_sync(&path, schema::READER_VERSION, sync.clone()).unwrap();
+        let mut out = Vec::new();
+        assert!(
+            handle_delivery(
+                &mut ledger,
+                &options,
+                &selected,
+                &mut out,
+                make_input("sync-1")
+            )
+            .is_err(),
+            "deduplicated retry on unsynced handle must fail if barrier sync fails"
+        );
+        assert!(out.is_empty(), "failed barrier retry must emit no receipt");
+        assert_eq!(sync.successful_syncs(), 0);
+        drop(ledger);
+
+        // Reopen with succeeding sync -> deduplicated retry runs barrier sync once before receipt.
+        sync.push(Ok(()));
+        let mut ledger =
+            LockedLedger::open_with_sync(&path, schema::READER_VERSION, sync.clone()).unwrap();
+        let mut out = Vec::new();
+        handle_delivery(
+            &mut ledger,
+            &options,
+            &selected,
+            &mut out,
+            make_input("sync-1"),
+        )
+        .unwrap();
+        let first_retry = String::from_utf8(out).unwrap();
+        let first_receipt: Value =
+            serde_json::from_str(first_retry.lines().next().unwrap()).unwrap();
+        assert_eq!(first_receipt["receipt"]["seq"], 12);
+        assert_eq!(first_receipt["receipt"]["deduplicated"], true);
+        assert_eq!(sync.successful_syncs(), 1);
+
+        // Repeat on the SAME already-synced handle -> 0 additional syncs.
+        let mut repeat_out = Vec::new();
+        handle_delivery(
+            &mut ledger,
+            &options,
+            &selected,
+            &mut repeat_out,
+            make_input("sync-1"),
+        )
+        .unwrap();
+        let repeat_retry = String::from_utf8(repeat_out).unwrap();
+        let repeat_receipt: Value =
+            serde_json::from_str(repeat_retry.lines().next().unwrap()).unwrap();
+        assert_eq!(repeat_receipt["receipt"]["seq"], 12);
+        assert_eq!(repeat_receipt["receipt"]["deduplicated"], true);
+        assert_eq!(sync.successful_syncs(), 1);
+
+        let raw = fs::read_to_string(&path).unwrap();
+        assert_eq!(raw.matches("\"origin_key\":\"sync-1\"").count(), 1);
+    }
+
+    // Part B: `execute_queue_transaction` retry after replacement `full_sync` failure.
+    {
+        let (_dir, ledger) = queue_ledger();
+        let path = ledger.path().to_owned();
+        drop(ledger);
+
+        let transaction = edit_transaction();
+        let sync = Arc::new(ScriptedSync::new([Ok(()), Err(io::ErrorKind::Other)]));
+        let mut ledger =
+            LockedLedger::open_with_sync(&path, schema::READER_VERSION, sync.clone()).unwrap();
+        assert!(
+            execute_queue_transaction(&mut ledger, "2026-08-28T09:00:02.000Z", &transaction)
+                .is_err(),
+            "queue transaction must fail when replacement full_sync fails"
+        );
+        assert_eq!(sync.successful_syncs(), 1);
+        drop(ledger);
+
+        // Reopen: both retract_seq and replacement_seq exist on disk, but replacement was not synced.
+        sync.push(Err(io::ErrorKind::Other));
+        let mut ledger =
+            LockedLedger::open_with_sync(&path, schema::READER_VERSION, sync.clone()).unwrap();
+        assert!(
+            execute_queue_transaction(&mut ledger, "2026-08-28T09:00:03.000Z", &transaction)
+                .is_err(),
+            "deduplicated queue transaction must fail if barrier sync fails"
+        );
+        assert_eq!(sync.successful_syncs(), 1);
+        drop(ledger);
+
+        sync.push(Ok(()));
+        let mut ledger =
+            LockedLedger::open_with_sync(&path, schema::READER_VERSION, sync.clone()).unwrap();
+        let committed =
+            execute_queue_transaction(&mut ledger, "2026-08-28T09:00:04.000Z", &transaction)
+                .unwrap();
+        assert_eq!(
+            committed.outcome,
+            QueueTransactionOutcome::Committed {
+                first_seq: 3,
+                last_seq: 4,
+                deduplicated: true,
+            }
+        );
+        assert_eq!(sync.successful_syncs(), 2);
+
+        // Repeat on the SAME already-synced handle -> 0 additional syncs.
+        let repeated =
+            execute_queue_transaction(&mut ledger, "2026-08-28T09:00:05.000Z", &transaction)
+                .unwrap();
+        assert_eq!(
+            repeated.outcome,
+            QueueTransactionOutcome::Committed {
+                first_seq: 3,
+                last_seq: 4,
+                deduplicated: true,
+            }
+        );
+        assert_eq!(sync.successful_syncs(), 2);
+    }
+}
+
+#[test]
+fn recover_unpaired_dynamic_mcp_external_effect_reuses_exact_request_and_handles_stop() {
+    let make_dynamic_tool = |name: &str, with_external_effect: bool| {
+        let mut tool = profile::DynamicTool::declared(
+            name,
+            profile::DynamicToolSource {
+                kind: profile::DynamicToolSourceKind::Mcp,
+                id: "fixture".to_owned(),
+            },
+            profile::DynamicToolEffect::ComputerControl,
+            true,
+            Vec::new(),
+            IJsonValue::parse(
+                &serde_json::to_vec(&json!({
+                    "name": name,
+                    "description": "Counter mutation",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"amount": {"type": "integer"}},
+                        "required": ["amount"],
+                        "additionalProperties": false
+                    }
+                }))
+                .unwrap(),
+            )
+            .unwrap(),
+        )
+        .expect("dynamic tool");
+        if with_external_effect {
+            tool.external_effect = Some(profile::ExternalEffectBinding {
+                protocol: profile::ExternalEffectProtocol::IdempotencyReconcileV1,
+                reconcile_tool: "check_bump".to_owned(),
+            });
+        }
+        tool
+    };
+
+    let session = "018f0000-0000-7000-8000-000000000003";
+
+    // 1. Dynamic external-effect tool started before crash: both ordinary and reconcile-only
+    //    recovery dispatch with exact original ToolControl.request_id and emit 1 result without
+    //    duplicating `tool_execution_started`.
+    for reconcile_only in [false, true] {
+        let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+        let name = "mcp__fixture__bump";
+        let mut profile = tool_profile(directory.path(), &[]);
+        profile.config.execution.policy.allowed_tools = vec![name.to_owned()];
+        profile.bindings.dynamic_catalog =
+            profile::DynamicToolCatalog::resolve(vec![make_dynamic_tool(name, true)])
+                .expect("catalog");
+        let options = test_options(&ledger);
+        append_test_attempt(&mut ledger, "dyn-attempt");
+        let arguments = json!({"amount": 1});
+        let call = provider::ToolCall {
+            call_id: "call-dyn-ext".to_owned(),
+            name: name.to_owned(),
+            arguments: arguments.clone(),
+        };
+        append_provider_tool_call(
+            &mut ledger,
+            &options,
+            &BuiltinManifest::compiled(),
+            2,
+            "dyn-attempt",
+            &call,
+        )
+        .unwrap();
+        ledger
+            .append_contract(
+                make_event(json!({
+                    "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"tool_execution_started",
+                    "ts":options.event_timestamp(),"call":"call-dyn-ext"
+                }))
+                .unwrap(),
+                BarrierContext::default(),
+            )
+            .unwrap();
+        let original = ToolControl::new(
+            session,
+            session,
+            2,
+            "call-dyn-ext",
+            name,
+            ijson(arguments.clone()).unwrap(),
+        )
+        .unwrap();
+        let reply = ToolControlResult::success(
+            original.request_id.clone(),
+            original.call_id.clone(),
+            ijson(json!({"count": 1})).unwrap(),
+        );
+        let mut replies = [Ok(String::from_utf8(
+            worker_control::encode_tool_control_result(&reply).unwrap(),
+        )
+        .unwrap())]
+        .into_iter();
+        let mut output = Vec::new();
+        let cancellation = RuntimeCancellation::default();
+        assert!(
+            !recover_unpaired_tool_calls(
+                &mut ledger,
+                &options,
+                Some(&profile),
+                Selected { version: 2 },
+                reconcile_only,
+                &mut replies,
+                &mut output,
+                &cancellation,
+            )
+            .unwrap()
+        );
+        let replayed = worker_control::decode_tool_control(&output).unwrap();
+        assert_eq!(replayed, original);
+        let events = &ledger.projection().unwrap().events;
+        assert_eq!(
+            events
+                .iter()
+                .filter(|event| *event.kind() == EventKind::ToolExecutionStarted
+                    && event.string_field("call") == Some("call-dyn-ext"))
+                .count(),
+            1
+        );
+        assert_eq!(
+            events
+                .iter()
+                .filter(|event| *event.kind() == EventKind::ToolResult
+                    && event.string_field("call") == Some("call-dyn-ext"))
+                .count(),
+            1
+        );
+    }
+
+    // 2. Effectful dynamic tool without external_effect metadata started before crash -> "crash".
+    {
+        let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+        let name = "mcp__fixture__unqueryable";
+        let mut profile = tool_profile(directory.path(), &[]);
+        profile.config.execution.policy.allowed_tools = vec![name.to_owned()];
+        profile.bindings.dynamic_catalog =
+            profile::DynamicToolCatalog::resolve(vec![make_dynamic_tool(name, false)])
+                .expect("catalog");
+        let options = test_options(&ledger);
+        append_test_attempt(&mut ledger, "dyn-attempt");
+        let call = provider::ToolCall {
+            call_id: "call-dyn-unsafe".to_owned(),
+            name: name.to_owned(),
+            arguments: json!({"amount": 1}),
+        };
+        append_provider_tool_call(
+            &mut ledger,
+            &options,
+            &BuiltinManifest::compiled(),
+            2,
+            "dyn-attempt",
+            &call,
+        )
+        .unwrap();
+        ledger
+            .append_contract(
+                make_event(json!({
+                    "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"tool_execution_started",
+                    "ts":options.event_timestamp(),"call":"call-dyn-unsafe"
+                }))
+                .unwrap(),
+                BarrierContext::default(),
+            )
+            .unwrap();
+        let mut output = Vec::new();
+        assert!(
+            !recover_unpaired_tool_calls(
+                &mut ledger,
+                &options,
+                Some(&profile),
+                Selected { version: 2 },
+                false,
+                &mut std::iter::empty::<io::Result<String>>(),
+                &mut output,
+                &RuntimeCancellation::default(),
+            )
+            .unwrap()
+        );
+        assert!(output.is_empty());
+        let last = serde_json::to_value(ledger.projection().unwrap().events.last().unwrap().raw())
+            .unwrap();
+        assert_eq!(last.pointer("/outcome/aborted"), Some(&json!("crash")));
+    }
+
+    // 3. Unstarted call when stop_active == true or reconcile_only == true -> "recovered" without
+    //    dispatching.
+    for stop_active in [true, false] {
+        let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+        let name = "mcp__fixture__bump";
+        let mut profile = tool_profile(directory.path(), &[]);
+        profile.config.execution.policy.allowed_tools = vec![name.to_owned()];
+        profile.bindings.dynamic_catalog =
+            profile::DynamicToolCatalog::resolve(vec![make_dynamic_tool(name, true)])
+                .expect("catalog");
+        let options = test_options(&ledger);
+        append_test_attempt(&mut ledger, "dyn-attempt");
+        let call = provider::ToolCall {
+            call_id: "call-dyn-unstarted".to_owned(),
+            name: name.to_owned(),
+            arguments: json!({"amount": 1}),
+        };
+        append_provider_tool_call(
+            &mut ledger,
+            &options,
+            &BuiltinManifest::compiled(),
+            2,
+            "dyn-attempt",
+            &call,
+        )
+        .unwrap();
+        if stop_active {
+            ledger
+                .append_contract(
+                    make_event(json!({
+                        "v":1,"seq":ledger.next_seq(),"kind":"stop_requested","generation":1,
+                        "ts":options.event_timestamp(),"origin_key":"stop-k",
+                        "origin_tuple":{"principal":"p","client":"cli","target":session,"op":"session.cancel","key":"stop-k"}
+                    }))
+                    .unwrap(),
+                    BarrierContext::default(),
+                )
+                .unwrap();
+        }
+        let mut output = Vec::new();
+        assert!(
+            !recover_unpaired_tool_calls(
+                &mut ledger,
+                &options,
+                Some(&profile),
+                Selected { version: 2 },
+                !stop_active,
+                &mut std::iter::empty::<io::Result<String>>(),
+                &mut output,
+                &RuntimeCancellation::default(),
+            )
+            .unwrap()
+        );
+        assert!(output.is_empty());
+        let last = serde_json::to_value(ledger.projection().unwrap().events.last().unwrap().raw())
+            .unwrap();
+        assert_eq!(last.pointer("/outcome/aborted"), Some(&json!("recovered")));
+    }
+}
+
+#[test]
+fn supervisor_eof_during_dynamic_external_effect_defers_result_for_recovery() {
+    let name = "mcp__fixture__bump";
+    let mut tool = profile::DynamicTool::declared(
+        name,
+        profile::DynamicToolSource {
+            kind: profile::DynamicToolSourceKind::Mcp,
+            id: "fixture".to_owned(),
+        },
+        profile::DynamicToolEffect::ComputerControl,
+        true,
+        Vec::new(),
+        IJsonValue::parse(
+            &serde_json::to_vec(&json!({
+                "name": name,
+                "description": "Counter mutation",
+                "parameters": {
+                    "type": "object",
+                    "properties": {"amount": {"type": "integer"}},
+                    "required": ["amount"],
+                    "additionalProperties": false
+                }
+            }))
+            .unwrap(),
+        )
+        .unwrap(),
+    )
+    .expect("dynamic tool");
+    tool.external_effect = Some(profile::ExternalEffectBinding {
+        protocol: profile::ExternalEffectProtocol::IdempotencyReconcileV1,
+        reconcile_tool: "check_bump".to_owned(),
+    });
+
+    let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+    engine::write_permission_mode(
+        ledger.path().parent().unwrap(),
+        engine::PermissionMode::DangerFullAccess,
+    )
+    .unwrap();
+    let mut profile = tool_profile(directory.path(), &[]);
+    profile.config.execution.policy.allowed_tools = vec![name.to_owned()];
+    profile.bindings.dynamic_catalog =
+        profile::DynamicToolCatalog::resolve(vec![tool]).expect("catalog");
+    let options = test_options(&ledger);
+    append_test_attempt(&mut ledger, "eof-attempt");
+    let arguments = json!({"amount": 1});
+    let call = provider::ToolCall {
+        call_id: "call-eof-ext".to_owned(),
+        name: name.to_owned(),
+        arguments: arguments.clone(),
+    };
+    append_provider_tool_call(
+        &mut ledger,
+        &options,
+        &BuiltinManifest::compiled(),
+        2,
+        "eof-attempt",
+        &call,
+    )
+    .unwrap();
+
+    let session = "018f0000-0000-7000-8000-000000000003";
+    let expected = ToolControl::new(
+        session,
+        session,
+        2,
+        "call-eof-ext",
+        name,
+        ijson(arguments).unwrap(),
+    )
+    .unwrap();
+
+    // Empty reply iterator simulates supervisor crashing while tool_control is in flight.
+    let mut eof_replies = std::iter::empty::<io::Result<String>>();
+    let mut output = Vec::new();
+    let cancellation = RuntimeCancellation::default();
+    let err = execute_provider_tool_calls(
+        &mut ledger,
+        ToolCallBatch {
+            options: &options,
+            profile: &profile,
+            selected: Selected { version: 2 },
+            attempt: "eof-attempt",
+            turn: 2,
+            calls: std::slice::from_ref(&call),
+            cancellation: &cancellation,
+        },
+        None,
+        &mut eof_replies,
+        &mut output,
+    )
+    .unwrap_err();
+    assert!(is_protocol_failure(err.as_ref()));
+    assert!(cancellation.supervisor_lost());
+    assert!(
+        !ledger
+            .projection()
+            .unwrap()
+            .events
+            .iter()
+            .any(|event| *event.kind() == EventKind::ToolResult
+                && event.string_field("call") == Some("call-eof-ext")),
+        "supervisor EOF must leave tool_call unpaired so recovery can reconcile external effects"
+    );
+    assert_eq!(
+        ledger
+            .projection()
+            .unwrap()
+            .events
+            .iter()
+            .filter(|event| *event.kind() == EventKind::ToolExecutionStarted
+                && event.string_field("call") == Some("call-eof-ext"))
+            .count(),
+        1
+    );
+
+    // Subsequent recovery queries supervisor with the exact same ToolControl.request_id.
+    let recovered_reply = ToolControlResult::success(
+        expected.request_id.clone(),
+        expected.call_id.clone(),
+        ijson(json!({"count": 1})).unwrap(),
+    );
+    let mut recovery_replies = [Ok(String::from_utf8(
+        worker_control::encode_tool_control_result(&recovered_reply).unwrap(),
+    )
+    .unwrap())]
+    .into_iter();
+    let mut recovery_out = Vec::new();
+    let recovery_cancel = RuntimeCancellation::default();
+    assert!(
+        !recover_unpaired_tool_calls(
+            &mut ledger,
+            &options,
+            Some(&profile),
+            Selected { version: 2 },
+            true,
+            &mut recovery_replies,
+            &mut recovery_out,
+            &recovery_cancel,
+        )
+        .unwrap()
+    );
+    assert_eq!(
+        worker_control::decode_tool_control(&recovery_out).unwrap(),
+        expected
+    );
+    let events = &ledger.projection().unwrap().events;
+    assert_eq!(
+        events
+            .iter()
+            .filter(|event| *event.kind() == EventKind::ToolExecutionStarted
+                && event.string_field("call") == Some("call-eof-ext"))
+            .count(),
+        1
+    );
+    assert_eq!(
+        events
+            .iter()
+            .filter(|event| *event.kind() == EventKind::ToolResult
+                && event.string_field("call") == Some("call-eof-ext"))
+            .count(),
+        1
+    );
+}
+
+#[test]
+fn recovery_after_dispatched_attempt_with_queued_input_reconciles_turn1_and_executes_turn2() {
+    let directory = tempfile::tempdir().unwrap();
+    let thread_id = "018f0000-0000-7000-8000-000000000158";
+    let folder = directory.path().join("threads").join(thread_id);
+    fs::create_dir_all(folder.join("assets")).unwrap();
+    let path = folder.join("main.jsonl");
+    let genesis_event = make_event(json!({
+        "v":1,"seq":1,"kind":"genesis","ts":"2026-08-28T00:00:00.000Z","format":1,
+        "min_reader":1,"min_writer":1,"thread":thread_id,"workspace":"w",
+        "origin_key":"origin-create-158-b",
+        "origin_tuple":{"client":"cli","key":"origin-create-158-b","op":"create","principal":"p","target":thread_id},
+        "resume":"never",
+        "config":{"digest":"cfg-digest"}
+    }))
+    .unwrap();
+    let mut genesis_bytes = genesis_event.canonical_bytes().unwrap();
+    genesis_bytes.push(b'\n');
+    fs::write(&path, &genesis_bytes).unwrap();
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
+    let assets = AssetStore::new(folder.join("assets")).unwrap();
+    // Both input 1 (seq 2) and queued input 2 (seq 3) exist before Turn 1 opens & records its epoch,
+    // so epoch 1 freezes at seq > 3 while input 2 stays in live_inputs.
+    ledger
+        .append_contract(
+            make_event(json!({
+                "v":1,"seq":2,"kind":"input","ts":"2026-08-28T00:00:01.000Z",
+                "content":[{"type":"text","text":"first dispatched prompt"}],
+                "origin_key":"origin-input-1",
+                "origin_tuple":{"client":"cli","key":"origin-input-1","op":"submit","principal":"p","target":thread_id},
+                "submission":{"model":"gpt-5","effort":"medium"}
+            }))
+            .unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+    ledger
+        .append_contract(
+            make_event(json!({
+                "v":1,"seq":3,"kind":"input","ts":"2026-08-28T00:00:01.500Z",
+                "content":[{"type":"text","text":"SECOND_QUEUED_INPUT_158"}],
+                "origin_key":"origin-input-2",
+                "origin_tuple":{"client":"cli","key":"origin-input-2","op":"submit","principal":"p","target":thread_id},
+                "submission":{"model":"gpt-5","effort":"medium"}
+            }))
+            .unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+    ledger
+        .append_contract(
+            make_event(json!({
+                "v":1,"seq":4,"kind":"run_start","ts":"2026-08-28T00:00:01.800Z",
+                "run":"r1","mode":"ordinary","recovery_ordinal":0,"binary":"worker",
+                "config_digest":"cfg-digest","instruction_digest":"ins","policy":"p"
+            }))
+            .unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+    ledger
+        .append_contract(
+            make_event(json!({
+                "v":1,"seq":5,"turn":1,"kind":"turn_open","ts":"2026-08-28T00:00:02.000Z",
+                "trigger":{"inputs":[2]}
+            }))
+            .unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+
+    let mut profile = configured_test_provider_profile(directory.path());
+    profile.config.execution.session_id = thread_id.to_owned();
+    let options = test_options(&ledger);
+    let (provider_config, model) = selected_provider(&profile.config).unwrap();
+    let resolved_profile = provider::resolve_profile(provider_config, model).unwrap();
+    let tool_catalog = ijson(json!([])).unwrap();
+    let preset = identity::resolve_preset(&mut ledger, &options.event_timestamp(), 1).unwrap();
+    let system_prompt = preset.render(
+        resolved_profile.wire_model(),
+        profile.config.execution_cwd(),
+        &effective_system(&profile.instruction),
+    );
+    let profile_value = provider::epoch_profile(
+        &resolved_profile,
+        &system_prompt,
+        profile.config.session_settings.as_ref(),
+    )
+    .unwrap();
+    let epoch_id = append_provider_epoch(
+        &mut ledger,
+        EpochAppend {
+            options: &options,
+            dialect: resolved_profile.dialect,
+            model: &model.id,
+            profile: &profile_value,
+            tools: &tool_catalog,
+            reason: "initial",
+            pending: &[2],
+        },
+    )
+    .unwrap();
+    let epoch_raw =
+        serde_json::to_value(ledger.projection().unwrap().events.last().unwrap().raw()).unwrap();
+    assert_eq!(epoch_raw["pending"]["eligible"], json!([2]));
+    assert_eq!(epoch_raw["pending"]["withheld"], json!([3]));
+
+    let request_asset = assets.publish(br#"{"input":[{"role":"user","content":[{"type":"input_text","text":"first dispatched prompt"}]}]}"#).unwrap();
+    let attempt_seq = ledger.next_seq();
+    ledger
+        .append_contract(
+            make_event(json!({
+                "v":1,"seq":attempt_seq,"turn":1,"kind":"attempt","ts":"2026-08-28T00:00:03.000Z",
+                "attempt":"a-1","epoch":epoch_id,
+                "request":{"asset":request_asset.asset,"bytes":request_asset.bytes},
+                "wire_digest":"wd-1","admits":[{"from":2,"to":2}]
+            }))
+            .unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+    ledger
+        .append_contract(
+            make_event(json!({
+                "v":1,"seq":ledger.next_seq(),"turn":1,"kind":"attempt_dispatched",
+                "ts":"2026-08-28T00:00:03.100Z","attempt":"a-1"
+            }))
+            .unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+
+    // Recovery step 1: dispatched Turn 1 + queued Input 2 under resume=never.
+    // Even though `run_decision` enters `Ordinary` due to queued Input 2,
+    // `recover_provider_attempt_for_ordinary` respects `resume=never`, closes
+    // Turn 1 as unresolved/interrupted (never silently resending Input 1), and
+    // returns `Stop` so Turn 2 opens cleanly for Input 2.
+    let facts1 = ledger.projection().unwrap().lifecycle.clone();
+    let state1 = classify(&facts1, LockFacts::FREE);
+    assert_eq!(state1, TailState::RecoveryNeeded);
+    assert_eq!(
+        run_decision(state1, &facts1),
+        RunDecision::Start(RunMode::Ordinary)
+    );
+    let progress =
+        recover_provider_attempt_for_ordinary(&mut ledger, &options, &mut Vec::new()).unwrap();
+    assert!(matches!(progress, RecoveryProgress::Stop));
+
+    let events_after_reconcile = &ledger.projection().unwrap().events;
+    assert!(events_after_reconcile.iter().any(|e| {
+        *e.kind() == EventKind::Error
+            && e.turn() == Some(1)
+            && e.string_field("classification") == Some("unresolved_dispatch")
+    }));
+    assert!(events_after_reconcile.iter().any(|e| {
+        *e.kind() == EventKind::Settle
+            && e.turn() == Some(1)
+            && e.string_field("outcome") == Some("interrupted")
+            && e.string_field("reason") == Some("recovered")
+    }));
+
+    // Recovery step 2: Settled with queued Input 2 -> Ordinary opens Turn 2 for trigger [3],
+    // builds non-empty input containing SECOND_QUEUED_INPUT_158, and settles completed.
+    let facts2 = ledger.projection().unwrap().lifecycle.clone();
+    let state2 = classify(&facts2, LockFacts::FREE);
+    assert_eq!(state2, TailState::Settled);
+    assert_eq!(facts2.runnable_inputs, vec![3]);
+    assert_eq!(
+        run_decision(state2, &facts2),
+        RunDecision::Start(RunMode::Ordinary)
+    );
+
+    open_ready_turn(&mut ledger, &options.event_timestamp(), RunMode::Ordinary).unwrap();
+    let turn2_open = ledger
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .rev()
+        .find(|e| *e.kind() == EventKind::TurnOpen && e.turn() == Some(2))
+        .cloned()
+        .unwrap();
+    assert_eq!(
+        serde_json::to_value(turn2_open.raw()).unwrap()["trigger"]["inputs"],
+        json!([3])
+    );
+
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let addr = listener.local_addr().unwrap();
+    let (req_tx, req_rx) = std::sync::mpsc::channel::<String>();
+    set_provider_test_redirect(Some(format!("http://{addr}")));
+    let server = std::thread::spawn(move || {
+        let (mut stream, _) = listener.accept().unwrap();
+        let mut buf = Vec::new();
+        let mut chunk = [0_u8; 4096];
+        let mut content_len = None::<usize>;
+        let mut header_end = None::<usize>;
+        loop {
+            let n = stream.read(&mut chunk).unwrap();
+            if n == 0 {
+                break;
+            }
+            buf.extend_from_slice(&chunk[..n]);
+            if header_end.is_none()
+                && let Some(pos) = buf.windows(4).position(|w| w == b"\r\n\r\n")
+            {
+                let headers = String::from_utf8_lossy(&buf[..pos]);
+                for line in headers.lines() {
+                    if let Some((k, v)) = line.split_once(':')
+                        && k.trim().eq_ignore_ascii_case("content-length")
+                    {
+                        content_len = v.trim().parse::<usize>().ok();
+                    }
+                }
+                header_end = Some(pos + 4);
+            }
+            if let (Some(start), Some(len)) = (header_end, content_len)
+                && buf.len() >= start + len
+            {
+                req_tx
+                    .send(String::from_utf8_lossy(&buf[start..start + len]).into_owned())
+                    .unwrap();
+                break;
+            }
+        }
+        let body = concat!(
+            "data: {\"type\":\"response.completed\",\"response\":{\"id\":\"resp_2\",\"status\":\"completed\",",
+            "\"output\":[{\"type\":\"message\",\"id\":\"msg_2\",\"status\":\"completed\",\"role\":\"assistant\",",
+            "\"content\":[{\"type\":\"output_text\",\"text\":\"turn 2 ok\"}]}],",
+            "\"usage\":{\"input_tokens\":4,\"output_tokens\":2}}}\n\n"
+        );
+        write!(
+            stream,
+            "HTTP/1.1 200 OK\r\ncontent-type: text/event-stream\r\ncontent-length: {}\r\nconnection: close\r\n\r\n{}",
+            body.len(),
+            body
+        )
+        .unwrap();
+    });
+
+    let next_attempt = format!("{}-attempt-{}", options.run_id, ledger.next_seq());
+    let mut replies = [Ok(
+        json!({"lease":{"attempt":next_attempt,"granted":true}}).to_string()
+    )]
+    .into_iter();
+    let mut output = Vec::new();
+    let turn2_res = run_provider_turn(
+        &mut ledger,
+        &options,
+        &profile,
+        &Selected { version: 2 },
+        &mut None,
+        &mut replies,
+        &mut output,
+        &RuntimeCancellation::default(),
+    );
+    set_provider_test_redirect(None);
+    turn2_res.unwrap();
+    server.join().unwrap();
+
+    let wire_req: Value = serde_json::from_str(&req_rx.recv().unwrap()).unwrap();
+    let wire_inputs = wire_req["input"].as_array().expect("non-empty input array");
+    assert!(
+        !wire_inputs.is_empty(),
+        "Turn 2 must not send input: [] to provider: {wire_req}"
+    );
+    let wire_text = serde_json::to_string(&wire_req["input"]).unwrap();
+    assert!(wire_text.contains("SECOND_QUEUED_INPUT_158"), "{wire_req}");
+    assert!(
+        wire_text.contains("first dispatched prompt"),
+        "without a prior provider response continuation, Turn 2 replays prior unreturned turn history plus Input 2: {wire_req}"
+    );
+
+    let events = &ledger.projection().unwrap().events;
+    let turn2_attempt = events
+        .iter()
+        .find(|e| *e.kind() == EventKind::Attempt && e.turn() == Some(2))
+        .unwrap();
+    let turn2_attempt_raw = serde_json::to_value(turn2_attempt.raw()).unwrap();
+    assert_eq!(turn2_attempt_raw["admits"], json!([{"from":3,"to":3}]));
+    assert!(events.iter().any(|e| {
+        *e.kind() == EventKind::Settle
+            && e.turn() == Some(2)
+            && e.string_field("outcome") == Some("completed")
+    }));
+
+    // Also verify incremental continuation (`previous_response_id` present) when `epoch.seq > input_seq`:
+    // Turn 2 must still admit the withheld input and never produce `input: []`.
+    let (_cont_dir, mut cont_ledger) = context_ledger("openai_responses_v1", true);
+    let cont_folder = cont_ledger.path().parent().unwrap().to_path_buf();
+    let cont_profile = configured_test_provider_profile(cont_folder.parent().unwrap());
+    let (cont_cfg, cont_model) = selected_provider(&cont_profile.config).unwrap();
+    let cont_resolved = provider::resolve_profile(cont_cfg, cont_model).unwrap();
+    let cont_preset =
+        identity::resolve_preset(&mut cont_ledger, "2026-08-27T09:00:01.000Z", 2).unwrap();
+    let cont_sys = cont_preset.render(
+        cont_resolved.wire_model(),
+        cont_profile.config.execution_cwd(),
+        &effective_system(&cont_profile.instruction),
+    );
+    let cont_pv = provider::epoch_profile(
+        &cont_resolved,
+        &cont_sys,
+        cont_profile.config.session_settings.as_ref(),
+    )
+    .unwrap();
+    let cont_tools = ijson(json!([])).unwrap();
+    let cont_options = test_options(&cont_ledger);
+    // Queue input at seq 12, THEN write Turn 2's epoch at seq 13 so epoch.seq > input.seq (12 < 13).
+    let mut queued_12 = serde_json::Map::new();
+    queued_12.insert("v".to_owned(), json!(1));
+    queued_12.insert("seq".to_owned(), json!(cont_ledger.next_seq()));
+    queued_12.insert("kind".to_owned(), json!("input"));
+    queued_12.insert("ts".to_owned(), json!("2026-08-27T09:00:02.000Z"));
+    queued_12.insert(
+        "content".to_owned(),
+        json!([{"type":"text","text":"WITHHELD_CONTINUATION_INPUT"}]),
+    );
+    queued_12.insert("origin_key".to_owned(), json!("i-cont"));
+    queued_12.insert(
+        "origin_tuple".to_owned(),
+        json!({"client":"cli","key":"i-cont","op":"submit","principal":"p","target":"018f0000-0000-7000-8000-000000000003"}),
+    );
+    cont_ledger
+        .append_contract(
+            make_event(Value::Object(queued_12)).unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+    let cont_epoch_id = append_provider_epoch(
+        &mut cont_ledger,
+        EpochAppend {
+            options: &cont_options,
+            dialect: cont_resolved.dialect,
+            model: &cont_model.id,
+            profile: &cont_pv,
+            tools: &cont_tools,
+            reason: "system_change",
+            pending: &[9],
+        },
+    )
+    .unwrap();
+    let cont_epoch_raw = serde_json::to_value(
+        cont_ledger
+            .projection()
+            .unwrap()
+            .events
+            .last()
+            .unwrap()
+            .raw(),
+    )
+    .unwrap();
+    assert_eq!(cont_epoch_raw["pending"]["withheld"], json!([12]));
+    let built =
+        project_provider_context(&cont_ledger, &cont_epoch_id, cont_resolved.dialect, 2).unwrap();
+    assert!(!built.admits.is_empty());
+    let cont_assets = AssetStore::new(cont_folder.join("assets")).unwrap();
+    let cont_req = cont_assets.publish(br#"{"input":[]}"#).unwrap();
+    cont_ledger
+        .append_contract(
+            make_event(json!({
+                "v":1,"seq":cont_ledger.next_seq(),"turn":2,"kind":"attempt","ts":"2026-08-27T09:00:02.500Z",
+                "attempt":"a2","epoch":cont_epoch_id,
+                "request":{"asset":cont_req.asset,"bytes":cont_req.bytes},
+                "wire_digest":"w2","admits":[{"from":9,"to":9}]
+            }))
+            .unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+    cont_ledger
+        .append_contract(
+            make_event(json!({
+                "v":1,"seq":cont_ledger.next_seq(),"turn":2,"kind":"output","ts":"2026-08-27T09:00:02.600Z",
+                "attempt":"a2","content":[{"type":"text","text":"turn 2 ans"}],
+                "continuation":{"id":"response-2"},
+                "sealed":{"adapter":"openai_responses_v1","fragments":"[]","version":1},
+                "usage":{"availability":"reported","input_tokens":"1","output_tokens":"1"}
+            }))
+            .unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+    append_settle(
+        &mut cont_ledger,
+        &cont_options.event_timestamp(),
+        2,
+        "completed",
+        None,
+    )
+    .unwrap();
+    open_ready_turn(
+        &mut cont_ledger,
+        &cont_options.event_timestamp(),
+        RunMode::Ordinary,
+    )
+    .unwrap();
+    let cont_built =
+        project_provider_context(&cont_ledger, &cont_epoch_id, cont_resolved.dialect, 3).unwrap();
+    assert_eq!(cont_built.continuation_id.as_deref(), Some("response-2"));
+    assert_eq!(cont_built.admits, vec![12]);
+    let cont_items = serde_json::to_string(&cont_built.items).unwrap();
+    assert!(
+        cont_items.contains("WITHHELD_CONTINUATION_INPUT"),
+        "{cont_items}"
+    );
+}
+
+#[test]
+fn recover_unpaired_tool_calls_replays_receipt_when_external_effect_or_tool_removed() {
+    let bump_tool = profile::DynamicTool::declared(
+        "mcp__fixture__bump",
+        profile::DynamicToolSource {
+            kind: profile::DynamicToolSourceKind::Mcp,
+            id: "fixture".to_owned(),
+        },
+        profile::DynamicToolEffect::ComputerControl,
+        true,
+        Vec::new(),
+        IJsonValue::parse(
+            &serde_json::to_vec(&json!({
+                "name": "mcp__fixture__bump",
+                "description": "Counter mutation",
+                "parameters": {
+                    "type": "object",
+                    "properties": {"amount": {"type": "integer"}},
+                    "required": ["amount"],
+                    "additionalProperties": false
+                }
+            }))
+            .unwrap(),
+        )
+        .unwrap(),
+    )
+    .expect("dynamic tool");
+    for (label, catalog_tools, with_receipt_value) in [
+        (
+            "external_effect_removed_settled_receipt",
+            vec![bump_tool],
+            Some(json!({"content":[{"type":"text","text":"settled-once"}],"isError":false})),
+        ),
+        (
+            "tool_removed_settled_receipt",
+            Vec::new(),
+            Some(json!({"content":[{"type":"text","text":"settled-once"}],"isError":false})),
+        ),
+        ("tool_removed_effect_conflicted_intent", Vec::new(), None),
+    ] {
+        let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+        let name = "mcp__fixture__bump";
+        let mut profile = tool_profile(directory.path(), &[]);
+        profile.config.execution.policy.allowed_tools = vec![name.to_owned()];
+        profile.bindings.dynamic_catalog =
+            profile::DynamicToolCatalog::resolve(catalog_tools).expect("catalog");
+        let options = test_options(&ledger);
+        append_test_attempt(&mut ledger, "dyn-attempt");
+        let call = provider::ToolCall {
+            call_id: format!("call-{label}"),
+            name: name.to_owned(),
+            arguments: json!({"amount": 1}),
+        };
+        append_provider_tool_call(
+            &mut ledger,
+            &options,
+            &BuiltinManifest::compiled(),
+            2,
+            "dyn-attempt",
+            &call,
+        )
+        .unwrap();
+        ledger
+            .append_contract(
+                make_event(json!({
+                    "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"tool_execution_started",
+                    "ts":options.event_timestamp(),"call":call.call_id
+                }))
+                .unwrap(),
+                BarrierContext::default(),
+            )
+            .unwrap();
+
+        let thread_folder = ledger.path().parent().unwrap().to_path_buf();
+        let session = thread_folder
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_owned();
+        let request = ToolControl::new(
+            session.clone(),
+            session,
+            2,
+            call.call_id.clone(),
+            name.to_owned(),
+            ijson(json!({"amount": 1})).unwrap(),
+        )
+        .unwrap();
+        let control_path = thread_folder
+            .join("control")
+            .join(&request.request_id[..2])
+            .join(format!("{}.json", request.request_id));
+        fs::create_dir_all(control_path.parent().unwrap()).unwrap();
+        fs::write(
+            &control_path,
+            serde_json_canonicalizer::to_vec(&json!({"format":1,"request":request})).unwrap(),
+        )
+        .unwrap();
+
+        let reply = match &with_receipt_value {
+            Some(val) => ToolControlResult::success(
+                request.request_id.clone(),
+                request.call_id.clone(),
+                ijson(val.clone()).unwrap(),
+            ),
+            None => ToolControlResult::failure(
+                request.request_id.clone(),
+                request.call_id.clone(),
+                worker_control::ToolControlError {
+                    code: ToolControlErrorCode::EffectConflicted,
+                    message: "intent conflicted after catalog change".to_owned(),
+                    retryable: false,
+                },
+            ),
+        };
+        let mut replies = [Ok(String::from_utf8(
+            worker_control::encode_tool_control_result(&reply).unwrap(),
+        )
+        .unwrap())]
+        .into_iter();
+        let mut output = Vec::new();
+        assert!(
+            !recover_unpaired_tool_calls(
+                &mut ledger,
+                &options,
+                Some(&profile),
+                Selected { version: 2 },
+                false,
+                &mut replies,
+                &mut output,
+                &RuntimeCancellation::default(),
+            )
+            .unwrap(),
+            "{label}"
+        );
+        assert_eq!(
+            worker_control::decode_tool_control(&output).unwrap(),
+            request
+        );
+        let last = serde_json::to_value(ledger.projection().unwrap().events.last().unwrap().raw())
+            .unwrap();
+        if with_receipt_value.is_some() {
+            assert_eq!(last["outcome"], json!("ok"), "{label}: {last}");
+            let text = last["content"][0]["text"].as_str().unwrap();
+            assert!(text.contains("settled-once"), "{label}: {last}");
+        } else {
+            assert_eq!(last["outcome"], json!("error"), "{label}: {last}");
+            let text = last["content"][0]["text"].as_str().unwrap();
+            assert!(text.contains("effect_conflicted"), "{label}: {last}");
+        }
+    }
+}

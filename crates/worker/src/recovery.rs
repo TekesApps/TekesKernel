@@ -135,6 +135,11 @@ where
         .filter(|call| !seen_attempts.insert(call.attempt.clone()))
         .map(|call| call.call.clone())
         .collect::<BTreeSet<_>>();
+    let stop_active = ledger
+        .projection()
+        .is_some_and(|projection| projection.lifecycle.stop_active);
+    let can_start_fresh = !reconcile_only && !stop_active;
+    let dynamic_catalog = profile.map(|profile| &profile.bindings.dynamic_catalog.tools);
     let manifest = BuiltinManifest::compiled();
     for call in pending {
         let never_started = if call.execution_tracked {
@@ -178,20 +183,27 @@ where
             continue;
         }
         let tool = manifest.tools.iter().find(|tool| tool.name == call.name);
-        let replay_safe = tool.is_some_and(|tool| !engine::side_effectful(tool.effect));
-        let stable_receipt_recovery =
-            tool.is_some_and(|tool| tool.backend == Backend::SupervisorControl);
-        let durable_approval_resume =
-            call.approval_response.is_some() && call.execution_tracked && !call.execution_started;
-        if (replay_safe || stable_receipt_recovery || durable_approval_resume || never_started)
-            && let Some(profile) = profile
-        {
+        let dynamic_tool =
+            dynamic_catalog.and_then(|tools| tools.iter().find(|tool| tool.name == call.name));
+        let replay_safe = tool.is_some_and(|tool| !engine::side_effectful(tool.effect))
+            || dynamic_tool.is_some_and(|tool| !engine::dynamic_side_effectful(tool.effect));
+        let stable_receipt_recovery = tool
+            .is_some_and(|tool| tool.backend == Backend::SupervisorControl)
+            || dynamic_tool.is_some_and(|tool| {
+                !engine::dynamic_side_effectful(tool.effect) || tool.external_effect.is_some()
+            });
+        let should_recover_via_execute = if never_started {
+            can_start_fresh
+        } else {
+            stable_receipt_recovery || (replay_safe && can_start_fresh)
+        };
+        if should_recover_via_execute && let Some(profile) = profile {
             let provider_call = provider::ToolCall {
                 call_id: call.call.clone(),
                 name: call.name.clone(),
                 arguments: call.arguments.clone(),
             };
-            if execute_provider_tool_calls(
+            if execute_provider_tool_calls_with_resume(
                 ledger,
                 ToolCallBatch {
                     options,
@@ -205,6 +217,7 @@ where
                 None,
                 lines,
                 stdout,
+                !never_started,
             )? {
                 if reconcile_only {
                     append_aborted_tool_result(
@@ -220,12 +233,158 @@ where
             }
             continue;
         }
+        if !never_started
+            && tool.is_none()
+            && !stable_receipt_recovery
+            && profile.is_some()
+            && recover_vanished_or_unqueryable_dynamic_record(
+                ledger,
+                options,
+                selected,
+                &call,
+                lines,
+                stdout,
+                cancellation,
+            )?
+        {
+            if cancellation.stop_requested() {
+                return Ok(true);
+            }
+            continue;
+        }
         // Without a profile there is nothing to execute with, but an unstarted
         // call is still not a crash.
         let outcome = if never_started { "recovered" } else { "crash" };
         append_aborted_tool_result(ledger, options, &call.call, call.turn, outcome)?;
     }
     Ok(false)
+}
+
+fn recover_vanished_or_unqueryable_dynamic_record<I, O>(
+    ledger: &mut LockedLedger,
+    options: &Options,
+    selected: Selected,
+    call: &PendingToolCall,
+    lines: &mut I,
+    stdout: &mut O,
+    cancellation: &RuntimeCancellation,
+) -> Result<bool, Box<dyn std::error::Error>>
+where
+    I: Iterator<Item = io::Result<String>>,
+    O: Write,
+{
+    let thread_folder = ledger
+        .path()
+        .parent()
+        .ok_or("worker ledger has no thread folder")?
+        .to_path_buf();
+    let Some(session) = thread_folder.file_name().and_then(|name| name.to_str()) else {
+        return Ok(false);
+    };
+    let thread = ledger
+        .projection()
+        .and_then(|projection| projection.events.first())
+        .and_then(|genesis| genesis.string_field("thread"))
+        .ok_or("genesis thread binding is missing")?
+        .to_owned();
+    let Ok(bytes) = serde_json::to_vec(&call.arguments) else {
+        return Ok(false);
+    };
+    let Ok(invocation) = IJsonValue::parse(&bytes) else {
+        return Ok(false);
+    };
+    let Ok(request) = ToolControl::new(
+        session.to_owned(),
+        thread.clone(),
+        call.turn,
+        call.call.clone(),
+        call.name.clone(),
+        invocation.clone(),
+    ) else {
+        return Ok(false);
+    };
+    let Some(prefix) = request.request_id.get(..2) else {
+        return Ok(false);
+    };
+    let record_exists = ["control", "control-receipts", "control-intents"]
+        .into_iter()
+        .any(|dir| {
+            thread_folder
+                .join(dir)
+                .join(prefix)
+                .join(format!("{}.json", request.request_id))
+                .is_file()
+        });
+    if !record_exists {
+        return Ok(false);
+    }
+    let result =
+        match exchange_tool_control_runtime(&selected, &request, lines, stdout, cancellation) {
+            Ok(result) => result,
+            Err(error) => {
+                if cancellation.protocol_failed() || cancellation.supervisor_lost() {
+                    return Err(error);
+                }
+                if cancellation.stop_requested() {
+                    return Ok(true);
+                }
+                return Err(error);
+            }
+        };
+    result.validate_for(&request)?;
+    let terminal = match (result.value, result.error, result.pending) {
+        (Some(value), None, None) => tools::BackendTerminal::Completed(value),
+        (None, Some(error), None) => tools::BackendTerminal::Unavailable {
+            code: recovered_control_error_code(error.code).to_owned(),
+            message: error.message,
+            retryable: error.retryable,
+        },
+        (None, None, Some(pending)) => tools::BackendTerminal::Pending {
+            continuation_id: pending.continuation_id,
+            state: pending.state,
+        },
+        _ => tools::BackendTerminal::Unavailable {
+            code: "protocol".to_owned(),
+            message: "invalid tool-control result union".to_owned(),
+            retryable: false,
+        },
+    };
+    let execution = engine::ToolExecution {
+        thread,
+        call: call.call.clone(),
+        name: call.name.clone(),
+        attempt: call.attempt.clone(),
+        invocation,
+        side_effectful: true,
+        turn: call.turn,
+        timestamp: options.event_timestamp(),
+    };
+    let mut pipeline = ToolPipeline::new(
+        ledger,
+        AssetStore::new(thread_folder.join("assets"))?,
+        SecretScanner::default(),
+    );
+    pipeline.execute_terminal_with_gate(
+        &execution,
+        &[],
+        |_, _| tools::ApprovalGate::Allow,
+        |_, _| terminal.clone(),
+    )?;
+    Ok(true)
+}
+
+const fn recovered_control_error_code(code: worker_control::ToolControlErrorCode) -> &'static str {
+    match code {
+        worker_control::ToolControlErrorCode::Unsupported => "unsupported",
+        worker_control::ToolControlErrorCode::Denied => "denied",
+        worker_control::ToolControlErrorCode::NotFound => "not_found",
+        worker_control::ToolControlErrorCode::Conflict => "conflict",
+        worker_control::ToolControlErrorCode::Unavailable => "unavailable",
+        worker_control::ToolControlErrorCode::Timeout => "timeout",
+        worker_control::ToolControlErrorCode::EffectUnknown => "effect_unknown",
+        worker_control::ToolControlErrorCode::EffectConflicted => "effect_conflicted",
+        worker_control::ToolControlErrorCode::Internal => "internal",
+    }
 }
 
 pub(crate) fn pending_tool_calls(
@@ -340,6 +499,17 @@ pub(crate) fn recover_provider_attempt_for_ordinary(
         .ok_or("recovered attempt epoch is missing")?;
     let dialect = DialectId::from_str(adapter_name)?;
     let capabilities = dialect.family().capabilities();
+    let recovery_mode = if ledger.projection().is_some_and(|projection| {
+        projection.lifecycle.durable_wait_until().is_none()
+            && !projection
+                .lifecycle
+                .resume_policy
+                .permits(projection.lifecycle.recovery_ordinal)
+    }) {
+        RunMode::Reconcile
+    } else {
+        RunMode::Ordinary
+    };
     let decision = match attempt.decision.as_deref() {
         Some("not_dispatched") => RecoveryDecision::NotDispatched,
         Some("adopt") => RecoveryDecision::Adopt,
@@ -363,7 +533,7 @@ pub(crate) fn recover_provider_attempt_for_ordinary(
             },
             sent_state(attempt.dispatched, capabilities.dispatch_marker_required),
             QueryResult::Unsupported,
-            RunMode::Ordinary,
+            recovery_mode,
         ),
     };
     if attempt.decision.is_none() {

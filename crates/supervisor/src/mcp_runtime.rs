@@ -61,6 +61,7 @@ pub struct McpSessionBinding {
     pub catalog: DynamicToolCatalog,
     pub authority: Arc<McpDynamicSupervisorAuthority>,
     refused_tools: Vec<String>,
+    connection_names: Vec<String>,
 }
 impl McpSessionBinding {
     /// Excuse only exact policy-selected names refused by the projection.
@@ -71,6 +72,34 @@ impl McpSessionBinding {
             .filter(|name| allowed.contains(name))
             .cloned()
             .collect()
+    }
+
+    /// Like [`unavailable_tools`], and during recovery/reconnect also excuses
+    /// policy-selected `mcp__<conn>__*` names that this session previously called
+    /// when a configured connection removed them from its catalog.
+    pub fn unavailable_tools_with_prior_calls(
+        &self,
+        allowed: &[String],
+        prior_calls: &std::collections::BTreeSet<String>,
+    ) -> Vec<String> {
+        let mut unavailable = std::collections::BTreeSet::new();
+        for name in allowed {
+            if self.refused_tools.contains(name) {
+                unavailable.insert(name.clone());
+                continue;
+            }
+            if prior_calls.contains(name)
+                && !self.catalog.tools.iter().any(|tool| tool.name == *name)
+                && self.connection_names.iter().any(|conn| {
+                    name.strip_prefix("mcp__")
+                        .and_then(|rest| rest.strip_prefix(conn))
+                        .is_some_and(|tail| tail.starts_with("__"))
+                })
+            {
+                unavailable.insert(name.clone());
+            }
+        }
+        unavailable.into_iter().collect()
     }
 }
 pub struct McpRuntime {
@@ -104,6 +133,7 @@ impl McpRuntime {
         let mut routes = BTreeMap::new();
         let mut tools = Vec::new();
         let mut refused_tools = std::collections::BTreeSet::new();
+        let mut connection_names = Vec::with_capacity(connections.len());
         // The authority owns every registered peer, including on partial failure.
         let mut authority = McpDynamicSupervisorAuthority::new(
             Arc::clone(&broker),
@@ -111,6 +141,7 @@ impl McpRuntime {
             self.secrets.clone(),
         );
         for connection in connections {
+            connection_names.push(connection.name.clone());
             let prepared = with_preparation_runtime(|runtime| {
                 prepare_server_cancellable(
                     session,
@@ -154,8 +185,12 @@ impl McpRuntime {
                             })
                     })
                     .transpose()?;
-                let contract =
-                    McpRouteContract::capture(prepared.peer.as_ref(), effect.clone(), reconcile)?;
+                let contract = McpRouteContract::capture(
+                    prepared.peer.as_ref(),
+                    &connection.name,
+                    effect.clone(),
+                    reconcile,
+                )?;
                 let route = McpRoute {
                     key: prepared.key.clone(),
                     remote_name: effect.name.clone(),
@@ -182,6 +217,7 @@ impl McpRuntime {
                 .map_err(|e| McpError::Conflict(e.to_string()))?,
             authority: Arc::new(authority),
             refused_tools: refused_tools.into_iter().collect(),
+            connection_names,
         })
     }
 }
@@ -392,11 +428,13 @@ pub struct McpRouteContract {
     pub effect_tool: McpTool,
     pub reconcile_tool: Option<McpTool>,
     pub digest: String,
+    pub authority_digest: String,
 }
 
 impl McpRouteContract {
     fn capture(
         peer: &dyn McpPeer,
+        connection_name: &str,
         effect_tool: McpTool,
         reconcile_tool: Option<McpTool>,
     ) -> Result<Self, McpError> {
@@ -412,6 +450,13 @@ impl McpRouteContract {
             &effect_tool,
             reconcile_tool.as_ref(),
         )?;
+        let authority_digest = reconcile_authority_digest(
+            &protocol_version,
+            &server_identity,
+            connection_name,
+            &effect_tool,
+            reconcile_tool.as_ref(),
+        )?;
         Ok(Self {
             protocol_version,
             server_identity,
@@ -419,8 +464,33 @@ impl McpRouteContract {
             effect_tool,
             reconcile_tool,
             digest,
+            authority_digest,
         })
     }
+}
+
+fn reconcile_authority_digest(
+    protocol_version: &str,
+    server_identity: &McpImplementation,
+    connection_name: &str,
+    effect_tool: &McpTool,
+    reconcile_tool: Option<&McpTool>,
+) -> Result<String, McpError> {
+    let preimage = json!({
+        "domain":"io.tekes/mcp-reconcile-authority/v1",
+        "protocolVersion":protocol_version,
+        "serverIdentity":server_identity,
+        "connection":connection_name,
+        "effectTool":effect_tool,
+        "reconcileTool":reconcile_tool,
+    });
+    Ok(format!(
+        "sha256-{:x}",
+        Sha256::digest(
+            serde_json_canonicalizer::to_vec(&preimage)
+                .map_err(|error| McpError::Protocol(error.to_string()))?
+        )
+    ))
 }
 
 fn route_contract_digest(
@@ -779,6 +849,12 @@ impl DynamicSupervisorAuthority for McpDynamicSupervisorAuthority {
         }
     }
 
+    fn authority_fingerprint(&self, tool: &DynamicTool) -> Option<String> {
+        self.routes
+            .get(&tool.name)
+            .map(|route| route.contract.authority_digest.clone())
+    }
+
     fn cancel_inflight(&self) {
         let cancelled = {
             let mut current = self
@@ -871,9 +947,13 @@ impl McpDynamicSupervisorAuthority {
                     })
             })
             .transpose()?;
-        let reconnected_contract =
-            McpRouteContract::capture(prepared.peer.as_ref(), effect_tool, reconcile_tool)
-                .map_err(route_preparation_error)?;
+        let reconnected_contract = McpRouteContract::capture(
+            prepared.peer.as_ref(),
+            &route.server.name,
+            effect_tool,
+            reconcile_tool,
+        )
+        .map_err(route_preparation_error)?;
         validate_reconnected_contract(&route.contract, &reconnected_contract)?;
         // The reconnected catalog is judged per tool like the first one: a
         // sibling tool that stays refused must not fail the reconnect of this
@@ -1080,4 +1160,43 @@ fn resolve_http_secret(
         ));
     }
     Ok((std::mem::take(&mut grant.token), generation))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn unavailable_tools_excuses_vanished_tools_only_for_configured_connections() {
+        let authority = Arc::new(McpDynamicSupervisorAuthority::new(
+            Arc::new(McpBroker::start().expect("broker")),
+            BTreeMap::new(),
+            SecretAccess::read_only(Arc::new(provider::MemorySecretStore::new())),
+        ));
+        let binding = McpSessionBinding {
+            catalog: DynamicToolCatalog::default(),
+            authority,
+            refused_tools: vec!["mcp__probe__refused".to_owned()],
+            connection_names: vec!["probe".to_owned()],
+        };
+        let allowed = vec![
+            "mcp__probe__refused".to_owned(),
+            "mcp__probe__removed".to_owned(),
+            "mcp__other__removed".to_owned(),
+            "read".to_owned(),
+        ];
+        let mut prior_calls = std::collections::BTreeSet::new();
+        prior_calls.insert("mcp__probe__removed".to_owned());
+        assert_eq!(
+            binding.unavailable_tools(&allowed),
+            vec!["mcp__probe__refused".to_owned()]
+        );
+        assert_eq!(
+            binding.unavailable_tools_with_prior_calls(&allowed, &prior_calls),
+            vec![
+                "mcp__probe__refused".to_owned(),
+                "mcp__probe__removed".to_owned(),
+            ]
+        );
+    }
 }

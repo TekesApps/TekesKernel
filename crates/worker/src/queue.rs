@@ -160,6 +160,8 @@ pub(crate) fn execute_queue_transaction(
         (None, Some(_)) => unreachable!("remove has no replacement origin"),
     };
 
+    ledger.ensure_synced_through(last_seq)?;
+
     Ok(QueueTransactionResult {
         delivery: transaction.delivery.clone(),
         outcome: QueueTransactionOutcome::Committed {

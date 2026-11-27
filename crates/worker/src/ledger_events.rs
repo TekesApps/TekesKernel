@@ -196,14 +196,16 @@ pub(crate) fn append_and_receipt(
     origin: &schema::OriginTuple,
     object: Map<String, Value>,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    if let Some(projection) = ledger.projection()
-        && let Some(existing_seq) = projection.origin_tuples.get(origin)
-    {
+    let existing_seq = ledger
+        .projection()
+        .and_then(|projection| projection.origin_tuples.get(origin).copied());
+    if let Some(existing_seq) = existing_seq {
+        ledger.ensure_synced_through(existing_seq)?;
         stdout.write_all(&encode_line(
             "receipt",
             &Receipt {
                 delivery,
-                seq: *existing_seq,
+                seq: existing_seq,
                 deduplicated: true,
                 rejected: None,
             },

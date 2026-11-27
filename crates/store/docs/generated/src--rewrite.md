@@ -461,7 +461,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `begin_rewrite` | `self.destination_has_live_rewrite` | [249](../../src/rewrite.rs#L249) | [store::rewrite::ThreadStore::destination_has_live_rewrite](../../src/rewrite.rs#L564) |
 | `begin_rewrite` | `self.root().join(area).join(destination).exists` | [253](../../src/rewrite.rs#L253) | receiver-type-required |
 | `begin_rewrite` | `self.root().join(area).join` | [253](../../src/rewrite.rs#L253) | receiver-type-required |
-| `begin_rewrite` | `crate::folder::park_stale_tombstone` | [261](../../src/rewrite.rs#L261) | [store::folder::park_stale_tombstone](../../src/folder.rs#L952) |
+| `begin_rewrite` | `crate::folder::park_stale_tombstone` | [261](../../src/rewrite.rs#L261) | [store::folder::park_stale_tombstone](../../src/folder.rs#L995) |
 | `begin_rewrite` | `fs::read_dir(self.root().join(".rewrite-trash"))?.any` | [262](../../src/rewrite.rs#L262) | receiver-type-required |
 | `begin_rewrite` | `fs::read_dir` | [262](../../src/rewrite.rs#L262) | external-constructor-callback-or-unresolved |
 | `begin_rewrite` | `entry.is_ok_and` | [263](../../src/rewrite.rs#L263) | receiver-type-required |
@@ -732,7 +732,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_source_ledgers` | `Err` | [790](../../src/rewrite.rs#L790), [796](../../src/rewrite.rs#L796) | external-constructor-callback-or-unresolved |
 | `read_source_ledgers` | `StoreError::Corruption` | [790](../../src/rewrite.rs#L790), [796](../../src/rewrite.rs#L796) | external-constructor-callback-or-unresolved |
 | `read_source_ledgers` | `"empty rewrite ledger".to_owned` | [790](../../src/rewrite.rs#L790) | receiver-type-required |
-| `read_source_ledgers` | `crate::tail::check_write_versions` | [792](../../src/rewrite.rs#L792) | [store::tail::check_write_versions](../../src/tail.rs#L154) |
+| `read_source_ledgers` | `crate::tail::check_write_versions` | [792](../../src/rewrite.rs#L792) | [store::tail::check_write_versions](../../src/tail.rs#L155) |
 | `read_source_ledgers` | `ledgers.insert` | [793](../../src/rewrite.rs#L793) | receiver-type-required |
 | `read_source_ledgers` | `ledgers.contains_key` | [795](../../src/rewrite.rs#L795) | receiver-type-required |
 | `read_source_ledgers` | `"rewrite source lacks main.jsonl".to_owned` | [797](../../src/rewrite.rs#L797) | receiver-type-required |
@@ -1424,7 +1424,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_payload` | `fs::read` | [2218](../../src/rewrite.rs#L2218), [2252](../../src/rewrite.rs#L2252) | external-constructor-callback-or-unresolved |
 | `validate_payload` | `payload.join` | [2218](../../src/rewrite.rs#L2218), [2250](../../src/rewrite.rs#L2250), [2252](../../src/rewrite.rs#L2252) | receiver-type-required |
 | `validate_payload` | `validate_ledger` | [2219](../../src/rewrite.rs#L2219) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1101) |
-| `validate_payload` | `crate::tail::check_write_versions` | [2220](../../src/rewrite.rs#L2220) | [store::tail::check_write_versions](../../src/tail.rs#L154) |
+| `validate_payload` | `crate::tail::check_write_versions` | [2220](../../src/rewrite.rs#L2220) | [store::tail::check_write_versions](../../src/tail.rs#L155) |
 | `validate_payload` | `projection.events.first().ok_or_else` | [2221](../../src/rewrite.rs#L2221) | receiver-type-required |
 | `validate_payload` | `projection.events.first` | [2221](../../src/rewrite.rs#L2221) | receiver-type-required |
 | `validate_payload` | `genesis.string_field` | [2224](../../src/rewrite.rs#L2224) | receiver-type-required |
@@ -1600,7 +1600,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::write(folder.join(format!("f{file}")), b"x").unwrap` | [2503](../../src/rewrite.rs#L2503) | receiver-type-required |
 | `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `shared.clone` | [2507](../../src/rewrite.rs#L2507) | receiver-type-required |
 | `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::thread::spawn` | [2508](../../src/rewrite.rs#L2508) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `crate::folder::remove_tree_if_present` | [2508](../../src/rewrite.rs#L2508), [2510](../../src/rewrite.rs#L2510) | [store::folder::remove_tree_if_present](../../src/folder.rs#L925) |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `crate::folder::remove_tree_if_present` | [2508](../../src/rewrite.rs#L2508), [2510](../../src/rewrite.rs#L2510) | [store::folder::remove_tree_if_present](../../src/folder.rs#L968) |
 | `startup_isolates_missing_fork_carrier_without_losing_source` | `tempfile::tempdir().unwrap` | [2518](../../src/rewrite.rs#L2518) | receiver-type-required |
 | `startup_isolates_missing_fork_carrier_without_losing_source` | `tempfile::tempdir` | [2518](../../src/rewrite.rs#L2518) | external-constructor-callback-or-unresolved |
 | `startup_isolates_missing_fork_carrier_without_losing_source` | `ThreadStore::open(directory.path()).unwrap` | [2519](../../src/rewrite.rs#L2519) | receiver-type-required |

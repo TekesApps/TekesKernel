@@ -7,6 +7,8 @@
 
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
 use std::fs;
+use std::io::{self, Read};
+use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, Weak};
@@ -537,6 +539,131 @@ impl RespondAuthority for ProductionRespondAuthority {
     }
 }
 
+type SyncedPrefixMap = HashMap<PathBuf, (u64, u64, u64)>;
+
+#[derive(Clone)]
+pub(crate) struct LedgerSyncGate {
+    sync: Arc<dyn store::SyncPolicy>,
+    synced: Arc<Mutex<SyncedPrefixMap>>,
+}
+
+impl LedgerSyncGate {
+    pub(crate) fn new(sync: Arc<dyn store::SyncPolicy>) -> Self {
+        Self {
+            sync,
+            synced: Arc::new(Mutex::new(HashMap::new())),
+        }
+    }
+
+    pub(crate) fn system() -> Arc<Self> {
+        Arc::new(Self::new(Arc::new(store::SystemSync)))
+    }
+
+    pub(crate) fn is_unsynced(&self, path: &Path) -> bool {
+        let Ok(metadata) = fs::metadata(path) else {
+            return true;
+        };
+        let dev = metadata.dev();
+        let ino = metadata.ino();
+        let len = metadata.len();
+        self.synced
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(path)
+            .copied()
+            .is_none_or(|(cached_dev, cached_ino, cached_len)| {
+                cached_dev != dev || cached_ino != ino || len > cached_len
+            })
+    }
+
+    pub(crate) fn ensure_durable_bytes(&self, path: &Path) -> io::Result<Vec<u8>> {
+        let metadata = fs::metadata(path)?;
+        let dev = metadata.dev();
+        let ino = metadata.ino();
+        let len = metadata.len();
+        let cached = self
+            .synced
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(path)
+            .copied();
+        if let Some((cached_dev, cached_ino, cached_len)) = cached
+            && cached_dev == dev
+            && cached_ino == ino
+            && len <= cached_len
+        {
+            let bytes = fs::read(path)?;
+            let actual_len = bytes.len() as u64;
+            if actual_len <= cached_len {
+                if actual_len != cached_len {
+                    let mut guard = self
+                        .synced
+                        .lock()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner);
+                    if guard.get(path).copied() == Some((dev, ino, cached_len)) {
+                        guard.insert(path.to_path_buf(), (dev, ino, actual_len));
+                    }
+                }
+                return Ok(bytes);
+            }
+        }
+        let mut file = fs::File::open(path)?;
+        let file_meta = file.metadata()?;
+        let dev = file_meta.dev();
+        let ino = file_meta.ino();
+        let mut bytes = Vec::new();
+        file.read_to_end(&mut bytes)?;
+        self.sync.full_sync(&file)?;
+        let synced_len = bytes.len() as u64;
+        let mut guard = self
+            .synced
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let next_len = match guard.get(path).copied() {
+            Some((cached_dev, cached_ino, cached_len))
+                if cached_dev == dev && cached_ino == ino =>
+            {
+                cached_len.max(synced_len)
+            }
+            _ => synced_len,
+        };
+        guard.insert(path.to_path_buf(), (dev, ino, next_len));
+        Ok(bytes)
+    }
+
+    pub(crate) fn read_durable_prefix(&self, path: &Path) -> io::Result<Vec<u8>> {
+        match self.ensure_durable_bytes(path) {
+            Ok(bytes) => Ok(bytes),
+            Err(error) => {
+                let metadata = fs::metadata(path)?;
+                let dev = metadata.dev();
+                let ino = metadata.ino();
+                let len = metadata.len();
+                let cached = self
+                    .synced
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                    .get(path)
+                    .copied();
+                if let Some((cached_dev, cached_ino, cached_len)) = cached
+                    && cached_dev == dev
+                    && cached_ino == ino
+                    && cached_len <= len
+                {
+                    let file = fs::File::open(path)?;
+                    let file_meta = file.metadata()?;
+                    if file_meta.dev() == dev && file_meta.ino() == ino {
+                        let mut bytes = Vec::new();
+                        file.take(cached_len).read_to_end(&mut bytes)?;
+                        return Ok(bytes);
+                    }
+                }
+                Err(error)
+            }
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct ProductionCarrierStreams {
     inner: Arc<CarrierStreamsInner>,
@@ -550,6 +677,7 @@ struct CarrierStreamsInner {
     controls: Mutex<BTreeMap<String, SessionControlItem>>,
     legacy_histories: Mutex<HashMap<String, Arc<FrozenLegacyHistory>>>,
     context_projection_lock: Mutex<()>,
+    sync_gate: Mutex<Arc<LedgerSyncGate>>,
     session_authority: Mutex<Option<Weak<dyn SupervisorSessionAuthority>>>,
     session_admission: Mutex<Option<Arc<SessionInputAdmissionAuthority>>>,
     next_rpc: AtomicU64,
@@ -1019,6 +1147,7 @@ impl ProductionCarrierStreams {
                 controls: Mutex::new(BTreeMap::new()),
                 legacy_histories: Mutex::new(HashMap::new()),
                 context_projection_lock: Mutex::new(()),
+                sync_gate: Mutex::new(LedgerSyncGate::system()),
                 session_authority: Mutex::new(None),
                 session_admission: Mutex::new(None),
                 next_rpc: AtomicU64::new(1),
@@ -1027,6 +1156,24 @@ impl ProductionCarrierStreams {
                 attachments: Mutex::new(Attachments::default()),
             }),
         }
+    }
+
+    pub(crate) fn attach_sync_gate(&self, gate: Arc<LedgerSyncGate>) {
+        *self
+            .inner
+            .sync_gate
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = gate;
+    }
+
+    pub(crate) fn sync_gate(&self) -> Arc<LedgerSyncGate> {
+        Arc::clone(
+            &self
+                .inner
+                .sync_gate
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner),
+        )
     }
 
     /// Binds the process host: its live workers count as `running` in inventory
@@ -1401,7 +1548,7 @@ impl ProductionCarrierStreams {
         }
         // Fold the same immutable byte buffer whose exact length is bound to the projection.
         // Never pair a semantic fold from an earlier version with later file metadata.
-        let contents = fs::read(&ledger)?;
+        let contents = self.sync_gate().ensure_durable_bytes(&ledger)?;
         let projection = scan_valid_prefix(&contents, schema::READER_VERSION)
             .projection
             .ok_or_else(|| {
@@ -1680,7 +1827,8 @@ impl ProductionCarrierStreams {
             .lock()
             .map_err(|_| poisoned())?;
         let folder = self.inner.root.join("threads").join(session_id);
-        let ledger = semantic_projection(&folder).map_err(internal_carrier)?;
+        let ledger =
+            semantic_projection_with_gate(&folder, &self.sync_gate()).map_err(internal_carrier)?;
         let journal = EndpointJournal::open(&folder)?;
         self.refresh_context_projection_locked(session_id, &folder, &ledger, &journal)
     }
@@ -1902,11 +2050,52 @@ impl ProductionCarrierStreams {
         // snapshots from the semantic ledger, then all later baselines read the durable bounded
         // projection instead of rescanning histories on every connection.
         for session in queue_unprojected {
-            self.publish_queue_snapshot(&session).map_err(|error| {
-                ProductionCarrierError::Lifecycle(format!(
-                    "cannot rebuild authoritative queue baseline for {session}: {error}"
-                ))
-            })?;
+            if let Err(error) = self.publish_queue_snapshot(&session) {
+                let folder = self.inner.root.join("threads").join(&session);
+                let ledger = folder.join("main.jsonl");
+                if let Ok(prefix) = self.sync_gate().read_durable_prefix(&ledger) {
+                    let projection = scan_valid_prefix(&prefix, schema::READER_VERSION)
+                        .projection
+                        .ok_or_else(|| {
+                            ProductionCarrierError::Lifecycle(
+                                "queue ledger has no valid durable prefix".to_owned(),
+                            )
+                        })?;
+                    let items = public_queue_items(&projection)?;
+                    let mut controls = self.inner.controls.lock().map_err(|_| poisoned())?;
+                    let item =
+                        controls
+                            .entry(session.clone())
+                            .or_insert_with(|| SessionControlItem {
+                                session_id: session.clone(),
+                                queue: Vec::new(),
+                                jobs: Vec::new(),
+                                projections: IJsonValue::parse_str(r#"{"asOfSeq":-1,"values":{}}"#)
+                                    .expect("empty control projection is I-JSON"),
+                            });
+                    item.queue = items;
+                } else if let Some(saved) = read_queue_projection(&folder).filter(|saved| {
+                    fs::metadata(&ledger)
+                        .is_ok_and(|metadata| metadata.len() >= saved.ledger_length)
+                }) {
+                    let mut controls = self.inner.controls.lock().map_err(|_| poisoned())?;
+                    let item =
+                        controls
+                            .entry(session.clone())
+                            .or_insert_with(|| SessionControlItem {
+                                session_id: session.clone(),
+                                queue: Vec::new(),
+                                jobs: Vec::new(),
+                                projections: IJsonValue::parse_str(r#"{"asOfSeq":-1,"values":{}}"#)
+                                    .expect("empty control projection is I-JSON"),
+                            });
+                    item.queue = saved.items;
+                } else {
+                    return Err(ProductionCarrierError::Lifecycle(format!(
+                        "cannot rebuild authoritative queue baseline for {session}: {error}"
+                    )));
+                }
+            }
         }
         let items = self
             .inner
@@ -3107,15 +3296,11 @@ mod folder_inventory_tests {
     }
 }
 
-fn semantic_projection(folder: &Path) -> Result<schema::LedgerProjection, HostFailure> {
-    semantic_line_projection(folder, "main.jsonl")
-}
-
-fn semantic_line_projection(
+fn semantic_projection_with_gate(
     folder: &Path,
-    line: &str,
+    sync_gate: &LedgerSyncGate,
 ) -> Result<schema::LedgerProjection, HostFailure> {
-    semantic_line_projection_mode(folder, line, false)
+    semantic_line_projection_with_gate(folder, "main.jsonl", false, Some(sync_gate))
 }
 
 /// How a ledger line is read: strict refuses an unrepaired tail (callers that need the whole
@@ -3126,6 +3311,15 @@ fn semantic_line_projection_mode(
     folder: &Path,
     line: &str,
     tolerant: bool,
+) -> Result<schema::LedgerProjection, HostFailure> {
+    semantic_line_projection_with_gate(folder, line, tolerant, None)
+}
+
+fn semantic_line_projection_with_gate(
+    folder: &Path,
+    line: &str,
+    tolerant: bool,
+    sync_gate: Option<&LedgerSyncGate>,
 ) -> Result<schema::LedgerProjection, HostFailure> {
     if line != "main.jsonl" {
         let id = line
@@ -3141,7 +3335,10 @@ fn semantic_line_projection_mode(
     {
         return Err(internal("actionable ledger must be a regular file"));
     }
-    let bytes = fs::read(path).map_err(internal)?;
+    let bytes = match sync_gate {
+        Some(gate) => gate.ensure_durable_bytes(&path).map_err(internal)?,
+        None => fs::read(path).map_err(internal)?,
+    };
     let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
     if scan.needs_repair() && !tolerant {
         return Err(HostFailure::Internal(

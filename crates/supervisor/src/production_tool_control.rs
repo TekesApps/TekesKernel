@@ -187,6 +187,10 @@ pub trait DynamicSupervisorAuthority: Send + Sync {
         }
     }
 
+    fn authority_fingerprint(&self, _tool: &DynamicTool) -> Option<String> {
+        None
+    }
+
     fn cancel_inflight(&self) {}
 }
 
@@ -347,7 +351,7 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ToolControlHandle
             .iter()
             .find(|tool| tool.name == request.name)
         else {
-            return ToolControlRecovery::ReplaySafe;
+            return ToolControlRecovery::UnavailableDynamicTool;
         };
         if matches!(
             tool.effect,
@@ -359,6 +363,18 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ToolControlHandle
         } else {
             ToolControlRecovery::UnqueryableExternalEffect
         }
+    }
+
+    fn authority_fingerprint(&self, request: &ToolControl) -> Option<String> {
+        let tool = self
+            .dynamic_catalog
+            .tools
+            .iter()
+            .find(|tool| tool.name == request.name)?;
+        self.dynamic
+            .as_ref()
+            .filter(|route| route.supports(tool))
+            .and_then(|route| route.authority_fingerprint(tool))
     }
 
     fn reconcile(&mut self, request: &ToolControl) -> ExternalEffectResolution {
